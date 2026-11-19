@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+
+<addon id="plugin.video.play_er"
+       version="25.60.40"
+       name="[B][COLOR orange]| PLAY.ER |[/COLOR][/B]"
+       provider-name="[COLOR orange][  Mau!X ER  ][/COLOR]">
+
+
+    <requires>
+        <import addon="xbmc.python" version="3.0.1"/>
+        <import addon="script.module.myconnpy" version="8.0.33"/>
+        <import addon="script.module.requests" version="2.31.0"/>
+        <import addon="script.module.beautifulsoup4" version="4.12.2"/>
+
+        <import addon="script.module.idna" version="3.10.0" optional="true"/>
+        <import addon="script.module.chardet" version="5.1.0" optional="true"/>
+        <import addon="script.module.urllib3" version="2.2.3" optional="true"/>
+        <import addon="script.module.soupsieve" version="2.4.1" optional="true"/>
+        <import addon="script.module.certifi" version="2023.5.7" optional="true"/>
+
+        <!-- <import addon="skin.arctic.fuse.3" version="3.2.9" optional="true"/> -->
+        <!-- <import addon="script.skinvariables" version="2.2.1" optional="true"/> -->
+        <!-- <import addon="plugin.video.themoviedb.helper" version="6.15.6" optional="true"/> -->
+        <!-- <import addon="service.upnext" version="9.0.21" optional="true"/> -->
+        <!-- <import addon="script.yatse.kodi" version="10.00.00" optional="true"/> -->
+        <!-- <import addon="plugin.video.tube_er" version="10.00.00" optional="true"/> -->
+    </requires>
+
+
+    <extension point="xbmc.python.pluginsource" library="main.py">
+        <provides>video</provides>
+    </extension>
+
+
+    <extension point="xbmc.service" library="service.py"/>
+
+
+    <extension point="xbmc.addon.metadata">
+
+
+        <summary lang="cs_cz">[COLOR orange][ FUCKING ] PLAY.ER : MULTI-PROVIDER VIDEO AI SEARCH &amp; SMART PLAYBACK[/COLOR]</summary>
+        <summary lang="en_gb">[COLOR orange][ FUCKING ] PLAY.ER : MULTI-PROVIDER VIDEO AI SEARCH &amp; SMART PLAYBACK[/COLOR]</summary>
+
+
+        <description lang="cs_cz">
+            [B][COLOR orange][  P L A Y . E R  ][/COLOR][/B]
+            • Multimediální addon pro Kodi 22 PIERS s vyhledáváním zdrojů, katalogy a chytrým přehráváním.
+            • RunPlugin(plugin://plugin.video.play_er/?action=show_stream_menu)
+
+            [B][COLOR orange][  VYHLEDÁVÁNÍ A PŘEHRÁVÁNÍ  ][/COLOR][/B]
+            • Souběžné vyhledávání zdrojů u providerů Prehraj.to a Webshare.
+            • Inteligentní filtry názvů, kvality, jazyka a zahrnutých či vyloučených výrazů.
+            • Výběr zdroje, rychlé přehrání, playlisty filmů a seriálů a automatické pokračování.
+            • Předběžné vyhledávání, volitelné filtrování playlistů a automatické snížení kvality při potížích.
+            • Správce seriálů, evidence epizod, historie přehrávání a seznam Sledovat později.
+
+            [B][COLOR orange][  KATALOGY A SLUŽBY  ][/COLOR][/B]
+            • TMDB: vyhledávání a katalogy filmů, seriálů, žánrů, osobností, poskytovatelů a doporučení.
+            • ČSFD: žebříčky, kategorie a denní tipy.
+            • TRAKT.TV: historie, seznamy a sledovaní uživatelé, kalendář, rozkoukané pořady a scrobbling.
+            • STREMIO: katalogy, žebříčky, studia, dabing a vyhledávání.
+            • TMDBHelper: PLAY.ER playery pro výběr zdroje, automatické přehrání a textové hledání.
+
+            [B][COLOR orange][  DOPLŇKOVÉ FUNKCE  ][/COLOR][/B]
+            • AI doporučení a hledání podobných titulů přes Gemini s podporou OpenRouter fallbacku.
+            • Upozornění na nové epizody, komunitní sdílení položek a Telegram reporty či zálohy složek.
+            • Lokální cache SQLite nebo MySQL, nastavitelné menu, statistiky a diagnostika připojení.
+
+            ••• Zdrojový kód je dostupný pod licencí GPL 3.0 •••
+        </description>
+
+
+        <description lang="en_gb">
+            [B][COLOR orange][  P L A Y . E R  ][/COLOR][/B]
+            • Multimedia addon for Kodi 22 PIERS with source search, catalogs and smart playback.
+            • RunPlugin(plugin://plugin.video.play_er/?action=show_stream_menu)
+
+            [B][COLOR orange][  SEARCH AND PLAYBACK  ][/COLOR][/B]
+            • Search sources from Prehraj.to and Webshare, with optional multi-provider search.
+            • Smart title, quality, language, include and exclude filters.
+            • Source selection, quick play, movie and TV show playlists, and automatic continuation.
+            • Optional pre-emptive search, playlist filters and automatic quality downgrade on playback issues.
+            • TV show manager, episode tracking, playback history and a Watch Later list.
+
+            [B][COLOR orange][  CATALOGS AND SERVICES  ][/COLOR][/B]
+            • TMDB: search and catalogs for movies, TV shows, genres, people, providers and recommendations.
+            • CSFD: charts, categories and daily picks.
+            • TRAKT.TV: history, lists and followed users, calendar, in-progress shows and scrobbling.
+            • STREMIO: catalogs, charts, studios, dubbed content and search.
+            • TMDBHelper: PLAY.ER players for source selection, autoplay and text search.
+
+            [B][COLOR orange][  EXTRA FEATURES  ][/COLOR][/B]
+            • AI recommendations and similar-title search through Gemini with OpenRouter fallback support.
+            • New episode alerts, community item sharing, and Telegram reports or folder backups.
+            • Local SQLite or MySQL cache, configurable menus, system metrics and connection diagnostics.
+
+            ••• Source code is available under the GPL 3.0 license •••
+        </description>
+
+
+        <news>
+            [B][COLOR orange][  2026-11-17 — server : 192.168.200.7  ][/COLOR][/B]
+            • Update verze z 25.60.34 na 25.60.35.
+            • TELEGRAM : k pěti složkám přidáno pět samostatných souborů s výběrem přímo v nastavení.
+            • TELEGRAM : první soubor má výchozí settings.xml doplňku TMDb Helper; původní složky zachovány.
+            • TELEGRAM : ZIP podporuje kombinaci složek a souborů, rozlišuje shodné názvy; nové české a anglické popisky.
+
+            [B][COLOR orange][  2026-11-17 — server : 192.168.200.7  ][/COLOR][/B]
+            • Update verze z 25.60.33 na 25.60.34.
+            • TELEGRAM : zálohování opět pouze složek, odstraněna podpora samostatných souborů.
+            • TELEGRAM : výchozí cesta zálohy č. 3 vrácena na prázdnou hodnotu.
+
+            [B][COLOR orange][  2026-11-17 — server : 192.168.200.7  ][/COLOR][/B]
+            • Update verze z 25.60.32 na 25.60.33.
+            • TMDBHELP : NASTAVIT TMDBHELPER nastaví only_resolve_strm=true a výchozí SOURCES-PREDICTION player pro filmy i epizody; se zálohou a ověřením.
+            • TMDBHELP : NASTAVIT TMDB HLEDÁNÍ zachová omezení dummy na knihovní STRM soubory.
+            • TELEGRAM : výchozí ZÁLOHA č. 3 je settings.xml TMDb Helperu; ZIP záloha podporuje také jednotlivé lokální soubory.
+
+            [B][COLOR orange][  2026-11-17 — server : 192.168.200.7  ][/COLOR][/B]
+            • Update verze z 25.60.31 na 25.60.32.
+            • INTELLIGENCE : výchozí OPENROUTER MODEL je google/gemma-4-31b-it:free; MODEL ID zůstává prázdné, vlastní uložená ID mají přednost.
+            • Ověřeny bezplatné předvolby GEMINI a OPENROUTER; výchozí GEMINI beze změny.
+            • AI-TODAY : opraven koncový oddělovač cesty prázdného adresáře pro obnovení widgetů Arctic Fuse 3.
+
+            [B][COLOR orange][  2026-11-17 — server : 192.168.200.7  ][/COLOR][/B]
+            • Update verze z 25.60.30 na 25.60.31.
+            • INTELLIGENCE : nové GEMINI : MODEL ID a OPENROUTER : MODEL, stejné ovládání obou providerů.
+            • MODEL vybírá předvolbu; vyplněné MODEL ID má u obou providerů přednost, prázdné pole použije předvolbu. Výchozí textová pole jsou prázdná, dosavadní uložená vlastní ID zachována.
+            • OPENROUTER : ověřené bezplatné předvolby Free Router, Gemma 4 a Nemotron 3.5; žádné načítání katalogu při otevření menu.
+            • Cache odpovědí rozlišuje skutečně vybraný model a vlastní ID; zachovány fallbacky, limity API, formátování lokalizací i metadata přehrávání.
+
+            [B][COLOR orange][  2026-11-17 — server : 192.168.200.7  ][/COLOR][/B]
+            • Update verze z 25.60.29 na 25.60.30.
+            • INTELLIGENCE : AI ZDROJ [1]/[2] nově nabízí TRAKT.TV : ZHLÉDNUTÉ, IN-PROGRESS a MOJE HODNOCENÍ [ 7–10 ].
+            • Kontext používá cache PLAY.ER podle účtu; MySQL doplňuje lokální zrcadlo v základní SQLite pro případ nedostupnosti serveru.
+            • AI-TODAY : Spotlight čte hotový seznam bez síťového získávání kontextu; obnova i migrace starší cache běží na pozadí.
+            • Denní výběr zachovává filmy i seriály včetně změny počtu položek; při neúspěšné obnově zůstává předchozí seznam.
+            • Původní formátování lokalizací, výchozí nastavení zdrojů a metadata přehrávání pro Yatse/Chorus zachovány.
+
+            [B][COLOR orange][  2026-11-17 — server : 192.168.200.7  ][/COLOR][/B]
+            • Update verze z 25.60.28 na 25.60.29.
+            • PREDICTION : po přirozeném konci otevře výsledky odmítnuté následující epizody a využije připravenou PRE-EMPTIVE cache.
+            • Čekání na zavření modálního dialogu, kontrola načteného cíle a omezené opakování; Stop, nové přehrávání nebo vypnutí volby nabídku zruší.
+            • Metadata epizod pro Yatse/Chorus, filtry, limit playlistu, časování 'SKIP CREDITS' a TMDb Helper : playery zachovány.
+
+            [B][COLOR orange][  2026-11-17 — server : 10.20.30.9  ][/COLOR][/B]
+            • Update verze z 25.60.27 na 25.60.28.
+            • Texty ve STREAM DASHBOARD: PREDICTION : ACTIVATED, UKONČIT PŘI NESHODĚ a RUČNÍ VÝBĚR PO UKONČENÍ.
+
+            [B][COLOR orange][  2026-11-17 — server : 10.20.30.9  ][/COLOR][/B]
+            • Update verze z 25.60.26 na 25.60.27.
+            • PREDICTION : AKTIVOVAT, UKONČIT PŘI NESHODĚ a RUČNÍ VÝBĚR PO UKONČENÍ přímo ve STREAM DASHBOARD pod 'SKIP CREDITS'.
+            • Přepínače používají stávající nastavení; upravena navigace ovladačem, časování a metadata zachovány.
+
+            [B][COLOR orange][  2026-11-16 — server : 10.20.30.9  ][/COLOR][/B]
+            • Update verze z 25.60.25 na 25.60.26.
+            • 'SKIP CREDITS': grafika dialogu Arctic Fuse 3 se vykresluje nezávisle na aktuální položce seznamu; zachovány rozměry, časování a metadata.
+
+            [B][COLOR orange][  2026-11-16 — server : 10.20.30.9  ][/COLOR][/B]
+            • Update verze z 25.60.24 na 25.60.25.
+            • 'SKIP CREDITS' : okamžitá kontrola po přetočení, aby skok těsně ke konci neminul dialog mezi periodickými kontrolami.
+            • Lokální kontrola po přetočení funguje i bez Trakt scrobblingu; diagnostika výsledku a důvodu SKIP CREDITS v kodi.log.
+
+            [B][COLOR orange][  2026-11-16 — server : 10.20.30.9  ][/COLOR][/B]
+            • Update verze z 25.60.23 na 25.60.24.
+            • PREDICTION : sjednocené názvy, popisek a přepínatelné notifikace s původním názvem vybraného souboru; výstup do kodi.log.
+            • PREDICTION : volitelné ukončení automatického výběru při neshodě, bez přerušení poslední vyhovující epizody.
+            • PREDICTION : volitelná ruční nabídka zdrojů následující epizody po přirozeném konci; ochrana při Stop, chybě a změně přehrávání.
+            • TMDb Helper : player [TMDBH]--SOURCES-PREDICTION.json; zachovány stávající playery a konfigurace serveru.
+
+            [B][COLOR orange][  2026-11-14 — server : 192.168.200.100  ][/COLOR][/B]
+            • Update verze z 25.60.22 na 25.60.23.
+            • Doplněn TMDBHelper player PLAY-ER--AUTO-PREDICTION.json, předávající TMDB identitu do stávajícího endpointu s čekáním na zavření dialogu v Arctic Fuse 3.
+            • Player je součástí instalátoru PLAY.ER. První zdroj zůstává ruční volbou, AUTO-PREDICTION se podle nastavení používá pro další epizody CONTINUE / SKIP CREDITS. Nastavení CZ/EN a filtrů zachováno.
+
+            [B][COLOR orange][  2026-11-14 — server : 192.168.200.100  ][/COLOR][/B]
+            • Update verze z 25.60.21 na 25.60.22.
+            • AUTO-PREDICTION : podporována i vydání, která mají označení uploadera, jazyka nebo kvality výhradně před číslem epizody. Zachována priorita celého původního názvu a bezpečný návrat k běžnému výběru.
+
+            [B][COLOR orange][  2026-11-14 — server : 192.168.200.100  ][/COLOR][/B]
+            • Update verze z 25.60.20 na 25.60.21.
+            • AUTO-PREDICTION : pro podobnost vydání se zohledňuje celý původní název souboru včetně označení uploadera a jazyka před číslem epizody; popisky skinu se nepoužívají. Stávající filtry a bezpečný návrat zůstávají zachované.
+
+            [B][COLOR orange][  2026-11-13 — server : 192.168.200.100  ][/COLOR][/B]
+            • Update verze z 25.60.10 na 25.60.20.
+            • FILTER : AUTO-PREDICTION preferuje pro další automatické epizody vydání podle první volby; zachovává stávající filtry a původní výběr při slabé shodě.
+            • Vlastní nastavení aktivace, podobnosti názvu a tolerance velikosti. Zachovány opravy metadat pro Yatse/Chorus a návaznost 'CONTINUE' / 'SKIP CREDITS'.
+
+            [B][COLOR orange][  2026-11-13 — server : 192.168.200.100  ][/COLOR][/B]
+            • Update verze z 25.60.00 na 25.60.10.
+            • Opraveno rozlišování epizod pro 'SKIP CREDITS' v 'CONTINUE' playlistu; další epizody se stejným cache ID již nesdílejí trigger nabídky.
+            • TMDb Helper : doplněna upozornění při chybějícím TMDB ID a timeoutu modálního dialogu a záložní inicializace addonu.
+        </news>
+
+
+        <disclaimer lang="cs_cz">••• SOUTH-FORK NETWORK [ KODI 22 PIERS ] •••</disclaimer>
+        <disclaimer lang="en_gb">••• SOUTH-FORK NETWORK [ KODI 22 PIERS ] •••</disclaimer>
+
+
+        <reuselanguageinvoker>true</reuselanguageinvoker>
+
+
+        <license>GPL-3.0</license>
+        <platform>all</platform>
+        <language>cs_cz</language>
+
+        <author>Mau!X ER</author>
+        <email>griperstone@gmail.com</email>
+        <website>https://xbmc.south-fork.uk/repo</website>
+        <source>https://gitea.south-fork.uk/mauix/plugin.video.play_er</source>
+
+
+        <assets>
+            <icon>resources/ADDON--PLAY-ER.webp</icon>
+            <banner>resources/banner.webp</banner>
+            <fanart>resources/fanart.webp</fanart>
+            <clearlogo>resources/clearlogo.webp</clearlogo>
+
+            <!-- <screenshot>resources/screenshots/SCREENSHOT-01.jpg</screenshot> -->
+            <!-- <screenshot>resources/screenshots/SCREENSHOT-02.jpg</screenshot> -->
+            <!-- <screenshot>resources/screenshots/SCREENSHOT-03.jpg</screenshot> -->
+            <!-- <screenshot>resources/screenshots/SCREENSHOT-04.jpg</screenshot> -->
+            <!-- <screenshot>resources/screenshots/SCREENSHOT-05.jpg</screenshot> -->
+            <!-- <screenshot>resources/screenshots/SCREENSHOT-06.jpg</screenshot> -->
+            <!-- <screenshot>resources/screenshots/SCREENSHOT-07.jpg</screenshot> -->
+            <!-- <screenshot>resources/screenshots/SCREENSHOT-08.jpg</screenshot> -->
+            <!-- <screenshot>resources/screenshots/SCREENSHOT-09.jpg</screenshot> -->
+            <!-- <screenshot>resources/screenshots/SCREENSHOT-10.jpg</screenshot> -->
+
+        </assets>
+    </extension>
+</addon>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<keymap>
+    <global>
+        <keyboard>
+
+            <!-- <key id="61634">RunPlugin(plugin://plugin.video.play_er/?action=show_player_menu&alt_tmdb=$INFO[ListItem.Property(tmdb_id)]&alt_media=$INFO[ListItem.Property(mediatype)]&title=$INFO[ListItem.Title])</key> -->
+
+            <!-- <key id="61656" mod="longpress">RunPlugin(plugin://plugin.video.play_er/?action=show_stream_menu)</key> -->
+            <!-- <key id="61623">RunScript(special://home/addons/plugin.video.play_er/resources/scripts/FULLSCREEN---MUTE.py)</key> -->
+            <!-- <key id="61623" mod="longpress">RunScript(script.display.control)</key> -->
+            <!-- <key id="61623" mod="longpress">RunScript(context.universal.remotes)</key> -->
+
+            <numpadtimes>PlayerControl(Partymode(music))</numpadtimes>
+            <numpadnine>PlayerControl(Partymode(video))</numpadnine>
+        </keyboard>
+    </global>
+</keymap>
+
+
+
+
+
+
+

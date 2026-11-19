@@ -1,0 +1,33 @@
+{
+    "name": "[TMDBH]--SOURCES-PREDICTION",
+    "plugin": "plugin.video.play_er",
+    "priority": 100,
+
+    "is_resolvable": "false",
+    "make_playlist": "false",
+
+    "assert": {
+        "play_movie": [
+            "tmdb"
+        ],
+        "play_episode": [
+            "tmdb",
+            "season",
+            "episode"
+        ],
+        "search_movie": [
+            "tmdb"
+        ],
+        "search_episode": [
+            "tmdb",
+            "season",
+            "episode"
+        ]
+    },
+
+    "play_movie": "executebuiltin://RunPlugin(plugin://plugin.video.play_er/?action=tmdbh_player_bridge&tmdb_id={tmdb}&media_type=movie&mode=search)",
+    "play_episode": "executebuiltin://RunPlugin(plugin://plugin.video.play_er/?action=tmdbh_player_bridge&tmdb_id={tmdb}&media_type=episode&season={season}&episode={episode}&mode=search)",
+
+    "search_movie": "executebuiltin://RunPlugin(plugin://plugin.video.play_er/?action=tmdbh_player_bridge&tmdb_id={tmdb}&media_type=movie&mode=search)",
+    "search_episode": "executebuiltin://RunPlugin(plugin://plugin.video.play_er/?action=tmdbh_player_bridge&tmdb_id={tmdb}&media_type=episode&season={season}&episode={episode}&mode=search)"
+}

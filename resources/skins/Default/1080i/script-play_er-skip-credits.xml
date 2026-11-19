@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<window>
+    <defaultcontrol always="true">3012</defaultcontrol>
+    <controls>
+        <control type="group">
+            <left>990</left><top>570</top><width>850</width><height>420</height>
+
+            <control type="image">
+                <!-- Fade only the panel background; keep content fully opaque. -->
+                <animation effect="fade" start="70" end="70" condition="true">Conditional</animation>
+                <width>850</width><height>420</height>
+                <texture colordiffuse="FF181818">common/white.webp</texture>
+            </control>
+
+            <control type="label">
+                <left>30</left><top>20</top><width>790</width><height>40</height>
+                <font>font13</font><textcolor>FFFF9900</textcolor>
+                <label>[COLOR orange]CREDITS[/COLOR] • $INFO[Window.Property(play_er.timeout_action)] $INFO[Window.Property(remaining)] s</label>
+            </control>
+
+            <control type="image">
+                <left>30</left><top>80</top><width>320</width><height>180</height>
+                <aspectratio>scale</aspectratio><texture fallback="DefaultVideo.png">$INFO[Window.Property(thumb)]</texture>
+            </control>
+
+            <control type="label">
+                <left>380</left><top>85</top><width>440</width><height>140</height>
+                <font>font13</font><textcolor>FFFFFFFF</textcolor><wrapmultiline>true</wrapmultiline><label>$INFO[Window.Property(play_er.episode_label)]</label>
+            </control>
+
+            <control type="progress" id="3014">
+                <left>30</left><top>285</top><width>790</width><height>4</height>
+                <texturebg colordiffuse="44FFFFFF">common/white.webp</texturebg>
+                <midtexture colordiffuse="FFFF9900">common/white.webp</midtexture>
+            </control>
+
+            <control type="button" id="3012">
+                <left>30</left><top>320</top><width>240</width><height>60</height>
+                <font>font13</font><label>SKIP</label><textcolor>FFFFFFFF</textcolor>
+                <texturefocus colordiffuse="FF985F00">common/white.webp</texturefocus>
+                <texturenofocus colordiffuse="FF333333">common/white.webp</texturenofocus>
+                <onleft>3015</onleft><onright>3013</onright><onup>3012</onup><ondown>3012</ondown>
+            </control>
+
+            <control type="button" id="3013">
+                <left>305</left><top>320</top><width>240</width><height>60</height>
+                <font>font13</font><label>CLOSE</label><textcolor>FFFFFFFF</textcolor>
+                <texturefocus colordiffuse="FF985F00">common/white.webp</texturefocus>
+                <texturenofocus colordiffuse="FF333333">common/white.webp</texturenofocus>
+                <onleft>3012</onleft><onright>3015</onright><onup>3013</onup><ondown>3013</ondown>
+            </control>
+
+            <control type="button" id="3015">
+                <left>580</left><top>320</top><width>240</width><height>60</height>
+                <font>font13</font><label>MENU</label><textcolor>FFFFFFFF</textcolor>
+                <texturefocus colordiffuse="FF985F00">common/white.webp</texturefocus>
+                <texturenofocus colordiffuse="FF333333">common/white.webp</texturenofocus>
+                <onleft>3013</onleft><onright>3012</onright><onup>3015</onup><ondown>3015</ondown>
+            </control>
+        </control>
+    </controls>
+</window>

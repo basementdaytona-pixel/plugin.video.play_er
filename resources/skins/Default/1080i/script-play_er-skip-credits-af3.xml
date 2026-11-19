@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!-- PLAY.ER composition using ARCTIC FUSE 3 skin layout components.
+     Skin code / artwork remain in AF3. Own labels and buttons avoid its fixed UP NEXT ordering ... -->
+
+
+<window>
+    <defaultcontrol always="true">3012</defaultcontrol>
+    <onload>Dialog.Close(fullscreeninfo,true)</onload>
+    <onload>Dialog.Close(videoosd,true)</onload>
+    <include>Animation_FadeIn</include>
+    <controls>
+        <control type="group">
+            <include>OSD_Info_Dimensions</include>
+            <include content="OSD_View_Line">
+                <param name="label">[COLOR orange]CREDITS[/COLOR] • $INFO[Window.Property(play_er.timeout_action)] $INFO[Window.Property(remaining)] s</param>
+            </include>
+            <control type="group">
+                <left>view_pad</left><top>-70</top>
+                <width>view_landscape_itemlayout_w</width><height>view_poster_itemlayout_h</height>
+                <!-- This window owns artwork properties, not a container ListItem.
+                     AF3 Layout_Landscape can hide valid art when ListItem is empty. -->
+                <control type="image" id="3090">
+                    <width>view_landscape_item_w</width><height>view_landscape_item_h</height>
+                    <texture background="true" diffuse="diffuse/landscape_w410_h231.png" fallback="DefaultVideo.png">$VAR[Image_UpNext]</texture>
+                    <aspectratio scalediffuse="false">scale</aspectratio>
+                </control>
+                <include>OSD_UpNext_Progress</include>
+                <control type="group">
+                    <top>view_landscape_item_h</top>
+                    <control type="label">
+                        <top>48</top><right>40</right><height>67</height>
+                        <font>font_mini</font><textcolor>panel_fg_70</textcolor>
+                        <align>left</align><aligny>top</aligny><wrapmultiline>true</wrapmultiline>
+                        <label>$INFO[Window.Property(play_er.episode_label)]</label>
+                    </control>
+                </control>
+            </control>
+
+            <control type="group">
+                <left>view_pad</left><top>260</top>
+                <width>view_landscape_item_w</width><height>180</height>
+                <control type="grouplist" id="4000">
+                    <!-- Small AF3 layout correction, tuned against the rendered poster center. -->
+                    <left>-30</left><top>0</top><bottom>0</bottom>
+                    <width>view_landscape_item_w</width>
+                    <align>center</align>
+                    <orientation>horizontal</orientation>
+                    <defaultcontrol always="true">3012</defaultcontrol>
+                    <onup>Close</onup>
+
+                <include content="DialogInfo_Button">
+                    <param name="vertical">false</param>
+                    <param name="icon">special://skin/extras/icons/play2.png</param>
+                    <param name="id">3012</param><param name="groupid">5012</param>
+                    <param name="label">SKIP</param><param name="include_hintlabel">true</param>
+                    <onleft>SetFocus(3015)</onleft><onright>SetFocus(3013)</onright>
+                </include>
+
+                <control type="group" id="4098"><width>osd_itemgap</width><left>-20</left></control>
+                <include content="DialogInfo_Button">
+                    <param name="vertical">false</param>
+                    <param name="icon">special://skin/extras/icons/xmark.png</param>
+                    <param name="id">3013</param><param name="groupid">5013</param>
+                    <param name="label">CLOSE</param><param name="include_hintlabel">true</param>
+                    <onleft>SetFocus(3012)</onleft><onright>SetFocus(3015)</onright>
+                </include>
+
+                <control type="group" id="4099"><width>osd_itemgap</width><left>-20</left></control>
+                <include content="DialogInfo_Button">
+                    <param name="vertical">false</param>
+                    <param name="icon">special://skin/extras/icons/gear.png</param>
+                    <param name="id">3015</param><param name="groupid">5015</param>
+                    <param name="label">MENU</param><param name="include_hintlabel">true</param>
+                    <onleft>SetFocus(3013)</onleft><onright>SetFocus(3012)</onright>
+                </include>
+                </control>
+            </control>
+        </control>
+    </controls>
+</window>

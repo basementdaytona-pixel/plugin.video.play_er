@@ -1,0 +1,18 @@
+{
+    "name": "[TMDBH]--SEARCH-TEXT",
+    "plugin": "plugin.video.play_er",
+    "priority": 200,
+
+
+    "is_resolvable": "false",
+
+
+    "assert": {
+        "search_movie": ["title"],
+        "search_episode": ["showname", "season", "episode"]
+    },
+
+
+    "search_movie": "plugin://plugin.video.play_er/?action=tmdbh_bridge&mode=text_search&q={name_url+}",
+    "search_episode": "plugin://plugin.video.play_er/?action=tmdbh_bridge&mode=text_search&q={name_url+}"
+}

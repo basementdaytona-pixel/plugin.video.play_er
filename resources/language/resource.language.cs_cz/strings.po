@@ -1,0 +1,3494 @@
+msgid ""
+msgstr "content-transfer-encoding: 8bit\nContent-Type: text/plain; charset=UTF-8\nLanguage: cs_CZ\nmime-version: 1.0\nPlural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\npo-revision-date: YEAR-MO-DA HO:MI+ZONE\npot-creation-date: YEAR-MO-DA HO:MI+ZONE\nproject-id-version: plugin.video.play_er\nreport-msgid-bugs-to: griperstone@gmail.com\nX-Context-English-Fallbacks: [{\"context\":\"#30332\",\"msgid\":\"Automatically selects a source for a library item. When disabled, shows a source selection dialog.\",\"plural\":null,\"forms\":[0]},{\"context\":\"#30333\",\"msgid\":\"First available keeps provider/global ordering after library exclusions. Intelligent also ranks library keyword preferences.\",\"plural\":null,\"forms\":[0]},{\"context\":\"#30693\",\"msgid\":\"Warns when PREHRAJ.TO premium has two days or less remaining. Account renewal is independent.\",\"plural\":null,\"forms\":[0]}]\n"
+
+# ======================================================================================== #
+# --- ITEMS SETTINGS :: ESTUARY
+# ======================================================================================== #
+# msgctxt "#30000"
+# msgid "[B][COLOR orange]►  [/COLOR]  SETTINGS[/B]"
+# msgstr ""
+#
+# msgctxt "#30102"
+# msgid "[B][COLOR orange]►  [/COLOR]   AUTOLISTS[/B]"
+# msgstr ""
+#
+# msgctxt "#30121"
+# msgid "[B][COLOR orange]►  [/COLOR]EXPRESSION[/B]"
+# msgstr ""
+#
+# msgctxt "#31035"
+# msgid "[B][COLOR orange]►  [/COLOR] API-SPECIAL[/B]"
+# msgstr ""
+#
+# msgctxt "#31100"
+# msgid "[B][COLOR orange]►  [/COLOR]  API - AI[/B]"
+# msgstr ""
+#
+# msgctxt "#30504"
+# msgid "[B][COLOR orange]►  [/COLOR]  WATCH - IT[/B]"
+# msgstr ""
+#
+# msgctxt "#30157"
+# msgid "[B][COLOR orange]►  [/COLOR]  SYSTEM[/B]"
+# msgstr ""
+#
+# msgctxt "#30198"
+# msgid "[B][COLOR orange]►  [/COLOR]     FILES[/B]"
+# msgstr ""
+#
+# msgctxt "#30217"
+# msgid "[B][COLOR orange]►  [/COLOR]  DATABASE[/B]"
+# msgstr ""
+#
+# msgctxt "#30232"
+# msgid "[B][COLOR orange]►  [/COLOR]  PROVIDERS[/B]"
+# msgstr ""
+#
+# msgctxt "#30253"
+# msgid "[B][COLOR orange]►  [/COLOR]  INTEGRATION[/B]"
+# msgstr ""
+#
+# msgctxt "#30701"
+# msgid "[B][COLOR orange]►  [/COLOR]  ADDON-UI[/B]"
+# msgstr ""
+#
+# msgctxt "#30267"
+# msgid "[B][COLOR orange]►  [/COLOR]  VIEW MODE[/B]"
+# msgstr ""
+# ======================================================================================== #
+# --- ITEMS SETTINGS :: FUSE 3
+# ======================================================================================== #
+msgctxt "#30000"
+msgid "[COLOR orange]►[/COLOR] SETTINGS"
+msgstr "[COLOR orange]►[/COLOR] NASTAVENÍ"
+
+msgctxt "#30102"
+msgid "[COLOR orange]►[/COLOR] AUTOLISTS"
+msgstr "[COLOR orange]►[/COLOR] AUTOLISTS"
+
+msgctxt "#30121"
+msgid "[COLOR orange]►[/COLOR] EXPRESSION"
+msgstr "[COLOR orange]►[/COLOR] EXPRESSION"
+
+msgctxt "#31035"
+msgid "[COLOR orange]►[/COLOR] STREAMING"
+msgstr "[COLOR orange]►[/COLOR] STREAMING"
+
+msgctxt "#31100"
+msgid "[COLOR orange]►[/COLOR] INTELLIGENCE"
+msgstr "[COLOR orange]►[/COLOR] INTELLIGENCE"
+
+msgctxt "#30504"
+msgid "[COLOR orange]►[/COLOR] WATCH-IT"
+msgstr "[COLOR orange]►[/COLOR] WATCH-IT"
+
+msgctxt "#30157"
+msgid "[COLOR orange]►[/COLOR] SYSTEM"
+msgstr "[COLOR orange]►[/COLOR] SYSTÉMOVÉ"
+
+msgctxt "#30198"
+msgid "[COLOR orange]►[/COLOR] FILES"
+msgstr "[COLOR orange]►[/COLOR] SOUBORY"
+
+msgctxt "#30217"
+msgid "[COLOR orange]►[/COLOR] DATABASE"
+msgstr "[COLOR orange]►[/COLOR] DATABÁZE"
+
+msgctxt "#30232"
+msgid "[COLOR orange]►[/COLOR] PROVIDERS"
+msgstr "[COLOR orange]►[/COLOR] PROVIDERS"
+
+msgctxt "#30253"
+msgid "[COLOR orange]►[/COLOR] INTEGRATION"
+msgstr "[COLOR orange]►[/COLOR] INTEGRACE"
+
+msgctxt "#30701"
+msgid "[COLOR orange]►[/COLOR] ADDON-UI"
+msgstr "[COLOR orange]►[/COLOR] ADDON-UI"
+
+msgctxt "#30267"
+msgid "[COLOR orange]►[/COLOR] VIEW MODE"
+msgstr "[COLOR orange]►[/COLOR] VIEW MODE"
+
+# ======================================================================================== #
+# --- ITEMS SETTINGS :: GREEN
+# ======================================================================================== #
+msgctxt "#30507"
+msgid "[COLOR limegreen][    AUTOLIST GENERATOR  -  PREFERENCES FOR  :  CONTINUED    ][/COLOR]"
+msgstr "[COLOR limegreen][    AUTOLIST GENERATOR  -  PREFERENCE PRO  :  CONTINUED    ][/COLOR]"
+
+msgctxt "#30972"
+msgid "[COLOR limegreen][    SPECIAL API FUNCTIONS AND SEARCH FILTERS  -  NETWORK SETUP    ][/COLOR]"
+msgstr "[COLOR limegreen][    SPECIÁLNÍ API FUNKCE A FILTRY VYHLEDÁVÁNÍ  -  NASTAVENÍ SÍŤE    ][/COLOR]"
+
+msgctxt "#30702"
+msgid "[COLOR limegreen][    MENU  -  RENAME MAIN ITEMS    ][/COLOR]"
+msgstr "[COLOR limegreen][    MENU  -  ZMĚNIT NÁZVY POLOŽEK    ][/COLOR]"
+
+msgctxt "#30533"
+msgid "[COLOR limegreen][    WATCH IT !  -  CATEGORY OPTIONS  :  RANDOMIZED    ][/COLOR]"
+msgstr "[COLOR limegreen][    WATCH IT !  -  VOLBY KATEGORIE  :  RANDOMIZED    ][/COLOR]"
+
+msgctxt "#30119"
+msgid "[COLOR limegreen][    AUTOLIST GENERATOR  -  PREFERENCES FOR  :  LIBRARY    ][/COLOR]"
+msgstr "[COLOR limegreen][    AUTOLIST GENERATOR  -  PREFERENCE PRO  :  KNIHOVNA    ][/COLOR]"
+
+msgctxt "#30184"
+msgid "[COLOR limegreen][    GLOBAL SETTINGS  -  DISPLAY CONTROL    ][/COLOR]"
+msgstr "[COLOR limegreen][    GLOBAL SETTINGS  -  DISPLAY CONTROL    ][/COLOR]"
+
+msgctxt "#30233"
+msgid "[COLOR limegreen][    PROVIDER SELECTION AND ACCOUNT LOGIN    ][/COLOR]"
+msgstr "[COLOR limegreen][    VÝBĚR PROVIDERA A PŘIHLÁŠENÍ k ÚČTŮM    ][/COLOR]"
+
+msgctxt "#30759"
+msgid "[COLOR limegreen][    MENU  -  SHOW / HIDE MENU ITEMS    ][/COLOR]"
+msgstr "[COLOR limegreen][    MENU  -  ZOBRAZIT / SKRÝVAT POLOŽKY    ][/COLOR]"
+
+msgctxt "#30158"
+msgid "[COLOR limegreen][    CACHE  -  API REQUESTS    ][/COLOR]"
+msgstr "[COLOR limegreen][    MEZIPAMĚŤ CACHE  -  POŽADAVKY API    ][/COLOR]"
+
+msgctxt "#30732"
+msgid "[COLOR limegreen][    MENU  -  ITEM ORDER SETTINGS    ][/COLOR]"
+msgstr "[COLOR limegreen][    MENU  -  NASTAVENÍ POŘADÍ POLOŽEK    ][/COLOR]"
+
+msgctxt "#31101"
+msgid "[COLOR limegreen][    AI INTELLIGENCE API SEARCH FILTERS  -  KEYS SETUP    ][/COLOR]"
+msgstr "[COLOR limegreen][    AI INTELLIGENCE API FILTRY VYHLEDÁVÁNÍ  -  NASTAVENÍ KLÍČŮ    ][/COLOR]"
+
+msgctxt "#30212"
+msgid "[COLOR limegreen][    LOCATION  -  PATHS FOR WORK FILES    ][/COLOR]"
+msgstr "[COLOR limegreen][    UMÍSTĚNÍ  -  CESTY PRO PRACOVNÍ SOUBORY    ][/COLOR]"
+
+msgctxt "#30505"
+msgid "[COLOR limegreen][    WATCH IT !  -  OPTIONS FOR   :  MOVIES    ][/COLOR]"
+msgstr "[COLOR limegreen][    WATCH IT !  -  VOLBY KATEGORIE  :  FILMY    ][/COLOR]"
+
+msgctxt "#30001"
+msgid "[COLOR limegreen][    BASIC SETTINGS AND DISPLAY LIMITS    ][/COLOR]"
+msgstr "[COLOR limegreen][    ZÁKLADNÍ NASTAVENÍ A LIMITY ZOBRAZOVÁNÍ    ][/COLOR]"
+
+msgctxt "#30254"
+msgid "[COLOR limegreen][    NOTIFICATIONS AND EXTERNAL SERVICE LINKING    ][/COLOR]"
+msgstr "[COLOR limegreen][    NOTIFIKACE A PROPOJENÍ S EXTERNÍMI SLUŽBAMI    ][/COLOR]"
+
+msgctxt "#30500"
+msgid "[COLOR limegreen][    TRAKT.TV SOCIAL  -  SETTINGS AND LIST LIMITS    ][/COLOR]"
+msgstr "[COLOR limegreen][    NASTAVENÍ TRAKT.TV  -  SOCIAL A LIMITY SEZNAMŮ    ][/COLOR]"
+
+msgctxt "#30174"
+msgid "[COLOR limegreen][    GLOBAL SETTINGS  -  NOTIFY CONTROL    ][/COLOR]"
+msgstr "[COLOR limegreen][    GLOBAL SETTINGS  -  NOTIFY CONTROL    ][/COLOR]"
+
+msgctxt "#30114"
+msgid "[COLOR limegreen][    AUTOLIST GENERATOR  -  PREFERENCES FOR  :  TV SHOWS    ][/COLOR]"
+msgstr "[COLOR limegreen][    AUTOLIST GENERATOR  -  PREFERENCE PRO  :  SERIÁLY    ][/COLOR]"
+
+msgctxt "#30268"
+msgid "[COLOR limegreen][    WINDOW APPEARANCE SETTINGS  -  MENU    ][/COLOR]"
+msgstr "[COLOR limegreen][    NASTAVENÍ VZHLEDU OKEN  -  MENU    ][/COLOR]"
+
+msgctxt "#30103"
+msgid "[COLOR limegreen][    AUTOLIST GENERATOR  -  PREFERENCES FOR  :  MOVIES    ][/COLOR]"
+msgstr "[COLOR limegreen][    AUTOLIST GENERATOR  -  PREFERENCE PRO  :  FILMY    ][/COLOR]"
+
+msgctxt "#30260"
+msgid "[COLOR limegreen][    BACKING UP FILES  -  SETTINGS AND DATABASES    ][/COLOR]"
+msgstr "[COLOR limegreen][    ZÁLOHOVÁNÍ SOUBORŮ  -  NASTAVENÍ A DATABÁZÍ    ][/COLOR]"
+
+msgctxt "#30126"
+msgid "[COLOR limegreen][    GLOBAL EXPRESSION  -  SEARCH FILTERS    ][/COLOR]"
+msgstr "[COLOR limegreen][    EXPRESSION GLOBALNÍ  -  FILTRY VYHLEDÁVÁNÍ    ][/COLOR]"
+
+msgctxt "#30900"
+msgid "[COLOR limegreen][    SHARING CONTENT VIA COMMUNITY SERVER    ][/COLOR]"
+msgstr "[COLOR limegreen][    SDÍLENÍ OBSAHU PŘES KOMUNITNÍ SERVER    ][/COLOR]"
+
+msgctxt "#30502"
+msgid "[COLOR limegreen][    LOCATION  -  TTL SETTINGS FOR CACHE    ][/COLOR]"
+msgstr "[COLOR limegreen][    UMÍSTĚNÍ  -  NASTAVENÍ TTL PRO CACHE    ][/COLOR]"
+
+msgctxt "#30218"
+msgid "[COLOR limegreen][    SQLITE SETTINGS  -  DATABASE CACHING    ][/COLOR]"
+msgstr "[COLOR limegreen][    NASTAVENÍ SQLITE  -  DATABASE CACHING    ][/COLOR]"
+
+msgctxt "#30141"
+msgid "[COLOR limegreen][    DISPLAY  -  MAIN MENU  AND  MEDIA ATTRIBUTES    ][/COLOR]"
+msgstr "[COLOR limegreen][    ZOBRAZENÍ  -  HLAVNÍ MENU  A  ATRIBUTY PRO MÉDIA    ][/COLOR]"
+
+msgctxt "#30506"
+msgid "[COLOR limegreen][    WATCH IT !  -  OPTIONS FOR  :  TV-SHOWS    ][/COLOR]"
+msgstr "[COLOR limegreen][    WATCH IT !  -  VOLBY KATEGORIE  :  SERIÁLY    ][/COLOR]"
+
+msgctxt "#32510"
+msgid "[COLOR limegreen][    WATCH IT !  -  OPTIONS FOR   :  SIMILAR    ][/COLOR]"
+msgstr "[COLOR limegreen][    WATCH IT !  -  VOLBY KATEGORIE  :  PODOBNÉ    ][/COLOR]"
+
+# ======================================================================================== #
+# --- ITEMS SETTINGS :: ORANGE :: ○
+# ======================================================================================== #
+msgctxt "#32511"
+msgid "[B][COLOR orange]○  [/B]ACCOUNT API KEYS  -  SERVICE  :  TRAKT.TV   ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]API KLÍČE ÚČTŮ  -  SLUŽBA  :  TRAKT.TV   ▼ [/COLOR]"
+
+msgctxt "#30247"
+msgid "[B][COLOR orange]○  [/B]ACCOUNT API KEYS  -  SERVICE  :  TMDB   ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]API KLÍČE ÚČTŮ  -  SLUŽBA  :  TMDB   ▼ [/COLOR]"
+
+msgctxt "#32512"
+msgid "[B][COLOR orange]○  [/B]ACCOUNT API KEYS  -  SERVICE  :  STREMIO   ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]API KLÍČE ÚČTŮ  -  SLUŽBA  :  STREMIO   ▼ [/COLOR]"
+
+msgctxt "#30083"
+msgid "[B][COLOR orange]○  [/B]ADVANCED OPTIONS  -  MAIN FUNCTIONS   ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]POKROČILÉ VOLBY  -  HLAVNÍ FUNKCE   ▼ [/COLOR]"
+
+msgctxt "#30089"
+msgid "[B][COLOR orange]○  [/B]ADVANCED OPTIONS  -  SOCIAL FEED        ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]POKROČILÉ VOLBY  -  SOCIAL FEED        ▼ [/COLOR]"
+
+msgctxt "#30501"
+msgid "[B][COLOR orange]○  [/B]ADVANCED OPTIONS  -  TRAKT.TV OPTIONS   ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]POKROČILÉ VOLBY  -  TRAKT.TV VOLBY   ▼ [/COLOR]"
+
+msgctxt "#30794"
+msgid "[B][COLOR orange]○  [/B]AUTOLIST  -  CONTINUED FILTER    ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]AUTOLIST  -  FILTRY CONTINUED    ▼ [/COLOR]"
+
+msgctxt "#31036"
+msgid "[B][COLOR orange]○  [/B]AUTOLIST  -  ENABLE FOR CONTINUED   ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]AUTOLIST  -  POVOLIT PRO CONTINUED   ▼ [/COLOR]"
+
+msgctxt "#30104"
+msgid "[B][COLOR orange]○  [/B]AUTOLIST  -  ENABLE FOR MOVIES   ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]AUTOLIST  -  POVOLIT PRO FILMY   ▼ [/COLOR]"
+
+msgctxt "#30115"
+msgid "[B][COLOR orange]○  [/B]AUTOLIST  -  ENABLE FOR TV SHOWS   ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]AUTOLIST  -  POVOLIT PRO SERIÁLY   ▼ [/COLOR]"
+
+msgctxt "#30120"
+msgid "[B][COLOR orange]○  [/B]AUTOLIST  -  ENABLE LIBRARY       ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]AUTOLIST  -  POVOLIT KNIHOVNA       ▼ [/COLOR]"
+
+msgctxt "#30133"
+msgid "[B][COLOR orange]○  [/B]AUTOLIST  -  FILTERS FOR MOVIES   ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]AUTOLIST  -  FILTRY PRO FILMY   ▼ [/COLOR]"
+
+msgctxt "#30136"
+msgid "[B][COLOR orange]○  [/B]AUTOLIST  -  FILTERS FOR TV SHOWS  ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]AUTOLIST  -  FILTRY PRO SERIÁL  ▼ [/COLOR]"
+
+msgctxt "#30137"
+msgid "[B][COLOR orange]○  [/B]AUTOLIST  -  LIBRARY FILTERS    ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]AUTOLIST  -  FILTRY KNIHOVNA    ▼ [/COLOR]"
+
+msgctxt "#30790"
+msgid "[B][COLOR orange]○  [/B]AUTOLIST  -  SOURCES FOR CONTINUED     ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]AUTOLIST  -  ZDROJE PRO CONTINUED     ▼ [/COLOR]"
+
+msgctxt "#30108"
+msgid "[B][COLOR orange]○  [/B]AUTOLIST  -  SOURCES FOR MOVIES     ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]AUTOLIST  -  ZDROJE PRO FILMY     ▼ [/COLOR]"
+
+msgctxt "#30118"
+msgid "[B][COLOR orange]○  [/B]AUTOLIST  -  SOURCES FOR TV SHOWS     ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]AUTOLIST  -  ZDROJE PRO SERIÁLY     ▼ [/COLOR]"
+
+msgctxt "#30850"
+msgid "[B][COLOR orange]○  [/B]COMMUNITY SERVER  -  SHARING CONTENT      ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]KOMUNITNÍ SERVER  -  SDÍLENÍ OBSAHU      ▼ [/COLOR]"
+
+msgctxt "#30124"
+msgid "[B][COLOR orange]○  [/B]CREDITS  -  SKIP ENABLED     ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]CREDITS  -  PŘESKOČIT TITULKY     ▼ [/COLOR]"
+
+msgctxt "#30503"
+msgid "[B][COLOR orange]○  [/B]DATABASE TYPE  -  MYSQL | SQLITE   ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]DATABASE TYPE  -  MYSQL | SQLITE   ▼ [/COLOR]"
+
+msgctxt "#30142"
+msgid "[B][COLOR orange]○  [/B]DISPLAY  -  MEDIA OPTIONS      ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]ZOBRAZOVÁNÍ  -  VOLBY PRO MÉDIA      ▼ [/COLOR]"
+
+msgctxt "#30300"
+msgid "[B][COLOR orange]○  [/B]DISPLAY  -  MOVIES     ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]ZOBRAZOVÁNÍ  -  FILMY     ▼ [/COLOR]"
+
+msgctxt "#30269"
+msgid "[B][COLOR orange]○  [/B]DISPLAY  -  TITLE     ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]ZOBRAZOVÁNÍ  -  TITLE     ▼ [/COLOR]"
+
+msgctxt "#30303"
+msgid "[B][COLOR orange]○  [/B]DISPLAY  -  TV SHOWS   ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]ZOBRAZOVÁNÍ  -  SERIÁLY   ▼ [/COLOR]"
+
+msgctxt "#30002"
+msgid "[B][COLOR orange]○  [/B]DISPLAY LIMITS  -  SEARCHING    ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]LIMITY ZOBRAZENÍ  -  VYHLEDÁVÁNÍ    ▼ [/COLOR]"
+
+msgctxt "#30060"
+msgid "[B][COLOR orange]○  [/B]DISPLAY LIMITS  -  SETTINGS       ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]LIMITY ZOBRAZENÍ  -  NASTAVENÍ       ▼ [/COLOR]"
+
+msgctxt "#31080"
+msgid "[B][COLOR orange]○  [/B]INTELIGENCE AI  -  PROVIDER API        ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]INTELIGENCE AI  -  PROVIDER API        ▼ [/COLOR]"
+
+msgctxt "#30199"
+msgid "[B][COLOR orange]○  [/B]LOCATION  -  CACHE DIRECTORY   ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]UMÍSTĚNÍ  -  MEZIPAMĚŤI CACHE   ▼ [/COLOR]"
+
+msgctxt "#30240"
+msgid "[B][COLOR orange]○  [/B]LOGIN CREDENTIALS  -  PREHRAJ.TO       ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]PŘIHLAŠOVACÍ ÚDAJE  -  PREHRAJ.TO       ▼ [/COLOR]"
+
+msgctxt "#30243"
+msgid "[B][COLOR orange]○  [/B]LOGIN CREDENTIALS  -  WEBSHARE.CZ   ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]PŘIHLAŠOVACÍ ÚDAJE  -  WEBSHARE.CZ   ▼ [/COLOR]"
+
+msgctxt "#30145"
+msgid "[B][COLOR orange]○  [/B]MAIN MENU  -  ENABLE DISPLAY    ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]HLAVNÍ MENU  -  POVOLIT ZOBRAZENÍ    ▼ [/COLOR]"
+
+msgctxt "#30123"
+msgid "[B][COLOR orange]○  [/B]PRE  -  EMPTIVE PRELOADING     ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]PRE  -  EMPTIVE PRELOADING     ▼ [/COLOR]"
+
+msgctxt "#30234"
+msgid "[B][COLOR orange]○  [/B]SERVER SELECTION  -  PROVIDER OPTIONS     ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]VÝBĚR SERVERU  -  VOLBY PROVIDER     ▼ [/COLOR]"
+
+msgctxt "#30261"
+msgid "[B][COLOR orange]○  [/B]TELEGRAM BACKUP  -  FOLDERS   ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]TELEGRAM ZÁLOHA  -  SLOŽKY   ▼ [/COLOR]"
+
+msgctxt "#30255"
+msgid "[B][COLOR orange]○  [/B]TELEGRAM NOTIFICATIONS  -  NEW EPISODES      ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]TELEGRAM NOTIFIKACE  -  NOVÉ EPIZODY      ▼ [/COLOR]"
+
+msgctxt "#32050"
+msgid "[B][COLOR orange]○  [/B]API  -  STREAMING MODE   ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]API  -  STREAMIMG REŽIM   ▼ [/COLOR]"
+
+msgctxt "#32503"
+msgid "[B][COLOR orange]○  [/B]NETWORK  -  AUTO-DOWNGRADE QUALITY   ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]SÍŤ  -  AUTO-DOWNGRADE KVALITY   ▼ [/COLOR]"
+
+# ======================================================================================== #
+# --- ITEMS SETTINGS :: ORANGE :: ►
+# ======================================================================================== #
+msgctxt "#31090"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   AI DAILY MIX"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   DENNÍ MIX"
+
+msgctxt "#31091"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   AI MOOD"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   NÁLADA"
+
+msgctxt "#31053"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   AI RECOMMEND"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   NAPOVĚZ"
+
+msgctxt "#31089"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   AI RECOMMEND"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   NAPOVĚZ"
+
+msgctxt "#30713"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   CONTINUE"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   POKRAČOVAT"
+
+msgctxt "#30719"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   CSFD LISTS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   ČSFD LIST'S"
+
+msgctxt "#30718"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   CSFD TOPS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   ČSFD TOP'S"
+
+msgctxt "#30729"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   EPISODES"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   EPIZODY"
+
+msgctxt "#31050"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   GEMINI AI"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   GEMINI AI"
+
+msgctxt "#30722"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   HISTORY"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   HISTORIE"
+
+msgctxt "#30724"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   LAUNCHER"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   LAUNCHER"
+
+msgctxt "#30707"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   LIBRARY"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   KNIHOVNA"
+
+msgctxt "#30723"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   MANAGER"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   MANAGER"
+
+msgctxt "#30714"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   MOVIES"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   FILMY"
+
+msgctxt "#30706"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   PLAYBACK"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   PLAYBACK"
+
+msgctxt "#30726"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   PROVIDERS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   POSKYTOVATELÉ"
+
+msgctxt "#30712"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   RANDOMIZED"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   NÁHODNĚ"
+
+msgctxt "#30727"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   REGISTRATION"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   REGISTRACE"
+
+msgctxt "#30705"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   SEARCH"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   HLEDÁNÍ"
+
+msgctxt "#30728"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   SETTINGS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   NASTAVENÍ"
+
+msgctxt "#30725"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   SPEEDTEST"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   SPEEDTEST"
+
+msgctxt "#30731"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   TAGS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   TAGY"
+
+msgctxt "#30717"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   TMDB EXTRA"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   TMDB EXTRA"
+
+msgctxt "#30716"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   TMDB USER"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   TMDB USER"
+
+msgctxt "#30720"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   TRAKT.TV"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   TRAKT.TV"
+
+msgctxt "#30715"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   TV SHOWS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   SERIÁLY"
+
+msgctxt "#30730"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   WATCH LATER"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   CHCI VIDĚT"
+
+msgctxt "#30710"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   WATCH LATER MOVIES"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   FILMY NA POZDĚJI"
+
+msgctxt "#30711"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   WATCH LATER SHOWS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   SERIÁLY NA POZDĚJI"
+
+msgctxt "#30708"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   WATCH MOVIES"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   SLEDOVAT FILMY"
+
+msgctxt "#30709"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   WATCH SHOWS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   SLEDOVAT SERIÁLY"
+
+msgctxt "#30721"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   WATCHED"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   SLEDOVANÉ"
+
+msgctxt "#30270"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  [   MAIN MENU   ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  [   HLAVNÍ  MENU   ]"
+
+msgctxt "#30239"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  [B]PROVIDER  :  DEFAULT[/B]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  [B]PROVIDER  :  VÝCHOZÍ[/B]"
+
+msgctxt "#30235"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  [B]PROVIDER  :  MULTI-SEARCH[/B]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  [B]PROVIDER  :  MULTI-SEARCH[/B]"
+
+msgctxt "#30236"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  [B]PROVIDER  :  PREFERRED[/B]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  [B]PROVIDER  :  PREFEROVANÝ[/B]"
+
+msgctxt "#31044"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  AI  :  MAX RESULTS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  AI  :  MAX VÝSLEDKŮ"
+
+msgctxt "#31095"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  AI  :  PROMPT"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  AI  :  PROMPT"
+
+msgctxt "#31070"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  AI  :  SOURCE  [ 1 ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  AI  :  ZDROJ  [ 1 ]"
+
+msgctxt "#31078"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  AI  :  SOURCE  [ 2 ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  AI  :  ZDROJ  [ 2 ]"
+
+msgctxt "#31068"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  AI  :  TEMPERATURE"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  AI  :  KREATIVITA AI"
+
+msgctxt "#30169"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  AIR-TIME  :  TMDB EPISODES  [ DAYS ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  AIR-TIME  :  TMDB EPIZODY  [ DNY ]"
+
+msgctxt "#30970"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  API  :  FORCE AUTO-SUBTITLES"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  API  :  VYNUTIT CZE TITULKY"
+
+msgctxt "#30802"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  API  :  MARK MULTI-STREAM"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  API  :  OZNAČIT MULTI-STREAM"
+
+msgctxt "#30159"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  API  :  SEARCH LANGUAGE  [ TMDB ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  API  :  JAZYK HLEDÁNÍ  [ TMDB ]"
+
+msgctxt "#30164"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  API  :  SEARCH LANGUAGE  [ TRAKT ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  API  :  JAZYK HLEDÁNÍ  [ TRAKT ]"
+
+msgctxt "#30262"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  BACKUP  :  FOLDER #1"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  ZÁLOHA  :  SLOŽKA #1"
+
+msgctxt "#30263"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  BACKUP  :  FOLDER #2"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  ZÁLOHA  :  SLOŽKA #2"
+
+msgctxt "#30264"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  BACKUP  :  FOLDER #3"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  ZÁLOHA  :  SLOŽKA #3"
+
+msgctxt "#30265"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  BACKUP  :  FOLDER #4"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  ZÁLOHA  :  SLOŽKA #4"
+
+msgctxt "#30266"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  BACKUP  :  FOLDER #5"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  ZÁLOHA  :  SLOŽKA #5"
+
+msgctxt "#30227"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MYSQL  :  DATABASE"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  MYSQL  :  DATABÁZE"
+
+msgctxt "#30106"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  DEFAULT STATE FOR MOVIES"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  VÝCHOZÍ STAV PRO FILMY"
+
+msgctxt "#30116"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  DEFAULT STATE FOR TV SHOWS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  VÝCHOZÍ STAV PRO SERIÁLY"
+
+msgctxt "#30182"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  DISABLE  :  NOTIFY  [ EPISODES ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  ZAKÁZAT  :  NOTIFY  [ EPISODES ]"
+
+msgctxt "#30178"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  DISABLE  :  NOTIFY  [ ERROR ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  ZAKÁZAT  :  NOTIFY  [ ERROR ]"
+
+msgctxt "#30177"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  DISABLE  :  NOTIFY  [ INFO ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  ZAKÁZAT  :  NOTIFY  [ INFO ]"
+
+msgctxt "#30179"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  DISABLE  :  NOTIFY  [ LOG-IN ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  ZAKÁZAT  :  NOTIFY  [ LOG-IN ]"
+
+msgctxt "#30176"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  DISABLE  :  NOTIFY  [ OK ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  ZAKÁZAT  :  NOTIFY  [ OK ]"
+
+msgctxt "#30692"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  DISABLE  :  NOTIFY  [ PREMIUM ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  ZAKÁZAT  :  NOTIFY  [ PREMIUM ]"
+
+msgctxt "#30942"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  EMPTIVE  :  THROTTLE  ( SECONDS )"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  EMPTIVE  :  THROTTLE  ( SEKUNDY )"
+
+msgctxt "#31060"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  ENABLE  :  AUTO-REPAIR PATCH"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  POVOLIT  :  AUTO-REPAIR PATCH"
+
+msgctxt "#30167"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  ENABLE  :  CACHE FOR WATCHED"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  POVOLIT  :  CACHE PRO SLEDOVANÉ"
+
+msgctxt "#30084"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  ENABLE  :  EXPRESSION FILTERS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  POVOLIT  :  FILTRY EXPRESSION"
+
+msgctxt "#30088"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  ENABLE  :  VIEW MODE FUNCTIONS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  POVOLIT  :  FUNKCE ZMĚNY VZHLEDU"
+
+msgctxt "#30093"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  FEED  :  FEED LIMIT ITEMS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  FEED  :  FEED LIMIT ITEMS"
+
+msgctxt "#30090"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  FEED  :  FOLLOW USER #1"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  FEED  :  FOLLOW USER #1"
+
+msgctxt "#30091"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  FEED  :  FOLLOW USER #2"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  FEED  :  FOLLOW USER #2"
+
+msgctxt "#30092"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  FEED  :  FOLLOW USER #3"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  FEED  :  FOLLOW USER #3"
+
+msgctxt "#31042"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  GEMINI  :  API KEY"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  GEMINI  :  API KLÍČ"
+
+msgctxt "#31062"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  GEMINI  :  MODEL"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  GEMINI  :  MODEL"
+
+msgctxt "#30190"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  GLOBAL  :  DISPLAY [ HISTORY ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  GLOBAL  :  DISPLAY [ HISTORY ]"
+
+msgctxt "#30188"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  GLOBAL  :  DISPLAY [ LIBRARY ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  GLOBAL  :  DISPLAY [ LIBRARY ]"
+
+msgctxt "#30189"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  GLOBAL  :  DISPLAY [ MANAGER ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  GLOBAL  :  DISPLAY [ MANAGER ]"
+
+msgctxt "#30186"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  GLOBAL  :  DISPLAY [ SEARCH ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  GLOBAL  :  DISPLAY [ SEARCH ]"
+
+msgctxt "#30191"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  GLOBAL  :  DISPLAY [ TALK-SHOW ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  GLOBAL  :  DISPLAY [ TALK-SHOW ]"
+
+msgctxt "#30185"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  GLOBAL  :  DISPLAY [ TMDB ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  GLOBAL  :  DISPLAY [ TMDB ]"
+
+msgctxt "#30192"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  GLOBAL  :  DISPLAY [ VIETCONG ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  GLOBAL  :  DISPLAY [ VIETCONG ]"
+
+msgctxt "#30187"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  GLOBAL  :  DISPLAY [ WATCHED ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  GLOBAL  :  DISPLAY [ WATCHED ]"
+
+msgctxt "#30197"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  GLOBAL  :  IP SECURITY BYPASS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  GLOBAL  :  IP SECURITY BYPASS"
+
+msgctxt "#30297"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  HISTORY  :  PLAYBACK"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  HISTORY  :  PLAYBACK"
+
+msgctxt "#30225"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MYSQL  :  IP ADDRESS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  MYSQL  :  IP ADRESA"
+
+msgctxt "#30226"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MYSQL  :  IP PORT"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  MYSQL  :  IP PORT"
+
+msgctxt "#30299"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  ITEM  :  CSFD TIPS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  POLOŽKA  :  TIPY ČSFD"
+
+msgctxt "#30298"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  ITEM  :  WATCHED"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  POLOŽKA  :  SLEDOVANÉ"
+
+msgctxt "#30213"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  LOCATION  :  DOWNLOADS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  UMÍSTĚNÍ  :  STAHOVÁNÍ"
+
+msgctxt "#30216"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  LOCATION  :  HISTORY"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  UMÍSTĚNÍ  :  HISTORIE"
+
+msgctxt "#30214"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  LOCATION  :  LIBRARY"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  UMÍSTĚNÍ  :  KNIHOVNA"
+
+msgctxt "#30196"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  LOGGING   :  DISPLAY [ LOG-LEVEL ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  LOGGING   :  DISPLAY [ [COLOR orange]LOG-LEVEL[/COLOR] ]"
+
+msgctxt "#30950"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  LOGGING   :  ENABLE [ METRICS ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  LOGGING   :  ZAPNOUT [ [COLOR orange]METRIKY[/COLOR] ]"
+
+msgctxt "#30143"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MEDIA  :  FILE SIZE"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  MÉDIA  :  VELIKOST SOUBORU"
+
+msgctxt "#30144"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MEDIA  :  VIDEO DURATION"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  MÉDIA  :  DOBA TRVÁNÍ VIDEA"
+
+msgctxt "#30147"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  HISTORY"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  HISTORIE"
+
+msgctxt "#30471"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  LATER MOVIE"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  LATER MOVIE"
+
+msgctxt "#30472"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  LATER SHOW"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  LATER SHOW"
+
+msgctxt "#30153"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  LAUNCHER"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  LAUNCHER"
+
+msgctxt "#30154"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  LIBRARY"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  KNIHOVNA"
+
+msgctxt "#30151"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  MANAGER"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  MANAGER"
+
+msgctxt "#30150"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  PROVIDER"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  PROVIDER"
+
+msgctxt "#30156"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  RANDOMIZED"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  RANDOMIZED"
+
+msgctxt "#30155"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  REGISTRATION"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  REGISTRACE"
+
+msgctxt "#30148"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  SETTINGS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  NASTAVENÍ"
+
+msgctxt "#30149"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  SPEEDTEST"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  SPEEDTEST"
+
+msgctxt "#30152"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  TRAKT.TV"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  TRAKT.TV"
+
+msgctxt "#30473"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  WATCH LATER LIST"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  CHCI VIDĚT"
+
+msgctxt "#30454"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  WATCH-MOVIE"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  WATCH-MOVIE"
+
+msgctxt "#30450"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  WATCH-SHOW"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  WATCH-SHOW"
+
+msgctxt "#30146"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  WATCHED"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  SLEDOVANÉ"
+
+msgctxt "#30301"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MOVIES  :  [  MAIN LISTS  ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  FILMY  :  [  HLAVNÍ SEZNAMY  ]"
+
+msgctxt "#30302"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MOVIES  :  SUBMENU  ( GENRES, YEARS )"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  FILMY  :  SUBMENU  ( ŽÁNRY, ROKY )"
+
+msgctxt "#30117"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  NUMBER OF EPISODES IN PLAYLIST"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  POČET EPIZOD V PLAYLISTU"
+
+msgctxt "#30788"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  NUMBER OF EPISODES IN PLAYLIST"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  POČET EPIZOD V PLAYLISTU"
+
+msgctxt "#30107"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  NUMBER OF MOVIES IN PLAYLIST"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  POČET FILMŮ V PLAYLISTU"
+
+msgctxt "#31081"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  OPENROUTER  :  API KEY"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  OPENROUTER  :  API KLÍČ"
+
+msgctxt "#31082"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  OPENROUTER  :  MODEL ID"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  OPENROUTER  :  MODEL ID"
+
+msgctxt "#30229"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MYSQL  :  PASSWORD"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  MYSQL  :  HESLO"
+
+msgctxt "#30064"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  PLAYBACK  :  HISTORY ITEMS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  PLAYBACK  :  POLOŽKY HISTORIE"
+
+msgctxt "#30231"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MYSQL  :  POOL SIZE  ( THREADS )"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  MYSQL  :  POOL SIZE  ( VLÁKNA )"
+
+msgctxt "#30241"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  PREHRAJ.TO  :  E-MAIL"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  PREHRAJ.TO  :  E-MAIL"
+
+msgctxt "#30242"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  PREHRAJ.TO  :  PASSWORD"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  PREHRAJ.TO  :  HESLO"
+
+msgctxt "#32620"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  PREHRAJ.TO  :  TTL"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  PREHRAJ.TO  :  TTL"
+
+msgctxt "#30062"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  PREHRAJTO  :  PAGE COUNT"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  PŘEHRAJTO  :  POČET STRÁNEK"
+
+msgctxt "#30206"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  RAM  :  MEMORY [ ITEMS ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  RAM  :  MEMORY [ POLOŽKY ]"
+
+msgctxt "#30205"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  RAM  :  MEMORY TTL [ HOURS ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  RAM  :  MEMORY TTL [ HOD ]"
+
+msgctxt "#30516"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  RANDOMIZED  :  CONTENT TYPE"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  RANDOMIZED  :  TYP OBSAHU"
+
+msgctxt "#30515"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  RANDOMIZED  :  ENABLED"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  RANDOMIZED  :  ZAPNUTO"
+
+msgctxt "#30520"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  RANDOMIZED  :  EXCLUDE SEEN"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  RANDOMIZED  :  VYLOUČIT VIDĚNÉ"
+
+msgctxt "#30518"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  RANDOMIZED  :  MAX ATTEMPTS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  RANDOMIZED  :  MAX POKUSŮ"
+
+msgctxt "#30522"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  RANDOMIZED  :  REQUIRE DABING"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  RANDOMIZED  :  VYŽADOVAT DABING"
+
+msgctxt "#30523"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  RANDOMIZED  :  REQUIRE QUALITY"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  RANDOMIZED  :  VYŽADOVAT KVALITU"
+
+msgctxt "#30521"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  RANDOMIZED  :  SOURCE STRATEGY"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  RANDOMIZED  :  STRATEGIE ZDROJŮ"
+
+msgctxt "#30519"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  RANDOMIZED  :  TRENDING PAGES"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  RANDOMIZED  :  TRENDING STRÁNEK"
+
+msgctxt "#30517"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  RANDOMIZED  :  TRENDING WINDOW"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  RANDOMIZED  :  TRENDING OKNO"
+
+msgctxt "#30296"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SEARCH  :  HISTORY"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  HLEDÁNÍ  :  HISTORIE"
+
+msgctxt "#30047"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SEARCH  :  MANAGER TIMEOUT"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  HLEDÁNÍ  :  MANAGER TIMEOUT"
+
+msgctxt "#30004"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SEARCH  :  PAGE COUNT"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  HLEDÁNÍ  :  POČET STRÁNEK"
+
+msgctxt "#30295"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SEARCH  :  RESULTS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  HLEDÁNÍ  :  VÝSLEDKY"
+
+msgctxt "#30016"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SEARCH  :  RESULTS LIMIT"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  HLEDÁNÍ  :  LIMIT VÝSLEDKŮ"
+
+msgctxt "#30040"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SEARCH  :  WEBSHARE CATEGORY"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  HLEDÁNÍ  :  WEBSHARE KATEGORIE"
+
+msgctxt "#30031"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SEARCH  :  WEBSHARE LIMIT"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  HLEDÁNÍ  :  WEBSHARE LIMIT"
+
+msgctxt "#30033"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SEARCH  :  WEBSHARE SORTING"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  HLEDÁNÍ  :  WEBSHARE ŘAZENÍ"
+
+msgctxt "#30113"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SELECT RESULT POSITION"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  VYBRAT POZICI VÝSLEDKU"
+
+msgctxt "#30934"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SHARING  :  API KEY"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  SHARING  :  API KLÍČ"
+
+msgctxt "#30860"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SHARING  :  HISTORY SIZE"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  SHARING  :  VELIKOST HISTORIE"
+
+msgctxt "#30936"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SHARING  :  TELEGRAM MASTER DEVICE"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  SHARING  :  HLAVNÍ ZAŘÍZENÍ TELEGRAM"
+
+msgctxt "#30862"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SHARING  :  NOTIFY SOUND"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  SHARING  :  ZVUK NOTIFIKACE"
+
+msgctxt "#30932"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SHARING  :  SERVER API URL"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  SHARING  :  SERVER API URL"
+
+msgctxt "#30960"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SHARING  :  SERVER CHECK INTERVAL"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  SHARING  :  INTERVAL KONTROLY"
+
+msgctxt "#31030"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SIMILAR  :  CONTENT SOURCE"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  SIMILAR  :  ZDROJ VÝSLEDKŮ"
+
+msgctxt "#31010"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SIMILAR  :  MAX ITEM LIMIT"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  SIMILAR  :  MAX VÝSLEDKŮ"
+
+msgctxt "#31020"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SIMILAR  :  MINIMUM RATING"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  SIMILAR  :  MINIMÁLNÍ HODNOCENÍ"
+
+msgctxt "#30914"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SKIP CREDITS  :  DEFAULT ACTION"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  CREDITS  :  VÝCHOZÍ AKCE"
+
+msgctxt "#30910"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SKIP CREDITS  :  TRIGGER TIME"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  CREDITS  :  ČAS ZOBRAZENÍ"
+
+msgctxt "#30940"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SKIP CREDITS  :  WHEN PLAYLIST PRESENT"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  CREDITS  :  PŘESKOČIT KDYŽ JE PLAYLIST"
+
+msgctxt "#30125"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SORTING  :  SIZE"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  ŘAZENÍ  :  VELIKOST"
+
+msgctxt "#30223"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SQLITE  :  CACHE LOCATION"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  SQLITE  :  UMÍSTĚNÍ CACHE"
+
+msgctxt "#30918"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  STREMIO  :  CATALOGS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  STREMIO  :  KATALOGY"
+
+msgctxt "#30259"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TELEGRAM  :  BOT TOKEN"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  TELEGRAM  :  BOT TOKEN"
+
+msgctxt "#30258"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TELEGRAM  :  CHAT ID"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  TELEGRAM  :  CHAT ID"
+
+msgctxt "#30256"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TELEGRAM  :  NEW EPISODES"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  TELEGRAM  :  NOVÉ EPIZODY"
+
+msgctxt "#30230"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MYSQL  :  TIMEOUT  ( SECONDS )"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  MYSQL  :  TIMEOUT  ( SEKUNDY )"
+
+msgctxt "#30168"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TIMEOUT  :  NEW EPISODES  [ HOURS ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  TIMEOUT  :  NOVÉ EPIZODY  [ HODINY ]"
+
+msgctxt "#30248"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TMDB  :  API KEY"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  TMDB  :  API KLÍČ"
+
+msgctxt "#30251"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TRAKT.TV  :  ACCESS TOKEN"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  TRAKT.TV  :  ACCESS TOKEN"
+
+msgctxt "#30249"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TRAKT.TV  :  CLIENT ID"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  TRAKT.TV  :  CLIENT ID"
+
+msgctxt "#30250"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TRAKT.TV  :  CLIENT SECRET"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  TRAKT.TV  :  CLIENT SECRET"
+
+msgctxt "#30101"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TRAKT.TV  :  CONTEXT MENU"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  TRAKT.TV  :  CONTEXT MENU"
+
+msgctxt "#30100"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TRAKT.TV  :  EXTENDED INFO"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  TRAKT.TV  :  ROZŠÍŘENÉ INFO"
+
+msgctxt "#30099"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TRAKT.TV  :  PLAYBACK TIME"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  TRAKT.TV  :  ČAS PŘEHRÁVÁNÍ"
+
+msgctxt "#30252"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TRAKT.TV  :  REFRESH TOKEN"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  TRAKT.TV  :  REFRESH TOKEN"
+
+msgctxt "#32513"
+msgid "[B][COLOR orange]    ►  [/COLOR]  TRAKT.TV  :  ACCOUNT LOGIN[/B]"
+msgstr "[B][COLOR orange]    ►  [/COLOR]  TRAKT.TV  :  PŘIHLÁŠENÍ K ÚČTU[/B]"
+
+msgctxt "#30086"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TRAKT.TV  :  SCROBBLING"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  TRAKT.TV  :  SCROBBLING"
+
+msgctxt "#30098"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TRAKT.TV  :  SEARCH IN CZECH"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  TRAKT.TV  :  VYHLEDAT ČESKY"
+
+msgctxt "#30097"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TRAKT.TV  :  TRAKT.TV LIMITS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  TRAKT.TV  :  LIMITY TRAKT.TV"
+
+msgctxt "#30201"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TTL  :  CSFD.CZ  [ HOURS ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  TTL  :  ČSFD.CZ  [ HOD ]"
+
+msgctxt "#30202"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TTL  :  TMDB.ORG  [ HOURS ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  TTL  :  TMDB.ORG  [ HOD ]"
+
+msgctxt "#30203"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TTL  :  TRAKT.TV  [ HOURS ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  TTL  :  TRAKT.TV  [ HOD ]"
+
+msgctxt "#30200"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TTL  :  USER DATA  [ DAYS ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  TTL  :  USER DATA  [ DNY ]"
+
+msgctxt "#30204"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TTL  :  WATCHED  [ HOURS ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  TTL  :  SLEDOVANÉ  [ HOD ]"
+
+msgctxt "#30304"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TV SHOWS  :  [  MAIN LISTS  ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  SERIÁLY  :  [  HLAVNÍ SEZNAMY  ]"
+
+msgctxt "#30307"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TV SHOWS  :  EPISODES"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  SERIÁLY  :  EPIZODY"
+
+msgctxt "#30306"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TV SHOWS  :  SEASONS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  SERIÁLY  :  SEZÓNY"
+
+msgctxt "#30305"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TV SHOWS  :  SUBMENU  ( GENRES, YEARS )"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  SERIÁLY  :  SUBMENU  ( ŽÁNRY, ROKY )"
+
+msgctxt "#30109"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  USE SELECTION METHOD"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  POUŽÍT METODU SELEKCE"
+
+msgctxt "#30228"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MYSQL  :  USER"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  MYSQL  :  UŽIVATEL"
+
+msgctxt "#30452"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  WATCH-MOVIE  :  MAX RECOMMENDATIONS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  WATCH-MOVIE  :  MAX DOPORUČENÍ"
+
+msgctxt "#30451"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  WATCH-MOVIE  :  SEED LIMIT"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  WATCH-MOVIE  :  SEED LIMIT"
+
+msgctxt "#30453"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  WATCH-MOVIE  :  SKIP WATCHED"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  WATCH-MOVIE  :  VYLOUČIT VIDĚNÉ"
+
+msgctxt "#30456"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  WATCH-SHOW  :  MAX RECOMMENDATIONS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  WATCH-SHOW  :  MAX DOPORUČENÍ"
+
+msgctxt "#30455"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  WATCH-SHOW  :  SEED LIMIT"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  WATCH-SHOW  :  SEED LIMIT"
+
+msgctxt "#30457"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  WATCH-SHOW  :  SKIP WATCHED"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  WATCH-SHOW  :  VYLOUČIT VIDĚNÉ"
+
+msgctxt "#30078"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  WATCHED  :  TIME RANGE"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  SLEDOVANÉ  :  ČASOVÝ ROZSAH"
+
+msgctxt "#30245"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  WEBSHARE.CZ  :  PASSWORD"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  WEBSHARE.CZ  :  HESLO"
+
+msgctxt "#30246"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  WEBSHARE.CZ  :  TOKEN"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  WEBSHARE.CZ  :  TOKEN"
+
+msgctxt "#30244"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  WEBSHARE.CZ  :  USERNAME"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  WEBSHARE.CZ  :  UŽIVATEL"
+
+msgctxt "#30912"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SKIP CREDITS  :  AUTO-CLOSE"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  CREDITS  :  ČASOVAČ ZAVŘENÍ"
+
+msgctxt "#32000"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  API CALL  :  STREAM SHORTING"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  API CALL  :  ŘAZENÍ STREAMŮ"
+
+msgctxt "#32004"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  API CALL  :  QUALITY LIMIT"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  API CALL  :  LIMIT KVALITY"
+
+msgctxt "#32010"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SORTING  :  CZE DUBBING"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  ŘAZENÍ  :  CZE DABING"
+
+msgctxt "#32054"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  API  :  PREFERRED QUALITY"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  API  :  PREFEROVANÁ KVALITA"
+
+msgctxt "#32062"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SORTING  :  LIKES  [ ANTI-FAKE ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  ŘAZENÍ  :  LIKES  [ ANTI-FAKE ]"
+
+msgctxt "#32501"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  NETWORK  :  MAX BANDWIDTH  [ Mbps ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  SÍŤ  :  MAX RYCHLOST  [ Mbps ]"
+
+msgctxt "#32505"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  NETWORK  :  BUFFERING TOLERANCE"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  SÍŤ  :  TOLERANCE ZASEKÁVÁNÍ"
+
+msgctxt "#32507"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  [B]PREHRAJ.TO  :  AUTO-REGISTRATION[/B]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  [B]PREHRAJ.TO  :  AUTO-REGISTRACE[/B]"
+
+msgctxt "#30127"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B][COLOR green]  INCLUDE[/COLOR]  :  AUTO-LIST"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B][COLOR green]  INCLUDE[/COLOR]  :  AUTO-LIST"
+
+msgctxt "#30134"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B][COLOR green]  INCLUDE[/COLOR]  :  AUTO-LIST"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B][COLOR green]  INCLUDE[/COLOR]  :  AUTO-LIST"
+
+msgctxt "#30138"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B][COLOR green]  INCLUDE[/COLOR]  :  AUTO-LIST"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B][COLOR green]  INCLUDE[/COLOR]  :  AUTO-LIST"
+
+msgctxt "#30129"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B][COLOR green]  INCLUDE[/COLOR]  :  FORMAT"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B][COLOR green]  INCLUDE[/COLOR]  :  FORMÁT"
+
+msgctxt "#30128"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B][COLOR green]  INCLUDE[/COLOR]  :  LANGUAGES"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B][COLOR green]  INCLUDE[/COLOR]  :  JAZYKY"
+
+msgctxt "#30130"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B][COLOR red]  EXCLUDE[/COLOR]  :  AUTO-LIST"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B][COLOR red]  EXCLUDE[/COLOR]  :  AUTO-LIST"
+
+msgctxt "#30135"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B][COLOR red]  EXCLUDE[/COLOR]  :  AUTO-LIST"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B][COLOR red]  EXCLUDE[/COLOR]  :  AUTO-LIST"
+
+msgctxt "#30139"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B][COLOR red]  EXCLUDE[/COLOR]  :  AUTO-LIST"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B][COLOR red]  EXCLUDE[/COLOR]  :  AUTO-LIST"
+
+msgctxt "#30132"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B][COLOR red]  EXCLUDE[/COLOR]  :  FORMAT"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B][COLOR red]  EXCLUDE[/COLOR]  :  FORMÁT"
+
+msgctxt "#30131"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B][COLOR red]  EXCLUDE[/COLOR]  :  LANGUAGES"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B][COLOR red]  EXCLUDE[/COLOR]  :  JAZYKY"
+
+# ======================================================================================== #
+# --- ITEMS SETTINGS :: ORANGE :: ▼
+# ======================================================================================== #
+msgctxt "#31093"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   AI DAILY MIX"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   DENNÍ MIX"
+
+msgctxt "#31094"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   AI MOOD"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   NÁLADA"
+
+msgctxt "#31054"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   AI RECOMMEND"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   NAPOVĚZ"
+
+msgctxt "#31092"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   AI RECOMMEND"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   NAPOVĚZ"
+
+msgctxt "#30784"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   CONTINUE"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   POKRAČOVAT"
+
+msgctxt "#30783"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   CSFD LIST'S"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   ČSFD LIST'S"
+
+msgctxt "#30782"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   CSFD TOP'S"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   ČSFD TOP'S"
+
+msgctxt "#30920"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   STREMIO DUBBING"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   STREMIO DABING"
+
+msgctxt "#30921"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   STREMIO CHARTS"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   STREMIO ŽEBŘÍČKY"
+
+msgctxt "#30785"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   EPISODES"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   EPIZODY"
+
+msgctxt "#31051"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   GEMINI AI"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   GEMINI AI"
+
+msgctxt "#30761"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   HISTORY"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   HISTORIE"
+
+msgctxt "#30772"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   LATER MOVIE"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   LATER MOVIE"
+
+msgctxt "#30773"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   LATER SHOW"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   LATER SHOW"
+
+msgctxt "#30767"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   LAUNCHER"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   LAUNCHER"
+
+msgctxt "#30768"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   LIBRARY"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   KNIHOVNA"
+
+msgctxt "#30765"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   MANAGER"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   MANAGER"
+
+msgctxt "#30778"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   MOVIES"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   FILMY"
+
+msgctxt "#30764"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   PROVIDERS"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   PROVIDERS"
+
+msgctxt "#30775"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   RANDOMIZED"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   RANDOMIZED"
+
+msgctxt "#30769"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   REGISTRATION"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   REGISTRACE"
+
+msgctxt "#30777"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   SEARCH"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   HLEDÁNÍ"
+
+msgctxt "#30779"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   SERIES"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   SERIÁLY"
+
+msgctxt "#30762"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   SETTINGS"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   NASTAVENÍ"
+
+msgctxt "#30763"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   SPEEDTEST"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   SPEEDTEST"
+
+msgctxt "#30776"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   TAGS"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   TAGY"
+
+msgctxt "#30780"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   TMDB USER"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   TMDB USER"
+
+msgctxt "#30781"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   TMDB XTRA"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   TMDB XTRA"
+
+msgctxt "#30766"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   TRAKT.TV"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   TRAKT.TV"
+
+msgctxt "#30922"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   STREMIO STUDIOS"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   STREMIO STUDIA"
+
+msgctxt "#30923"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   STREMIO SERVICES"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   STREMIO SLUŽBY"
+
+msgctxt "#30944"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   STREMIO SEARCH"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   STREMIO HLEDÁNÍ"
+
+msgctxt "#30949"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   STREMIO CSFD"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   STREMIO ČSFD"
+
+msgctxt "#30954"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   STREMIO IMDB"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   STREMIO IMDB"
+
+msgctxt "#30774"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   WATCH LATER"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   CHCI VIDĚT"
+
+msgctxt "#30770"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   WATCH MOVIE"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   WATCH MOVIE"
+
+msgctxt "#30771"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   WATCH SHOW"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   WATCH SHOW"
+
+msgctxt "#30760"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   WATCHED"
+msgstr "[B][COLOR orange]    ▼  [/COLOR][/B]  ZOBRAZIT   :   SLEDOVANÉ"
+
+# ======================================================================================== #
+# --- ITEMS SETTINGS :: SELECTION :: ▲
+# ======================================================================================== #
+msgctxt "#30928"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   STREMIO DUBBING"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   STREMIO DABING"
+
+msgctxt "#30929"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   STREMIO CHARTS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   STREMIO ŽEBŘÍČKY"
+
+msgctxt "#30939"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]   LABEL   :   SERVER-SHARE"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]   LABEL   :   SERVER-SHARE"
+
+msgctxt "#30930"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   STREMIO STUDIOS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   STREMIO STUDIA"
+
+msgctxt "#30931"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   STREMIO SERVICES"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   STREMIO SLUŽBY"
+
+msgctxt "#30946"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   STREMIO SEARCH"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   STREMIO HLEDÁNÍ"
+
+msgctxt "#30948"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   STREMIO CSFD"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   STREMIO ČSFD"
+
+msgctxt "#30953"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   STREMIO IMDB"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   STREMIO IMDB"
+
+msgctxt "#31087"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   AI DAILY MIX"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   DENNÍ MIX"
+
+msgctxt "#31088"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   AI MOOD"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   NÁLADA"
+
+msgctxt "#31055"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   AI RECOMMEND"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   NAPOVĚZ"
+
+msgctxt "#31086"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   AI RECOMMEND"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   NAPOVĚZ"
+
+msgctxt "#30742"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   CONTINUE"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   POKRAČOVAT"
+
+msgctxt "#30748"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   CSFD LIST'S"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   ČSFD LIST'S"
+
+msgctxt "#30747"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   CSFD TOP'S"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   ČSFD TOP'S"
+
+msgctxt "#30924"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   STREMIO DUBBING"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   STREMIO DABING"
+
+msgctxt "#30925"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   STREMIO CHARTS"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   STREMIO ŽEBŘÍČKY"
+
+msgctxt "#30757"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   EPISODES"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   EPIZODY"
+
+msgctxt "#31052"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   GEMINI AI"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   GEMINI AI"
+
+msgctxt "#30751"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   HISTORY"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   HISTORIE"
+
+msgctxt "#30739"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   LATER MOVIE"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   LATER MOVIE"
+
+msgctxt "#30740"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   LATER SHOW"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   LATER SHOW"
+
+msgctxt "#30753"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   LAUNCHER"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   LAUNCHER"
+
+msgctxt "#30736"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   LIBRARY"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   KNIHOVNA"
+
+msgctxt "#30752"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   MANAGER"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   MANAGER"
+
+msgctxt "#30750"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   MOST WATCHED"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   SLEDOVANÉ"
+
+msgctxt "#30743"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   MOVIES"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   FILMY"
+
+msgctxt "#30735"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   PLAYBACK"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   PLAYBACK"
+
+msgctxt "#30755"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   PROVIDERS"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   PROVIDERS"
+
+msgctxt "#30741"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   RANDOMIZED"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   RANDOMIZED"
+
+msgctxt "#30756"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   REGISTRATION"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   REGISTRACE"
+
+msgctxt "#30734"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   SEARCH"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   HLEDÁNÍ"
+
+msgctxt "#30938"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   SERVER-SHARE"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   SERVER-SHARE"
+
+msgctxt "#30754"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   SPEEDTEST"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   SPEEDTEST"
+
+msgctxt "#30733"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   TAGS"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   TAGY"
+
+msgctxt "#30745"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   TMDB USER"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   TMDB USER"
+
+msgctxt "#30746"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   TMDB XTRA"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   TMDB XTRA"
+
+msgctxt "#30749"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   TRAKT.TV"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   TRAKT.TV"
+
+msgctxt "#30744"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   TV SHOWS"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   SERIÁLY"
+
+msgctxt "#30926"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   STREMIO STUDIOS"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   STREMIO STUDIA"
+
+msgctxt "#30927"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   STREMIO SERVICES"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   STREMIO SLUŽBY"
+
+msgctxt "#30945"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   STREMIO SEARCH"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   STREMIO HLEDÁNÍ"
+
+msgctxt "#30947"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   STREMIO CSFD"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   STREMIO ČSFD"
+
+msgctxt "#30952"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   STREMIO IMDB"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   STREMIO IMDB"
+
+msgctxt "#30758"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   WATCH LATER"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   CHCI VIDĚT"
+
+msgctxt "#30737"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   WATCH MOVIE"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   WATCH MOVIE"
+
+msgctxt "#30738"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   WATCH SHOW"
+msgstr "[B][COLOR orange]    ▲  [/COLOR][/B]  POŘADÍ   :   WATCH SHOW"
+
+# ======================================================================================== #
+# --- ITEMS SETTINGS :: SELECTION :: NUMBER
+# ======================================================================================== #
+msgctxt "#30006"
+msgid "1"
+msgstr "1"
+
+msgctxt "#30007"
+msgid "2"
+msgstr "2"
+
+msgctxt "#30008"
+msgid "3"
+msgstr "3"
+
+msgctxt "#30009"
+msgid "4"
+msgstr "4"
+
+msgctxt "#30010"
+msgid "5"
+msgstr "5"
+
+msgctxt "#30011"
+msgid "6"
+msgstr "6"
+
+msgctxt "#30012"
+msgid "7"
+msgstr "7"
+
+msgctxt "#30013"
+msgid "8"
+msgstr "8"
+
+msgctxt "#30014"
+msgid "9"
+msgstr "9"
+
+msgctxt "#30015"
+msgid "10"
+msgstr "10"
+
+msgctxt "#30018"
+msgid "32"
+msgstr "32"
+
+msgctxt "#30019"
+msgid "64"
+msgstr "64"
+
+msgctxt "#30020"
+msgid "96"
+msgstr "96"
+
+msgctxt "#30021"
+msgid "128"
+msgstr "128"
+
+msgctxt "#30022"
+msgid "160"
+msgstr "160"
+
+msgctxt "#30023"
+msgid "192"
+msgstr "192"
+
+msgctxt "#30024"
+msgid "224"
+msgstr "224"
+
+msgctxt "#30025"
+msgid "256"
+msgstr "256"
+
+msgctxt "#30026"
+msgid "288"
+msgstr "288"
+
+msgctxt "#30027"
+msgid "320"
+msgstr "320"
+
+msgctxt "#30028"
+msgid "352"
+msgstr "352"
+
+msgctxt "#30029"
+msgid "384"
+msgstr "384"
+
+msgctxt "#30030"
+msgid "416"
+msgstr "416"
+
+msgctxt "#30049"
+msgid "0"
+msgstr "0"
+
+msgctxt "#30050"
+msgid "0.5"
+msgstr "0.5"
+
+msgctxt "#30051"
+msgid "1.0"
+msgstr "1.0"
+
+msgctxt "#30052"
+msgid "1.5"
+msgstr "1.5"
+
+msgctxt "#30053"
+msgid "2.0"
+msgstr "2.0"
+
+msgctxt "#30054"
+msgid "2.5"
+msgstr "2.5"
+
+msgctxt "#30055"
+msgid "3.0"
+msgstr "3.0"
+
+msgctxt "#30056"
+msgid "3.5"
+msgstr "3.5"
+
+msgctxt "#30057"
+msgid "4.0"
+msgstr "4.0"
+
+msgctxt "#30058"
+msgid "4.5"
+msgstr "4.5"
+
+msgctxt "#30059"
+msgid "5.0"
+msgstr "5.0"
+
+msgctxt "#30066"
+msgid "50"
+msgstr "50"
+
+msgctxt "#30067"
+msgid "100"
+msgstr "100"
+
+msgctxt "#30068"
+msgid "150"
+msgstr "150"
+
+msgctxt "#30069"
+msgid "200"
+msgstr "200"
+
+msgctxt "#30070"
+msgid "250"
+msgstr "250"
+
+msgctxt "#30071"
+msgid "300"
+msgstr "300"
+
+msgctxt "#30072"
+msgid "350"
+msgstr "350"
+
+msgctxt "#30073"
+msgid "400"
+msgstr "400"
+
+msgctxt "#30074"
+msgid "450"
+msgstr "450"
+
+msgctxt "#30075"
+msgid "500"
+msgstr "500"
+
+msgctxt "#30076"
+msgid "1000"
+msgstr "1000"
+
+msgctxt "#30077"
+msgid "5000"
+msgstr "5000"
+
+msgctxt "#30094"
+msgid "20"
+msgstr "20"
+
+msgctxt "#30095"
+msgid "30"
+msgstr "30"
+
+msgctxt "#30096"
+msgid "40"
+msgstr "40"
+
+msgctxt "#30170"
+msgid "14"
+msgstr "14"
+
+msgctxt "#30171"
+msgid "60"
+msgstr "60"
+
+msgctxt "#30172"
+msgid "90"
+msgstr "90"
+
+msgctxt "#30173"
+msgid "120"
+msgstr "120"
+
+msgctxt "#30207"
+msgid "750"
+msgstr "750"
+
+msgctxt "#30208"
+msgid "1500"
+msgstr "1500"
+
+msgctxt "#30209"
+msgid "2000"
+msgstr "2000"
+
+msgctxt "#30210"
+msgid "3000"
+msgstr "3000"
+
+msgctxt "#30211"
+msgid "4000"
+msgstr "4000"
+
+msgctxt "#31012"
+msgid "5"
+msgstr "5"
+
+msgctxt "#31013"
+msgid "10"
+msgstr "10"
+
+msgctxt "#31014"
+msgid "15"
+msgstr "15"
+
+msgctxt "#31015"
+msgid "20"
+msgstr "20"
+
+msgctxt "#31016"
+msgid "30"
+msgstr "30"
+
+msgctxt "#31017"
+msgid "50"
+msgstr "50"
+
+msgctxt "#31046"
+msgid "5"
+msgstr "5"
+
+msgctxt "#31047"
+msgid "10"
+msgstr "10"
+
+msgctxt "#31048"
+msgid "15"
+msgstr "15"
+
+msgctxt "#31049"
+msgid "20"
+msgstr "20"
+
+msgctxt "#32020"
+msgid "25"
+msgstr "25"
+
+msgctxt "#32021"
+msgid "30"
+msgstr "30"
+
+msgctxt "#32022"
+msgid "35"
+msgstr "35"
+
+msgctxt "#32023"
+msgid "40"
+msgstr "40"
+
+# ======================================================================================== #
+# --- ITEMS SETTINGS :: SELECTION
+# ======================================================================================== #
+msgctxt "#30035"
+msgid "RELEVANCE"
+msgstr "RELEVANCE"
+
+msgctxt "#30036"
+msgid "RECENT"
+msgstr "RECENT"
+
+msgctxt "#30037"
+msgid "RATING"
+msgstr "HODNOCENÍ"
+
+msgctxt "#30038"
+msgid "LARGEST"
+msgstr "NEJVETŠÍ"
+
+msgctxt "#30039"
+msgid "SMALLEST"
+msgstr "NEJMENŠÍ"
+
+msgctxt "#30041"
+msgid "VIDEO"
+msgstr "VIDEO"
+
+msgctxt "#30042"
+msgid "IMAGES"
+msgstr "OBRÁZKY"
+
+msgctxt "#30043"
+msgid "AUDIO"
+msgstr "AUDIO"
+
+msgctxt "#30044"
+msgid "ARCHIVES"
+msgstr "ARCHIVY"
+
+msgctxt "#30045"
+msgid "DOCUMENTS"
+msgstr "DOKUMENTY"
+
+msgctxt "#30046"
+msgid "ADULT"
+msgstr "PRO DOSPĚLÉ"
+
+msgctxt "#30080"
+msgid "24 HOURS"
+msgstr "24 HODIN"
+
+msgctxt "#30081"
+msgid "7 DAYS"
+msgstr "7 DNÍ"
+
+msgctxt "#30082"
+msgid "14 DAYS"
+msgstr "14 DNÍ"
+
+msgctxt "#30110"
+msgid "FIRST AVAILABLE"
+msgstr "PRVNÍ DOSTUPNÝ"
+
+msgctxt "#30111"
+msgid "BY POSITION"
+msgstr "PODLE POZICE"
+
+msgctxt "#30112"
+msgid "INTELLIGENT"
+msgstr "INTELIGENTNÍ"
+
+msgctxt "#30160"
+msgid "AUTO"
+msgstr "AUTO"
+
+msgctxt "#30161"
+msgid "cs_CZ"
+msgstr "cs_CZ"
+
+msgctxt "#30162"
+msgid "en_GB"
+msgstr "en_GB"
+
+msgctxt "#30163"
+msgid "en_US"
+msgstr "en_US"
+
+msgctxt "#30165"
+msgid "cs"
+msgstr "cs"
+
+msgctxt "#30166"
+msgid "en"
+msgstr "en"
+
+msgctxt "#30193"
+msgid "OFF"
+msgstr "OFF"
+
+msgctxt "#30194"
+msgid "SOFT"
+msgstr "SOFT"
+
+msgctxt "#30195"
+msgid "HARD"
+msgstr "HARD"
+
+msgctxt "#30221"
+msgid "SQLite"
+msgstr "SQLite"
+
+msgctxt "#30222"
+msgid "MySQL (MariaDB)"
+msgstr "MySQL (MariaDB)"
+
+msgctxt "#30237"
+msgid "PREHRAJ.TO"
+msgstr "PREHRAJ.TO"
+
+msgctxt "#30238"
+msgid "WEBSHARE.CZ"
+msgstr "WEBSHARE.CZ"
+
+msgctxt "#30510"
+msgid "DEBUG"
+msgstr "DEBUG"
+
+msgctxt "#30511"
+msgid "INFO"
+msgstr "INFO"
+
+msgctxt "#30512"
+msgid "WARNING"
+msgstr "WARNING"
+
+msgctxt "#30513"
+msgid "ERROR"
+msgstr "ERROR"
+
+msgctxt "#30514"
+msgid "OFF"
+msgstr "OFF"
+
+msgctxt "#30805"
+msgid "[ -BEST- ]"
+msgstr "[ -BEST- ]"
+
+msgctxt "#30806"
+msgid "[ 1080P ]"
+msgstr "[ 1080P ]"
+
+msgctxt "#30807"
+msgid "[ 720P ]"
+msgstr "[ 720P ]"
+
+msgctxt "#30808"
+msgid "[ 480P ]"
+msgstr "[ 480P ]"
+
+msgctxt "#30809"
+msgid "[ -AUTO- ]"
+msgstr "[ -AUTO- ]"
+
+msgctxt "#30810"
+msgid "[ ORIGINAL ]"
+msgstr "[ ORIGINAL ]"
+
+msgctxt "#30916"
+msgid "SKIP CREDITS"
+msgstr "PŘESKOČIT"
+
+msgctxt "#30917"
+msgid "CONTINUE"
+msgstr "POKRAČOVAT"
+
+msgctxt "#30962"
+msgid "5 MINUTES"
+msgstr "5 MINUT"
+
+msgctxt "#30963"
+msgid "10 MINUTES"
+msgstr "10 MINUT"
+
+msgctxt "#30964"
+msgid "15 MINUTES"
+msgstr "15 MINUT"
+
+msgctxt "#30965"
+msgid "30 MINUTES"
+msgstr "30 MINUT"
+
+msgctxt "#30966"
+msgid "1 HOUR"
+msgstr "1 HODINA"
+
+msgctxt "#31022"
+msgid "NO FILTER"
+msgstr "BEZ FILTRU"
+
+msgctxt "#31023"
+msgid "RATING 5.0 +"
+msgstr "RATING 5.0 +"
+
+msgctxt "#31024"
+msgid "RATING 6.0 +"
+msgstr "RATING 6.0 +"
+
+msgctxt "#31025"
+msgid "RATING 7.0 +"
+msgstr "RATING 7.0 +"
+
+msgctxt "#31026"
+msgid "RATING 8.0 +"
+msgstr "RATING 8.0 +"
+
+msgctxt "#31032"
+msgid "COMBO MODE"
+msgstr "COMBO MODE"
+
+msgctxt "#31033"
+msgid "RECOMMENDED ONLY"
+msgstr "POUZE DOPORUČENÉ"
+
+msgctxt "#31034"
+msgid "SIMILAR ONLY"
+msgstr "POUZE PODOBNÉ"
+
+msgctxt "#31064"
+msgid "gemini-3.5-flash-lite [ RECOMMENDED ]"
+msgstr "gemini-3.5-flash-lite [ DOPORUČENO ]"
+
+msgctxt "#31065"
+msgid "gemini-3.8-flash [ ADVANCED ]"
+msgstr "gemini-3.8-flash [ POKROČILÝ ]"
+
+msgctxt "#31066"
+msgid "gemini-3.6-flash [ BALANCED ]"
+msgstr "gemini-3.6-flash [ VYVÁŽENÝ ]"
+
+msgctxt "#31067"
+msgid "gemini-3.1-flash-lite [ ALTERNATIVE ]"
+msgstr "gemini-3.1-flash-lite [ ALTERNATIVA ]"
+
+msgctxt "#31072"
+msgid "INTERNAL : PLAY BACK"
+msgstr "INTERNÍ : PLAY BACK"
+
+msgctxt "#31073"
+msgid "INTERNAL : WATCH LATER"
+msgstr "INTERNÍ : WATCH LATER"
+
+msgctxt "#31074"
+msgid "TRAKT.TV : WATCHLIST"
+msgstr "TRAKT.TV : WATCHLIST"
+
+msgctxt "#31075"
+msgid "TRAKT.TV : FAVOURITES"
+msgstr "TRAKT.TV : OBLÍBENÉ"
+
+msgctxt "#31076"
+msgid "TMDB : WATCHLIST"
+msgstr "TMDB : WATCHLIST"
+
+msgctxt "#31077"
+msgid "NONE"
+msgstr "ŽÁDNÝ"
+
+msgctxt "#32001"
+msgid "DEFAULT"
+msgstr "VÝCHOZÍ"
+
+msgctxt "#32002"
+msgid "POPULARITY"
+msgstr "POPULARITA"
+
+msgctxt "#32003"
+msgid "RELEVANCE"
+msgstr "RELEVANCE"
+
+msgctxt "#32005"
+msgid "ALL QUALITY"
+msgstr "VŠECHNY KVALITY"
+
+msgctxt "#32006"
+msgid "ONLY [ 4K UHD ]"
+msgstr "POUZE [ 4K UHD ]"
+
+msgctxt "#32007"
+msgid "ONLY [ 1080P FHD ]"
+msgstr "POUZE [ 1080P FHD ]"
+
+msgctxt "#32008"
+msgid "ONLY [ 720P HD ]"
+msgstr "POUZE [ 720P HD ]"
+
+msgctxt "#32052"
+msgid "ALWAYS ASK"
+msgstr "VŽDY SE ZEPTAT"
+
+msgctxt "#32053"
+msgid "AUTO-SELECT"
+msgstr "AUTOMATICKY"
+
+msgctxt "#32056"
+msgid "[ ORIGINAL ]"
+msgstr "[ ORIGINÁL ]"
+
+msgctxt "#32057"
+msgid "[ HIGHEST ]"
+msgstr "[ NEJVYŠŠÍ ]"
+
+msgctxt "#32058"
+msgid "[ 1080P ]"
+msgstr "[ 1080P ]"
+
+msgctxt "#32059"
+msgid "[ 720P ]"
+msgstr "[ 720P ]"
+
+msgctxt "#32060"
+msgid "[ 480P ]"
+msgstr "[ 480P ]"
+
+msgctxt "#32061"
+msgid "[ LOWEST ]"
+msgstr "[ NEJNIŽŠÍ ]"
+
+# ======================================================================================== #
+# --- ITEMS SETTINGS :: SELECTION :: VIEW MODE
+# ======================================================================================== #
+msgctxt "#30272"
+msgid "List"
+msgstr "Seznam"
+
+msgctxt "#30273"
+msgid "Poster | Media list"
+msgstr "Plakát | Seznam médií"
+
+msgctxt "#30274"
+msgid "Shift"
+msgstr "Shift"
+
+msgctxt "#30275"
+msgid "InfoWall"
+msgstr "InfoWall"
+
+msgctxt "#30276"
+msgid "WideList"
+msgstr "Široký seznam"
+
+msgctxt "#30277"
+msgid "Wall"
+msgstr "Dlaždice"
+
+msgctxt "#30278"
+msgid "Banner"
+msgstr "Banner"
+
+msgctxt "#30279"
+msgid "Fanart"
+msgstr "Fanart"
+
+msgctxt "#30280"
+msgid "Big Banner"
+msgstr "Velký banner"
+
+msgctxt "#30281"
+msgid "Low List"
+msgstr "Nízký seznam"
+
+msgctxt "#30282"
+msgid "Gallery"
+msgstr "Galerie"
+
+msgctxt "#30283"
+msgid "Poster Info List"
+msgstr "Informační seznam plakátů"
+
+msgctxt "#30284"
+msgid "Tags"
+msgstr "Štítky"
+
+msgctxt "#30285"
+msgid "Submenu"
+msgstr "Podnabídka"
+
+msgctxt "#30286"
+msgid "Media Info Wall"
+msgstr "Zeď s informacemi o médiích"
+
+msgctxt "#30287"
+msgid "Basic Media Info"
+msgstr "Základní informace o médiích"
+
+msgctxt "#30288"
+msgid "Playlist with Info"
+msgstr "Seznam skladeb s informacemi"
+
+msgctxt "#30289"
+msgid "Media Info List"
+msgstr "Seznam informací o médiích"
+
+msgctxt "#30290"
+msgid "Big Square Row"
+msgstr "Velký čtvercový řádek"
+
+msgctxt "#30291"
+msgid "Square Wall"
+msgstr "Vesla čtvercová zeď"
+
+msgctxt "#30292"
+msgid "Big Landscape Wall"
+msgstr "Velká zeď na šířku"
+
+msgctxt "#30293"
+msgid "Poster Wall"
+msgstr "Zeď plakátů"
+
+msgctxt "#30294"
+msgid "Big Poster List"
+msgstr "Velký seznam plakátů"
+
+# ======================================================================================== #
+# --- ITEMS SETTINGS :: HELP
+# ======================================================================================== #
+msgctxt "#30003"
+msgid "Main switch to enable or disable limits when searching for content."
+msgstr "Hlavní přepínač pro zapnutí nebo vypnutí limitů při vyhledávání obsahu."
+
+msgctxt "#30005"
+msgid "Determines how many result pages to load from the source at once."
+msgstr "Určuje, kolik stránek s výsledky se má najednou načíst ze zdroje."
+
+msgctxt "#30017"
+msgid "Maximum number of results downloaded from Prehraj.to server."
+msgstr "Maximální počet výsledků stahovaných ze serveru Prehraj.to"
+
+msgctxt "#30032"
+msgid "Maximum number of results downloaded from Webshare.cz server."
+msgstr "Maximální počet výsledků stahovaných ze serveru Webshare.cz"
+
+msgctxt "#30034"
+msgid "Criterion for sorting search results on Webshare.cz."
+msgstr "Kritérium pro řazení výsledků vyhledávání na Webshare.cz"
+
+msgctxt "#30048"
+msgid "Waiting time in seconds before the next network request to avoid IP blocking."
+msgstr "Doba čekání v sekundách před dalším síťovým požadavkem, aby nedošlo k zablokování IP."
+
+msgctxt "#30061"
+msgid "Settings for the watched and history section. Allows customization of the display."
+msgstr "Nastavení pro sekci sledovaných a historie. Umožňuje přizpůsobit zobrazení."
+
+msgctxt "#30063"
+msgid "Maximum number of history or watched pages to load."
+msgstr "Kolik stránek historie nebo sledovaných se maximálně načte."
+
+msgctxt "#30065"
+msgid "Maximum number of items the plugin remembers in playback history."
+msgstr "Maximální počet položek, které si plugin pamatuje v historii přehrávání."
+
+msgctxt "#30079"
+msgid "Over what period to display the most watched movies and series."
+msgstr "Za jaké období se mají zobrazovat nejsledovanější filmy a seriály."
+
+msgctxt "#30085"
+msgid "Activates advanced content filtering using custom expressions."
+msgstr "Aktivuje pokročilé filtrování obsahu pomocí vlastních výrazů."
+
+msgctxt "#30087"
+msgid "Enables automatic reporting of what you are currently watching to your Trakt.tv account."
+msgstr "Zapne automatické odesílání informací o tom, co právě sledujete, na váš účet Trakt.tv"
+
+msgctxt "#30105"
+msgid "Automatically generates a playlist from found movies for continuous playback."
+msgstr "Automaticky generuje playlist z nalezených filmů pro plynulé přehrávání za sebou."
+
+msgctxt "#30215"
+msgid "Path where  ( STRM )  files will be saved for Kodi local library integration."
+msgstr "Složka pro ukládání souborů pro integraci knihovny Kodi  ( STRM ) "
+
+msgctxt "#30220"
+msgid "SQLITE is sufficient for normal use. Choose MYSQL for sharing history between multiple devices."
+msgstr "Pro běžné použití stačí SQLITE. Pro sdílení historie mezi vícero zařízeními zvolte MYSQL."
+
+msgctxt "#30257"
+msgid "A message will be sent to Telegram when a new episode of a favorite series is released."
+msgstr "Při vydání nové epizody oblíbeného seriálu vám přijde zpráva na Telegram."
+
+msgctxt "#30271"
+msgid "Forces selected display mode  ( Posters, List )  for the Main Menu."
+msgstr "Vynutí vybraný vzhled zobrazení  ( Plakáty, Seznam )  pro Hlavní menu."
+
+msgctxt "#30308"
+msgid "Select the type of files to search for  ( VIDEO, AUDIO, ARCHIVES )."
+msgstr "Vyberte typ souborů, které se budou hledat  ( VIDEO, AUDIO, ARCHIVY )."
+
+msgctxt "#30309"
+msgid "Displays advanced plugin settings  ( for experienced users )."
+msgstr "Zobrazí pokročilá nastavení pluginu  ( pro zkušenější uživatele )."
+
+msgctxt "#30310"
+msgid "Allows changing the display mode  ( Poster, List, Gallery )  in the plugin."
+msgstr "Umožní změnu režimu zobrazení  ( Plakát, Seznam, Galerie )  v pluginu."
+
+msgctxt "#30311"
+msgid "Displays Trakt.tv integration settings  ( scrobbling, social feed )."
+msgstr "Zobrazí nastavení integrace s Trakt.tv  ( scrobbling, social feed )."
+
+msgctxt "#30312"
+msgid "First Trakt.tv user for social feed."
+msgstr "První Trakt.tv uživatel pro sociální feed."
+
+msgctxt "#30313"
+msgid "Second Trakt.tv user for social feed."
+msgstr "Druhý Trakt.tv uživatel pro sociální feed."
+
+msgctxt "#30314"
+msgid "Third Trakt.tv user for social feed."
+msgstr "Třetí Trakt.tv uživatel pro sociální feed."
+
+msgctxt "#30315"
+msgid "How many items from Trakt.tv social feed to load in lists."
+msgstr "Kolik položek ze sociálního feed Trakt.tv se načte v seznamech."
+
+msgctxt "#30316"
+msgid "How many pages of results to load when browsing on Trakt.tv."
+msgstr "Kolik stránek výsledků se načte při procházení na Trakt.tv"
+
+msgctxt "#30317"
+msgid "Prioritizes Czech results when searching on Trakt.tv for localization."
+msgstr "Upřednostní české výsledky při vyhledávání na Trakt.tv pro lokalizaci."
+
+msgctxt "#30318"
+msgid "Displays the release / update time of the item in the Trakt.tv feed."
+msgstr "Zobrazí čas uvedení / aktualizace položky v Trakt.tv feed."
+
+msgctxt "#30319"
+msgid "Displays additional information  ( description )  for Trakt.tv feed items."
+msgstr "Zobrazí doplňující informace  ( popis )  u položek Trakt.tv feed."
+
+msgctxt "#30320"
+msgid "Displays additional context  ( rating, genres )  from Trakt.tv in details."
+msgstr "Zobrazí doplňující kontext  ( hodnocení, žánry )  z Trakt.tv v detailech."
+
+msgctxt "#30321"
+msgid "Sets default movie auto-play behavior."
+msgstr "Nastaví výchozí chování automatického přehrávání filmů."
+
+msgctxt "#30322"
+msgid "Determines how many movies to pre-load into the playlist for smooth playback."
+msgstr "Určuje, kolik filmů se přednačte do playlistu pro plynulé přehrávání."
+
+msgctxt "#30323"
+msgid "Allows manual selection of the source for generating autolists."
+msgstr "Umožní ručně vybrat zdroj, ze kterého se budou generovat autolisty."
+
+msgctxt "#30324"
+msgid "Method for selecting autolist source  ( first available, by order, intelligent )."
+msgstr "Způsob výběru zdroje pro autolist  ( první dostupný, podle pořadí, inteligentní )."
+
+msgctxt "#30325"
+msgid "Sets source priority when collecting results for autolist."
+msgstr "Nastavuje prioritu zdrojů při sběru výsledků pro autolist."
+
+msgctxt "#30326"
+msgid "Enables automatic creation of a video list  ( autolist )  from search results."
+msgstr "Zapne automatické vytváření seznamu videí  ( autolist )  z výsledků vyhledávání."
+
+msgctxt "#30327"
+msgid "Automatically plays the next episode of the series after the current episode ends."
+msgstr "Po skončení epizody automaticky přehraje další epizodu seriálu."
+
+msgctxt "#30328"
+msgid "Number of items added to the autolist when it starts."
+msgstr "Počet položek, které se do autolistu přidají při jeho spuštění."
+
+msgctxt "#30329"
+msgid "Allows selecting a source for the series autolist."
+msgstr "Umožní vybrat zdroj pro autolist seriálů."
+
+msgctxt "#30330"
+msgid "Source selection method for the series autolist."
+msgstr "Způsob výběru zdroje pro autolist seriálů."
+
+msgctxt "#30331"
+msgid "Source priority when creating the series autolist."
+msgstr "Priorita zdrojů při vytváření autolistu pro seriály."
+
+msgctxt "#30332"
+msgid "Automatically selects a source for a library item. When disabled, shows a source selection dialog."
+msgstr "Automatically selects a source for a library item. When disabled, shows a source selection dialog."
+
+msgctxt "#30333"
+msgid "First available keeps provider/global ordering after library exclusions. Intelligent also ranks library keyword preferences."
+msgstr "First available keeps provider/global ordering after library exclusions. Intelligent also ranks library keyword preferences."
+
+msgctxt "#30334"
+msgid "Pre-loads available sources before item selection for faster result display \n[COLOR orange][  TURN OFF   |   PLAYER > VIDEO > PLAY NEXT   >   SERIES + EPISODES  ][/COLOR]"
+msgstr "Načte automaticky zdroje na pozadí pro plynulejší přechod mezi položkami v playlistu \n[COLOR orange][  NUTNO VYPNOUT   |   PŘEHRÁVAČ > VIDEA > PŘEHRÁT DALŠÍ   >   SERIÁLY + EPIZODY  ][/COLOR]"
+
+msgctxt "#30335"
+msgid "Displays option to skip end credits and immediately play the next episode."
+msgstr "Zobrazí výzvu pro přeskočení závěrečných titulků a okamžité přehrání další epizody."
+
+msgctxt "#30336"
+msgid "Sorts results by file size in ascending order  ( smaller files first )."
+msgstr "Seřadí výsledky podle velikosti souboru vzestupně  ( menší soubory první )"
+
+msgctxt "#30337"
+msgid "Filter results by expressions from the following   „SMART TAG“   dictionary ... \n[ QUALITY ]  :  4K , 1080P , 720P , CAM , TS         [ CODEC ]  :  H264 , H265 \n[ AUDIO ]  :  DAB , SK         [ SUBS ]  :  SUB , MULTI"
+msgstr "Můžete filtrovat výsledky a výrazy pomocí následujícího slovníku   „SMART TAG“  ... \n[COLOR orange][ KVALITA ]  :  4K , 1080P , 720P , CAM , TS           [  CODEC  ]  :  H264 , H265 \n[  AUDIO  ]  :  DAB , SK                                           [ TITULKY ]  :  SUB , MULTI[/COLOR]"
+
+msgctxt "#30338"
+msgid "Filter results by expressions from the following   „SMART TAG“   dictionary ... \n[ QUALITY ]  :  4K , 1080P , 720P , CAM , TS         [ CODEC ]  :  H264 , H265 \n[ AUDIO ]  :  DAB , SK         [ SUBS ]  :  SUB , MULTI"
+msgstr "Můžete filtrovat výsledky a výrazy pomocí následujícího slovníku   „SMART TAG“  ... \n[COLOR orange][ KVALITA ]  :  4K , 1080P , 720P , CAM , TS           [  CODEC  ]  :  H264 , H265 \n[  AUDIO  ]  :  DAB , SK                                           [ TITULKY ]  :  SUB , MULTI[/COLOR]"
+
+msgctxt "#30339"
+msgid "Filter results by expressions from the following   „SMART TAG“   dictionary ... \n[ QUALITY ]  :  4K , 1080P , 720P , CAM , TS         [ CODEC ]  :  H264 , H265 \n[ AUDIO ]  :  DAB , SK         [ SUBS ]  :  SUB , MULTI"
+msgstr "Můžete filtrovat výsledky a výrazy pomocí následujícího slovníku   „SMART TAG“  ... \n[COLOR orange][ KVALITA ]  :  4K , 1080P , 720P , CAM , TS           [  CODEC  ]  :  H264 , H265 \n[  AUDIO  ]  :  DAB , SK                                           [ TITULKY ]  :  SUB , MULTI[/COLOR]"
+
+msgctxt "#30340"
+msgid "Exclude results containing expressions from the following   „SMART TAG“   dictionary  ... \n[ QUALITY ]  :  4K , 1080P , 720P , CAM , TS         [ CODEC ]  :  H264 , H265 \n[ AUDIO ]  :  DAB , SK         [ SUBS ]  :  SUB , MULTI"
+msgstr "Můžete vyloučit výsledky obsahující výrazy z následujícího slovníku   „SMART TAG“  ... \n[COLOR orange][ KVALITA ]  :  4K , 1080P , 720P , CAM , TS           [  CODEC  ]  :  H264 , H265 \n[  AUDIO  ]  :  DAB , SK                                           [ TITULKY ]  :  SUB , MULTI[/COLOR]"
+
+msgctxt "#30341"
+msgid "Exclude results containing expressions from the following   „SMART TAG“   dictionary  ... \n[ QUALITY ]  :  4K , 1080P , 720P , CAM , TS         [ CODEC ]  :  H264 , H265 \n[ AUDIO ]  :  DAB , SK         [ SUBS ]  :  SUB , MULTI"
+msgstr "Můžete vyloučit výsledky obsahující výrazy z následujícího slovníku   „SMART TAG“  ... \n[COLOR orange][ KVALITA ]  :  4K , 1080P , 720P , CAM , TS           [  CODEC  ]  :  H264 , H265 \n[  AUDIO  ]  :  DAB , SK                                           [ TITULKY ]  :  SUB , MULTI[/COLOR]"
+
+msgctxt "#30342"
+msgid "Exclude results containing expressions from the following   „SMART TAG“   dictionary  ... \n[ QUALITY ]  :  4K , 1080P , 720P , CAM , TS         [ CODEC ]  :  H264 , H265 \n[ AUDIO ]  :  DAB , SK         [ SUBS ]  :  SUB , MULTI"
+msgstr "Můžete vyloučit výsledky obsahující výrazy z následujícího slovníku   „SMART TAG“  ... \n[COLOR orange][ KVALITA ]  :  4K , 1080P , 720P , CAM , TS           [  CODEC  ]  :  H264 , H265 \n[  AUDIO  ]  :  DAB , SK                                           [ TITULKY ]  :  SUB , MULTI[/COLOR]"
+
+msgctxt "#30343"
+msgid "Enables filtering of movie results using   „SMART TAG“ "
+msgstr "Zapne filtrování výsledků pro filmy pomocí   „SMART TAG“ "
+
+msgctxt "#30344"
+msgid "Filter results by expressions from the following   „SMART TAG“   dictionary ... \n[ QUALITY ]  :  4K , 1080P , 720P , CAM , TS         [ CODEC ]  :  H264 , H265 \n[ AUDIO ]  :  DAB , SK         [ SUBS ]  :  SUB , MULTI"
+msgstr "Můžete filtrovat výsledky a výrazy pomocí následujícího slovníku   „SMART TAG“  ... \n[COLOR orange][ KVALITA ]  :  4K , 1080P , 720P , CAM , TS           [  CODEC  ]  :  H264 , H265 \n[  AUDIO  ]  :  DAB , SK                                           [ TITULKY ]  :  SUB , MULTI[/COLOR]"
+
+msgctxt "#30345"
+msgid "Exclude results containing expressions from the following   „SMART TAG“   dictionary  ... \n[ QUALITY ]  :  4K , 1080P , 720P , CAM , TS         [ CODEC ]  :  H264 , H265 \n[ AUDIO ]  :  DAB , SK         [ SUBS ]  :  SUB , MULTI"
+msgstr "Můžete vyloučit výsledky obsahující výrazy z následujícího slovníku   „SMART TAG“  ... \n[COLOR orange][ KVALITA ]  :  4K , 1080P , 720P , CAM , TS           [  CODEC  ]  :  H264 , H265 \n[  AUDIO  ]  :  DAB , SK                                           [ TITULKY ]  :  SUB , MULTI[/COLOR]"
+
+msgctxt "#30346"
+msgid "Enables filtering of series results using   „SMART TAG“ "
+msgstr "Zapne filtrování výsledků pro seriály pomocí   „SMART TAG“ "
+
+msgctxt "#30347"
+msgid "Filter results by expressions from the following   „SMART TAG“   dictionary ... \n[ QUALITY ]  :  4K , 1080P , 720P , CAM , TS         [ CODEC ]  :  H264 , H265 \n[ AUDIO ]  :  DAB , SK         [ SUBS ]  :  SUB , MULTI"
+msgstr "Můžete filtrovat výsledky a výrazy pomocí následujícího slovníku   „SMART TAG“  ... \n[COLOR orange][ KVALITA ]  :  4K , 1080P , 720P , CAM , TS           [  CODEC  ]  :  H264 , H265 \n[  AUDIO  ]  :  DAB , SK                                           [ TITULKY ]  :  SUB , MULTI[/COLOR]"
+
+msgctxt "#30348"
+msgid "Exclude results containing expressions from the following  „SMART TAG“  dictionary  ... \n[ QUALITY ]  :  4K , 1080P , 720P , CAM , TS         [ CODEC ]  :  H264 , H265 \n[ AUDIO ]  :  DAB , SK         [ SUBS ]  :  SUB , MULTI"
+msgstr "Můžete vyloučit výsledky obsahující výrazy z následujícího slovníku   „SMART TAG“  ... \n[COLOR orange][ KVALITA ]  :  4K , 1080P , 720P , CAM , TS           [  CODEC  ]  :  H264 , H265 \n[  AUDIO  ]  :  DAB , SK                                           [ TITULKY ]  :  SUB , MULTI[/COLOR]"
+
+msgctxt "#30349"
+msgid "Enables filtering of library results using   „SMART TAG“ "
+msgstr "Zapne filtrování výsledků knihovny pomocí   „SMART TAG“ "
+
+msgctxt "#30350"
+msgid "Filter results by expressions from the following   „SMART TAG“   dictionary ... \n[ QUALITY ]  :  4K , 1080P , 720P , CAM , TS         [ CODEC ]  :  H264 , H265 \n[ AUDIO ]  :  DAB , SK         [ SUBS ]  :  SUB , MULTI"
+msgstr "Můžete filtrovat výsledky a výrazy pomocí následujícího slovníku   „SMART TAG“  ... \n[COLOR orange][ KVALITA ]  :  4K , 1080P , 720P , CAM , TS           [  CODEC  ]  :  H264 , H265 \n[  AUDIO  ]  :  DAB , SK                                           [ TITULKY ]  :  SUB , MULTI[/COLOR]"
+
+msgctxt "#30351"
+msgid "Exclude results containing expressions from the following   „SMART TAG“   dictionary  ... \n[ QUALITY ]  :  4K , 1080P , 720P , CAM , TS         [ CODEC ]  :  H264 , H265 \n[ AUDIO ]  :  DAB , SK         [ SUBS ]  :  SUB , MULTI"
+msgstr "Můžete vyloučit výsledky obsahující výrazy z následujícího slovníku   „SMART TAG“  ... \n[COLOR orange][ KVALITA ]  :  4K , 1080P , 720P , CAM , TS           [  CODEC  ]  :  H264 , H265 \n[  AUDIO  ]  :  DAB , SK                                           [ TITULKY ]  :  SUB , MULTI[/COLOR]"
+
+msgctxt "#30353"
+msgid "Shows or hides the  \"SIZE ITEM\"  in the plugin menu."
+msgstr "Zobrazí nebo skryje  \"VELIKOST SOUBORU\"  ve výsledcích hledaní."
+
+msgctxt "#30354"
+msgid "Shows or hides the  \"DURATION TIME\"  item in the plugin menu."
+msgstr "Zobrazí nebo skryje  \"DOBU TRVÁNÍ\"  ve výsledcích hledaní."
+
+msgctxt "#30356"
+msgid "Shows or hides the most watched item in the plugin menu."
+msgstr "Zobrazí nebo skryje položku  \"SLEDOVANÉ\"  ( PREHRAJ.TO ) v menu pluginu."
+
+msgctxt "#30357"
+msgid "Shows or hides the prehrajto history item in the plugin menu."
+msgstr "Zobrazí nebo skryje položku  \"HISTORIE\"  ( PREHRAJ.TO ) v menu pluginu."
+
+msgctxt "#30358"
+msgid "Shows or hides the settings menu item in the plugin menu."
+msgstr "Zobrazí nebo skryje položku  \"[ NASTAVENÍ ]\"  menu v menu pluginu."
+
+msgctxt "#30359"
+msgid "Shows or hides the speedtest menu item in the plugin menu."
+msgstr "Zobrazí nebo skryje položku  \"SPEEDTEST\"  menu v menu pluginu."
+
+msgctxt "#30360"
+msgid "Shows or hides the select provider item in the plugin menu."
+msgstr "Zobrazí nebo skryje položku  \"PROVIDER\"  v menu pluginu."
+
+msgctxt "#30361"
+msgid "Shows or hides the manager menu item in the plugin menu."
+msgstr "Zobrazí nebo skryje položku  \"MANAGER\"  menu v menu pluginu."
+
+msgctxt "#30362"
+msgid "Shows or hides the trakt menu item in the plugin menu."
+msgstr "Zobrazí nebo skryje položku  \"TRAKT.TV\"  menu v menu pluginu."
+
+msgctxt "#30363"
+msgid "Shows or hides the launcher menu item in the plugin menu."
+msgstr "Zobrazí nebo skryje položku  \"LAUNCHER\"  menu v menu pluginu."
+
+msgctxt "#30364"
+msgid "Shows or hides the library menu item in the plugin menu."
+msgstr "Zobrazí nebo skryje položku  \"KNIHOVNA\"  menu v menu pluginu."
+
+msgctxt "#30365"
+msgid "Shows or hides the play mail menu item in the plugin menu."
+msgstr "Zobrazí nebo skryje položku  \"REGISTRACE\"  menu v menu pluginu."
+
+msgctxt "#30366"
+msgid "Shows or hides the random play menu item in the plugin menu."
+msgstr "Zobrazí nebo skryje položku  \"RANDOMIZED\"  menu v menu pluginu."
+
+msgctxt "#30367"
+msgid "TMDB language search settings  ( see plugin documentation )."
+msgstr "Nastavení jazyka pro požadavky hledání přez  \"TMDB\"  seznamy"
+
+msgctxt "#30368"
+msgid "Trakt.tv settings : language."
+msgstr "Nastavení jazyka pro požadavky hledání přez  \"TRAKT.TV\"  seznamy"
+
+msgctxt "#30369"
+msgid "Caches data for the  \"MOST WATCHED\"  section for faster loading."
+msgstr "Ukládá data kategorie  \"SLEDOVANÉ\"  do mezipaměti cache."
+
+msgctxt "#30370"
+msgid "Episode notify interval settings  ( see plugin documentation )."
+msgstr "Nastavení intervalu kontroly nových epizod pro notifikace addonu."
+
+msgctxt "#30371"
+msgid "Episode air time  ( see plugin documentation )."
+msgstr "Nastavení intervalu pro kontrolu  \"AIR-TIME\"  nových epizod."
+
+msgctxt "#30373"
+msgid "Disables display or notification of 'notify ok'."
+msgstr "Zakáže zobrazení potvrzujících notifikací typu  \"OK\" "
+
+msgctxt "#30374"
+msgid "Disables display or notification of 'notify info'."
+msgstr "Zakáže zobrazení notifikací pro úroveň  \"INFO\" "
+
+msgctxt "#30375"
+msgid "Disables display or notification of 'notify error'."
+msgstr "Zakáže zobrazení notifikací pro úroveň  \"ERROR\" "
+
+msgctxt "#30376"
+msgid "Disables display or notification of 'notify acc'."
+msgstr "Zakáže zobrazení notifikací o přihlášení k účtu  \"LOG-IN\" "
+
+msgctxt "#30379"
+msgid "Disables display or notification of 'episode notify'."
+msgstr "Zakáže zobrazení notifikací o  \"NOVÝCH EPIZODÁCH\"  seriálů"
+
+msgctxt "#30381"
+msgid "Enables or disables  \"TMDB\"  title display filter."
+msgstr "Filtr pro vyčištění zobrazených výsledků při hledání přez  \"TMDB\"  seznamy"
+
+msgctxt "#30382"
+msgid "Enables or disables search title display filter."
+msgstr "Filtr pro vyčištění zobrazených výsledků při použití  \"HLEDAT\" "
+
+msgctxt "#30383"
+msgid "Enables or disables watched title display filter."
+msgstr "Filtr pro vyčištění zobrazených výsledků v kategorii  \"SLEDOVANÉ\" "
+
+msgctxt "#30384"
+msgid "Enables or disables library title display filter."
+msgstr "Filtr pro vyčištění zobrazených výsledků při hledání z  \"KNIHOVNA\" "
+
+msgctxt "#30385"
+msgid "Enables or disables manager title display filter."
+msgstr "Filtr pro vyčištění zobrazených výsledků při hledání z  \"MANAGER\" "
+
+msgctxt "#30386"
+msgid "Enables or disables history title display filter."
+msgstr "Filtr pro vyčištění zobrazených výsledků při hledání z  \"HISTORIE\" "
+
+msgctxt "#30387"
+msgid "Enables or disables actor tv shows filter."
+msgstr "Filtr skryje kategorii TALK-SHOW z výsledků hledání v seznamech  \"HERCI\" "
+
+msgctxt "#30388"
+msgid "Filter results by TMDB language (language, quality, extension)."
+msgstr "Úroveň filtrování obsahu Asijského původu [COLOR orange] \"VIETCONG FILTER\" [/COLOR]"
+
+msgctxt "#30389"
+msgid "Logging level settings (see plugin documentation)."
+msgstr "Nastavení úrovně pro logování addonu do souboru kodi.log [COLOR orange] \"LOG\" [/COLOR]"
+
+msgctxt "#30390"
+msgid "Enables or disables security bypass function."
+msgstr "Zapne nebo vypne funkci security bypass."
+
+msgctxt "#30392"
+msgid "Cache validity for userdata (in days)."
+msgstr "Doba platnosti mezipaměti cache pro  USERDATA  ( ve dnech )"
+
+msgctxt "#30393"
+msgid "Cache validity for csfd (in hours)."
+msgstr "Doba platnosti mezipaměti cache pro položky seznamů  ČSFD  ( v hodinách )"
+
+msgctxt "#30394"
+msgid "Cache validity for tmdb (in hours)."
+msgstr "Doba platnosti mezipaměti cache pro položky seznamů  TMDB  ( v hodinách )"
+
+msgctxt "#30395"
+msgid "Cache validity for trakt (in hours)."
+msgstr "Doba platnosti mezipaměti cache pro položky seznamů  TRAKT.TV  ( v hodinách )"
+
+msgctxt "#30396"
+msgid "Cache validity for watch (in hours)."
+msgstr "Doba platnosti mezipaměti cache pro položky kategorie  SLEDOVANÉ  ( v hodinách )"
+
+msgctxt "#30397"
+msgid "RAM cache TTL settings (see plugin documentation)."
+msgstr "Doba platnosti mezipaměti cache pro položky v paměti  RAM  ( v hodinách )"
+
+msgctxt "#30398"
+msgid "Maximum number of items to keep in RAM cache (memory amount)."
+msgstr "Maximální počet položek, které udrží mezipamět  RAM  ( počet položek )"
+
+msgctxt "#30399"
+msgid "Folder for downloaded files."
+msgstr "Složka pro stahované soubory."
+
+msgctxt "#30400"
+msgid "Folder for storing playback history."
+msgstr "Složka pro ukládání  \"PLAYBACK\"  historie přehrávání."
+
+msgctxt "#30401"
+msgid "Folder for storing cache data."
+msgstr "Složka pro ukládání  \"SQLITE\"  databáze pro mezipaměti cache."
+
+msgctxt "#30402"
+msgid "Database settings  \"MYSQL\"  :  HOST IP"
+msgstr "Nastavení síťové caching databáze  \"MYSQL\"  :  HOST IP"
+
+msgctxt "#30403"
+msgid "Database settings  \"MYSQL\"  :  PORT"
+msgstr "Nastavení síťové caching databáze  \"MYSQL\"  :  PORT"
+
+msgctxt "#30404"
+msgid "Database settings  \"MYSQL\"  :  DATABASE"
+msgstr "Nastavení síťové caching databáze  \"MYSQL\"  :  DATABASE"
+
+msgctxt "#30405"
+msgid "Database settings  \"MYSQL\"  :  USERNAME"
+msgstr "Nastavení síťové caching databáze  \"MYSQL\"  :  USERNAME"
+
+msgctxt "#30406"
+msgid "Database settings  \"MYSQL\"  :  PASSWORD"
+msgstr "Nastavení síťové caching databáze  \"MYSQL\"  :  PASSWORD"
+
+msgctxt "#30407"
+msgid "Database settings  \"MYSQL\"  :  TIMEOUT"
+msgstr "Nastavení síťové caching databáze  \"MYSQL\"  :  TIMEOUT"
+
+msgctxt "#30408"
+msgid "Database settings  \"MYSQL\"  :  POOL SIZE"
+msgstr "Nastavení síťové caching databáze  \"MYSQL\"  :  VLÁKNA"
+
+msgctxt "#30410"
+msgid "Allows using multiple providers simultaneously when searching for sources."
+msgstr "Umožní používat více poskytovatelů současně při vyhledávání zdrojů."
+
+msgctxt "#30411"
+msgid "Multi-provider sort settings  ( see plugin documentation )."
+msgstr "Nastavení multi-provider sort  ( viz dokumentace pluginu )."
+
+msgctxt "#30412"
+msgid "Active provider settings  ( see plugin documentation )."
+msgstr "Nastavení active provider  ( viz dokumentace pluginu )."
+
+msgctxt "#30414"
+msgid "Login / configuration settings for Prehraj.to : e-mail."
+msgstr "Nastavení přihlášení / konfigurace pro Prehraj.to : e-mail."
+
+msgctxt "#30415"
+msgid "Login / configuration settings for Prehraj.to : password."
+msgstr "Nastavení přihlášení / konfigurace pro Prehraj.to : heslo."
+
+msgctxt "#32621"
+msgid "Maximum access token age in minutes before automatic renewal. The server token expiry always takes precedence."
+msgstr "Maximální stáří přístupového tokenu v minutách před automatickou obnovou. Expirace určená serverem má vždy přednost."
+
+msgctxt "#30417"
+msgid "Login / configuration settings for Webshare.cz : username."
+msgstr "Nastavení přihlášení / konfigurace pro Webshare.cz : username."
+
+msgctxt "#30418"
+msgid "Login / configuration settings for Webshare.cz : password."
+msgstr "Nastavení přihlášení / konfigurace pro Webshare.cz : password."
+
+msgctxt "#30419"
+msgid "Login / configuration settings for Webshare.cz : token."
+msgstr "Nastavení přihlášení / konfigurace pro Webshare.cz : token."
+
+msgctxt "#30421"
+msgid "TMDB api key settings  ( see plugin documentation )."
+msgstr "Nastavení TMDB api key  ( viz dokumentace pluginu )."
+
+msgctxt "#30422"
+msgid "Trakt.tv settings : client id."
+msgstr "Nastavení Trakt.tv : client id."
+
+msgctxt "#30423"
+msgid "Trakt.tv settings : client secret."
+msgstr "Nastavení Trakt.tv : client secret."
+
+msgctxt "#30424"
+msgid "Trakt.tv settings : access token."
+msgstr "Nastavení Trakt.tv : access token."
+
+msgctxt "#30425"
+msgid "Trakt.tv settings : refresh token."
+msgstr "Nastavení Trakt.tv : refresh token."
+
+msgctxt "#32514"
+msgid "Connect your Trakt.tv account using the code at trakt.tv/activate."
+msgstr "Připojit účet Trakt.tv pomocí kódu na stránce trakt.tv/activate."
+
+msgctxt "#30427"
+msgid "Telegram notifications settings : chat id."
+msgstr "Nastavení pro Telegram notifikace : chat id."
+
+msgctxt "#30428"
+msgid "Telegram notifications settings : bot token."
+msgstr "Nastavení pro Telegram notifikace : bot token."
+
+msgctxt "#30430"
+msgid "Kodi folder to include in the Telegram ZIP backup  ( folder #1 )."
+msgstr "Složka Kodi zahrnutá do ZIP zálohy pro Telegram  ( složka #1 )."
+
+msgctxt "#30431"
+msgid "Kodi folder to include in the Telegram ZIP backup  ( folder #2 )."
+msgstr "Složka Kodi zahrnutá do ZIP zálohy pro Telegram  ( složka #2 )."
+
+msgctxt "#30432"
+msgid "Kodi folder to include in the Telegram ZIP backup  ( folder #3 )."
+msgstr "Složka Kodi zahrnutá do ZIP zálohy pro Telegram  ( složka #3 )."
+
+msgctxt "#30433"
+msgid "Kodi folder to include in the Telegram ZIP backup  ( folder #4 )."
+msgstr "Složka Kodi zahrnutá do ZIP zálohy pro Telegram  ( složka #4 )."
+
+msgctxt "#30434"
+msgid "Kodi folder to include in the Telegram ZIP backup  ( folder #5 )."
+msgstr "Složka Kodi zahrnutá do ZIP zálohy pro Telegram  ( složka #5 )."
+
+msgctxt "#30436"
+msgid "Default display mode for search  ( ESTUARY : Poster  |  ARCTIC FUSE 3 : Media List )."
+msgstr "Výchozí režim zobrazení pro search  ( ESTUARY : Plakát  |  ARCTIC FUSE 3 : Seznam médií )."
+
+msgctxt "#30437"
+msgid "Default display mode for search history  ( Poster, List )."
+msgstr "Výchozí režim zobrazení pro search history  ( Plakát, Seznam )."
+
+msgctxt "#30438"
+msgid "Default display mode for playback history  ( Poster, List )."
+msgstr "Výchozí režim zobrazení pro playback history  ( Plakát, Seznam )."
+
+msgctxt "#30439"
+msgid "Default display mode for most watched  ( Poster, List )."
+msgstr "Výchozí režim zobrazení pro most watched  ( Plakát, Seznam )."
+
+msgctxt "#30440"
+msgid "Default display mode for csfd tips  ( Poster, List )."
+msgstr "Výchozí režim zobrazení pro csfd tips  ( Plakát, Seznam )."
+
+msgctxt "#30442"
+msgid "Default display mode for movies  ( Poster, List )."
+msgstr "Výchozí režim zobrazení pro movies  ( Plakát, Seznam )."
+
+msgctxt "#30443"
+msgid "Default display mode for movies submenu  ( Poster, List )."
+msgstr "Výchozí režim zobrazení pro movies submenu  ( Plakát, Seznam )."
+
+msgctxt "#30445"
+msgid "Default display mode for tvshows  ( Poster, List )."
+msgstr "Výchozí režim zobrazení pro tvshows  ( Plakát, Seznam )."
+
+msgctxt "#30446"
+msgid "Default display mode for tvshows submenu  ( Poster, List )."
+msgstr "Výchozí režim zobrazení pro tvshows submenu  ( Plakát, Seznam )."
+
+msgctxt "#30447"
+msgid "Default display mode for seasons  ( Poster, List )."
+msgstr "Výchozí režim zobrazení pro seasons  ( Plakát, Seznam )."
+
+msgctxt "#30448"
+msgid "Default display mode for episodes  ( Poster, List )."
+msgstr "Výchozí režim zobrazení pro episodes  ( Plakát, Seznam )."
+
+msgctxt "#30460"
+msgid "Enable  \"WATCH MOVIE\"  recommendations feature in main menu"
+msgstr "Zobrazí nebo skryje položku  \"WATCH MOVIE\"  menu v menu pluginu."
+
+msgctxt "#30461"
+msgid "Maximum number of movies from  \"PLAYBACK\"  history to use as seed for recommendations"
+msgstr "Maximální počet filmů z  \"PLAYBACK\"  historie pro doporučení"
+
+msgctxt "#30462"
+msgid "Maximum number of movie recommendations to display"
+msgstr "Maximální počet doporučených filmů k zobrazení"
+
+msgctxt "#30463"
+msgid "Skip movies that are already in  \"PLAYBACK\"  watch history"
+msgstr "Přeskočit filmy, které již jsou v historii  \"PLAYBACK\" "
+
+msgctxt "#30464"
+msgid "Enable  \"WATCH SHOW\"  recommendations feature in main menu"
+msgstr "Zobrazí nebo skryje položku  \"WATCH SHOW\"  menu v menu pluginu."
+
+msgctxt "#30465"
+msgid "Maximum number of series from  \"PLAYBACK\"  history to use as seed for recommendations"
+msgstr "Maximální počet seriálů z  \"PLAYBACK\"  historie pro doporučení"
+
+msgctxt "#30466"
+msgid "Maximum number of series recommendations to display"
+msgstr "Maximální počet doporučených seriálů k zobrazení"
+
+msgctxt "#30467"
+msgid "Skip series that are already in  \"PLAYBACK\"  watch history"
+msgstr "Přeskočit seriály, které již jsou v historii  \"PLAYBACK\" "
+
+msgctxt "#30681"
+msgid "Enable  \"LATER MOVIE\"  recommendations feature in main menu"
+msgstr "Zobrazí nebo skryje položku  \"LATER MOVIE\"  menu v menu pluginu."
+
+msgctxt "#30682"
+msgid "Enable  \"LATER SHOW\"  recommendations feature in main menu"
+msgstr "Zobrazí nebo skryje položku  \"LATER SHOW\"  menu v menu pluginu."
+
+msgctxt "#30683"
+msgid "Shows or hides the  \"WATCH LATER\"  list item in the plugin menu."
+msgstr "Zobrazí nebo skryje položku  \"WATCH LATER\"  ( CHCI VIDĚT )  v menu pluginu."
+
+msgctxt "#30524"
+msgid "Enable/disable  \"RANDOMIZED\"  play feature"
+msgstr "Zapnout/vypnout funkci  \"RANDOMIZED\"  náhodného přehrávání"
+
+msgctxt "#30525"
+msgid "Select content type for  \"RANDOMIZED\"  selection"
+msgstr "Vyberte typ obsahu pro  \"RANDOMIZED\"  náhodný výběr"
+
+msgctxt "#30526"
+msgid "Time window for trending content  ( day / week )"
+msgstr "Časové okno pro trendující obsah  ( den / týden )"
+
+msgctxt "#30527"
+msgid "Maximum number of attempts to find playable content"
+msgstr "Maximální počet pokusů pro nalezení přehratelného obsahu"
+
+msgctxt "#30528"
+msgid "Number of trending pages to search through"
+msgstr "Počet stránek kategorie trendů pro prohledávání"
+
+msgctxt "#30529"
+msgid "Skip content already in  \"PLAYBACK\"  history"
+msgstr "Přeskočit obsah, který je již v  \"PLAYBACK\"  historii přehrávání"
+
+msgctxt "#30530"
+msgid "Strategy for selecting video sources"
+msgstr "Strategie pro výběr video zdrojů pro streaming"
+
+msgctxt "#30531"
+msgid "Require Czech dubbing in video filenames"
+msgstr "Vyžadovat příznaky Českého dabingu v názvech souborů"
+
+msgctxt "#30532"
+msgid "Require minimum quality  ( 1080P )  in video filenames"
+msgstr "Vyžadovat minimální kvalitu  ( 1080P )  v názvech souborů"
+
+msgctxt "#30693"
+msgid "Warns when PREHRAJ.TO premium has two days or less remaining. Account renewal is independent."
+msgstr "Warns when PREHRAJ.TO premium has two days or less remaining. Account renewal is independent."
+
+msgctxt "#30789"
+msgid "Number of episodes to play in  \"CONTINUED\"  playlist"
+msgstr "Počet epizod k přehrání v  \"CONTINUED\"  playlist"
+
+msgctxt "#30971"
+msgid "Automatically turn on subtitles for foreign language content without dubbing."
+msgstr "Automaticky zapne titulky u cizojazyčného obsahu bez tagu pro dabing."
+
+msgctxt "#30911"
+msgid "How many seconds before the end of the episode the dialog should appear."
+msgstr "Kolik vteřin před koncem epizody se má dialog zobrazit."
+
+msgctxt "#30913"
+msgid "How many seconds the dialog will stay on screen."
+msgstr "Kolik vteřin zůstane dialog zobrazen na obrazovce."
+
+msgctxt "#30915"
+msgid "Action to perform when the dialog auto-closes."
+msgstr "Akce, která se vykoná, když časovač dialogu vyprší."
+
+msgctxt "#30919"
+msgid "Enter URL of manifest manifest.json file  ( Streamstr or Cyberflix )."
+msgstr "Vložte URL adresu manifest.json souboru  ( Streamstr or Cyberflix )."
+
+msgctxt "#30933"
+msgid "Enter API URL of sharing server   [ addon-sharing.php ]"
+msgstr "Vložte API URL serveru   [ addon-sharing.php ]"
+
+msgctxt "#30851"
+msgid "Enable context sharing via Community Server"
+msgstr "Povolit kontextové sdílení obsahu přes komunitní server"
+
+msgctxt "#30861"
+msgid "Maximum number of stored shares"
+msgstr "Maximální počet uložených přijatých sdílení"
+
+msgctxt "#30863"
+msgid "Play notification sound on incoming share"
+msgstr "Přehrát notifikační zvuk při novém komunitním sdílení"
+
+msgctxt "#30935"
+msgid "Secret key for community server authentication"
+msgstr "Tajný klíč pro autentizaci ke komunitnímu serveru"
+
+msgctxt "#30937"
+msgid "This is default device used to sharing community content in local network ( MESSAGE SPAM FIX )"
+msgstr "Používat toto zařízení jako defaultní pro sdílení community obsahu ( MESSAGE SPAM FIX )"
+
+msgctxt "#30941"
+msgid "If enabled and the Kodi playlist contains a next item, automatically perform Next instead of showing the dialog."
+msgstr "Pokud je zapnuto a v Kodi playlistu je připraven další díl, automaticky přejít na další položku místo zobrazení dialogu."
+
+msgctxt "#30943"
+msgid "Minimum interval between pre-emptive scrape triggers for the same show (seconds)."
+msgstr "Minimální interval mezi pre-emptive vyhledáváními pro stejný seriál (vteřiny)."
+
+msgctxt "#30951"
+msgid "Enable system metrics for diagnostic CONTEXT menu - settings option."
+msgstr "Povolit systemové metriky pro diagnostiku a zobrazení CONTEXT menu - volba nastavení."
+
+msgctxt "#30961"
+msgid "Time in minutes how often to check server for new shared content"
+msgstr "Čas v minutách, jak často se má na serveru kontrolovat nový obsah"
+
+msgctxt "#31011"
+msgid "Maximum number of similar items returned by TMDB recommendations"
+msgstr "Maximální počet návrhů  ( podobných položek )  vrácených TMDB"
+
+msgctxt "#31021"
+msgid "Only show items with a TMDB rating above the selected value. 'No filter' shows all items."
+msgstr "Zobrazí pouze položky, jejichž hodnocení na TMDB je vyšší než zvolená hodnota. 'Bez filtru' zobrazí vše."
+
+msgctxt "#31031"
+msgid "Choose the source for similar items. A 'COMBO MODE' provides more results, but 'SIMILAR ONLY' is often more accurate."
+msgstr "Vyberte zdroj pro podobné položky. 'COMBO MODE' poskytne více výsledků, ale 'POUZE PODOBNÉ' je často přesnější."
+
+msgctxt "#31037"
+msgid "Automatically generates a playlist from found epizodes for continuous playback."
+msgstr "Automaticky generuje playlist z nalezených epizod pro plynulé přehrávání za sebou."
+
+msgctxt "#31041"
+msgid "Settings for Gemini and OpenRouter AI integrations."
+msgstr "Nastavení pro integraci Gemini a OpenRouter AI."
+
+msgctxt "#31043"
+msgid "Google Gemini API Key  ( Get from  -  https://aistudio.google.com )"
+msgstr "Google Gemini API klíč  ( Získáte zdarma na  - https://aistudio.google.com )"
+
+msgctxt "#31045"
+msgid "Maximum number of AI recommendations to process."
+msgstr "Maximální počet doporučení ke zpracování."
+
+msgctxt "#31061"
+msgid "Enables automatic copying of localizations and modules to target addons after updates."
+msgstr "Povolí instalaci CZ lokalizací automatické zálohování/obnovu  ARCTIC FUSE 3 | TMDB HELPER "
+
+msgctxt "#31063"
+msgid "Select the AI engine for responses."
+msgstr "Vyberte jádro modelu AI pro generování odpovědí."
+
+msgctxt "#31069"
+msgid "AI Temperature  ( 0 = Strict facts , 10 = High creativity )"
+msgstr "Teplota AI  ( 0 = Přesná fakta , 10 = Vysoká kreativita )"
+
+msgctxt "#31071"
+msgid "Select which list to send to Gemini as user context."
+msgstr "Vyberte, jaký seznam odeslat Gemini jako kontext uživatele."
+
+msgctxt "#31096"
+msgid "Add custom rules for AI  ( 'I hate horror' , 'Speak in Slovak' , 'Act like Deadpool' )"
+msgstr "Zadejte vlastní pravidla pro AI  ( 'Nemám rád horory' , 'Odpovídej Slovensky' , 'Mluv jako Deadpool' )"
+
+msgctxt "#31097"
+msgid "FREE MODEL : 'https://openrouter.ai/models?q=free' \n1) 'openrouter/free' \n2) 'openai/gpt-oss-120b:free' \n3) 'google/gemini-2.5-flash:free' \n4) 'google/gemma-4-31b-it:free' \n5) 'nvidia/nemotron-3-super-120b-a12b:free' "
+msgstr "FREE MODEL : 'https://openrouter.ai/models?q=free' \n1) 'openrouter/free' \n2) 'openai/gpt-oss-120b:free' \n3) 'google/gemini-2.5-flash:free' \n4) 'google/gemma-4-31b-it:free' \n5) 'nvidia/nemotron-3-super-120b-a12b:free' "
+
+msgctxt "#31098"
+msgid "OpenRouter API Key  ( Get from  -  https://openrouter.ai )"
+msgstr "OpenRouter API klíč  ( Získáte zdarma na  - https://openrouter.ai )"
+
+msgctxt "#32051"
+msgid "Set how to handle playback when multiple stream qualities are available."
+msgstr "Způsob přehrávání, pokud je dostupných více kvalit streamu  ( Dialog nebo Automaticky )"
+
+msgctxt "#32055"
+msgid "Select preferred quality for auto-select mode."
+msgstr "Preferovaná kvalita streamu pro automatický režim přehrávání."
+
+msgctxt "#32063"
+msgid "Prioritize files with more user likes to avoid fake uploads."
+msgstr "Zvýhodní soubory s kladným hodnocením  ( LIKES )  pro vyfiltrování falešného obsahu."
+
+msgctxt "#32502"
+msgid "Set maximum network bandwidth for adaptive stream selection ( 0 = Unlimited )"
+msgstr "Nastavte maximální rychlost stahování v Mbps pro vyřazení streamů s velkým datovým tokem před spuštěním ( 0 = Neomezeno )"
+
+msgctxt "#32504"
+msgid "Automatically switch to a lower quality stream if the video is buffering ( stuttering )."
+msgstr "Při zasekávání ( načítání ) videa automaticky a bez přerušení přepne na stream v nižší kvalitě."
+
+msgctxt "#32506"
+msgid "How many seconds to wait during buffering before triggering quality downgrade."
+msgstr "Počet vteřin, po které se video musí sekat ( načítat ), než addon zakročí a sníží kvalitu."
+
+msgctxt "#32508"
+msgid "Automatically creates a new Prehraj.to VIP account when the current one is about to expire."
+msgstr "Automaticky vytvoří nový VIP účet na Prehraj.to, jakmile stávajícímu končí platnost."
+
+msgctxt "#32630"
+msgid "[COLOR orange]►[/COLOR] TMDBHELP"
+msgstr "[COLOR orange]►[/COLOR] TMDBHELP"
+
+msgctxt "#32631"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TMDBHELP  :  SET LIBRARY"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  TMDBHELP  :  NASTAVIT KNIHOVNU"
+
+msgctxt "#32632"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TMDBHELP  :  SET SEARCH"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  TMDBHELP  :  NASTAVIT TMDB HLEDÁNÍ"
+
+msgctxt "#32633"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TMDBHELP  :  SET API KEYS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  TMDBHELP  :  NASTAVIT API KLÍČE"
+
+msgctxt "#32634"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TMDBHELP  :  INSTALL PLAYERS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  TMDBHELP  :  INSTALOVAT PLAYERY"
+
+msgctxt "#32641"
+msgid "Back up TMDBHelper settings, then set its Movies and TV Shows folders from the PLAY.ER library path. This does not change MySQL settings."
+msgstr "Zálohuje nastavení TMDBHelper a nastaví složky Movies a TV Shows podle knihovny PLAY.ER. Nastavení MySQL nemění."
+
+msgctxt "#32642"
+msgid "Back up TMDBHelper settings, then set dummy duration and delay to 0.1 seconds and enable Restrict to library strm. Normal menu playback skips the dummy video."
+msgstr "Zálohuje nastavení TMDBHelper, nastaví délku pomocného videa a prodlevu na 0,1 sekundy a zapne omezení na soubory STRM v knihovně. Běžné přehrávání z nabídky pomocné video přeskočí."
+
+msgctxt "#32643"
+msgid "Back up TMDBHelper settings, then copy the nonempty PLAY.ER Gemini API key. Other API keys do not have matching settings."
+msgstr "Zálohuje nastavení TMDBHelper a zkopíruje vyplněný Gemini API klíč z PLAY.ER. Ostatní API klíče nemají odpovídající nastavení."
+
+msgctxt "#32644"
+msgid "Back up TMDBHelper settings and any replaced players, then install the three TMDBH players from resources/custom/players."
+msgstr "Zálohuje nastavení TMDBHelper a přepisované playery, potom nainstaluje tři TMDBH playery ze složky resources/custom/players."
+
+msgctxt "#32645"
+msgid "[B][COLOR orange]    ►  [/COLOR]  TMDB  :  ACCOUNT LOGIN[/B]"
+msgstr "[B][COLOR orange]    ►  [/COLOR]  TMDB  :  PŘIHLÁŠENÍ K ÚČTU[/B]"
+
+msgctxt "#32646"
+msgid "Connect your TMDB account using the authorization link shown in Kodi."
+msgstr "Připojit účet TMDB pomocí autorizačního odkazu zobrazeného v Kodi."
+
+msgctxt "#30391"
+msgid "Show or hide the settings in the Files section."
+msgstr "Zobrazit nebo skrýt nastavení v sekci SOUBORY."
+
+msgctxt "#30409"
+msgid "Show or hide the provider settings section."
+msgstr "Zobrazit nebo skrýt sekci nastavení poskytovatelů."
+
+msgctxt "#30413"
+msgid "Show or hide the Prehraj.to provider settings."
+msgstr "Zobrazit nebo skrýt nastavení poskytovatele Prehraj.to."
+
+msgctxt "#30416"
+msgid "Show or hide the Webshare provider settings."
+msgstr "Zobrazit nebo skrýt nastavení poskytovatele Webshare."
+
+msgctxt "#30426"
+msgid "Show or hide the Telegram notification settings."
+msgstr "Zobrazit nebo skrýt nastavení oznámení Telegramu."
+
+msgctxt "#30429"
+msgid "Show or hide the Telegram backup settings."
+msgstr "Zobrazit nebo skrýt nastavení zálohování přes Telegram."
+
+msgctxt "#30435"
+msgid "Show or hide title filtering settings."
+msgstr "Zobrazit nebo skrýt nastavení filtrování názvů."
+
+msgctxt "#30441"
+msgid "Show or hide movie view settings."
+msgstr "Zobrazit nebo skrýt nastavení zobrazení filmů."
+
+msgctxt "#30444"
+msgid "Show or hide TV show view settings."
+msgstr "Zobrazit nebo skrýt nastavení zobrazení seriálů."
+
+msgctxt "#32650"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  AI  :  REASON LENGTH [ WORDS ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  AI  :  DÉLKA DŮVODU [ SLOVA ]"
+
+msgctxt "#32651"
+msgid "Maximum length of each recommendation reason, in words. Applied when generating a new selection. Your custom prompt and style remain active."
+msgstr "Maximální délka důvodu doporučení ve slovech. Použije se při vytvoření nového výběru. Váš vlastní prompt a styl zůstávají aktivní."
+
+msgctxt "#32652"
+msgid "EL BASTARDO :"
+msgstr "EL BASTARDO :"
+
+msgctxt "#32654"
+msgid "AI-TODAY: Preparing a new selection."
+msgstr "AI-TODAY: Připravuji nový výběr."
+
+msgctxt "#32655"
+msgid "AI-TODAY: A refresh is already in progress."
+msgstr "AI-TODAY: Obnova již probíhá."
+
+msgctxt "#32656"
+msgid "AI-TODAY – preparing today's selection…"
+msgstr "AI-TODAY – připravuji denní výběr…"
+
+msgctxt "#32657"
+msgid "Refresh failed – use Refresh AI-TODAY"
+msgstr "Obnova selhala – použijte Obnovit AI-TODAY"
+
+msgctxt "#32658"
+msgid "AI settings changed. Use Refresh AI-TODAY to apply them to a new selection."
+msgstr "Nastavení AI se změnilo. Použijte Obnovit AI-TODAY pro nový výběr s aktuálním nastavením."
+
+msgctxt "#32661"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TMDBH PLAYER  :  WAIT FOR CLOSE MODAL DIALOG"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  TMDBH PLAYER  :  ČEKAT NA ZAVŘENÍ MODÁLNÍHO DIALOGU"
+
+msgctxt "#32662"
+msgid "Waits for the active TMDbHelper modal dialog to close before opening search results."
+msgstr "Před otevřením výsledků vyhledávání vyčká na uzavření aktivního modálního dialogu TMDBHelperu."
+
+msgctxt "#32663"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TMDBH PLAYER  :  MAX WAIT TIME [ S ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  TMDBH PLAYER  :  MAX DOBA ČEKÁNÍ [ S ]"
+
+msgctxt "#32664"
+msgid "Maximum time in seconds to wait for the modal dialog to close (1 to 15 s)."
+msgstr "Maximální doba v sekundách, po kterou se čeká na uzavření modálního dialogu (1 až 15 s)."
+
+msgctxt "#32665"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TMDBH PLAYER  :  CHECK INTERVAL [ MS ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  TMDBH PLAYER  :  INTERVAL KONTROLY [ MS ]"
+
+msgctxt "#32666"
+msgid "Time interval in milliseconds between dialog status checks (25 to 500 ms)."
+msgstr "Časový interval v milisekundách mezi jednotlivými kontrolami stavu dialogu (25 až 500 ms)."
+
+msgctxt "#32667"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TMDBH PLAYER  :  OPEN EVEN AFTER TIMEOUT"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  TMDBH PLAYER  :  OTEVŘÍT I PO LIMITU"
+
+msgctxt "#32668"
+msgid "If the modal dialog does not close within the specified timeout, attempt to open the results window anyway."
+msgstr "Pokud modální dialog nezmizí do zadaného časového limitu, pokusí se okno výsledků přesto otevřít."
+
+msgctxt "#32700"
+msgid "[COLOR orange]►[/COLOR] PREDICTION"
+msgstr "[COLOR orange]►[/COLOR] PREDICTION"
+
+msgctxt "#32701"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  PREDICTION  :  ENABLE"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  PREDICTION  :  AKTIVOVAT"
+
+msgctxt "#32702"
+msgid "Prefer the release style of the first selected episode for automatic CONTINUE and SKIP CREDITS queues. Existing filters and manual source lists stay unchanged. Without a reliable match, use the existing selection."
+msgstr "Pro automatické fronty CONTINUE a SKIP CREDITS preferuje styl vydání první vybrané epizody. Stávající filtry a ruční seznam zdrojů se nemění. Bez spolehlivé shody použije původní výběr."
+
+msgctxt "#32703"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  PREDICTION  :  MIN TITLE SIMILARITY [ % ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  PREDICTION  :  MIN PODOBNOST NÁZVU [ % ]"
+
+msgctxt "#32704"
+msgid "Higher values require closer release filename matches. Episode numbering and episode-specific titles before quality tags are ignored. This is a similarity score, not a probability."
+msgstr "Vyšší hodnoty vyžadují podobnější názvy vydání. Číslování epizod a jejich vlastní názvy před značkami kvality se ignorují. Jde o skóre podobnosti, nikoli pravděpodobnost."
+
+msgctxt "#32705"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  PREDICTION  :  COMPARE FILE SIZE"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  PREDICTION  :  POROVNÁVAT VELIKOST"
+
+msgctxt "#32706"
+msgid "Also compare the file size with the first selected episode. Missing sizes do not block prediction. Turn off for episodes with very different lengths."
+msgstr "Porovnává také velikost souboru s první zvolenou epizodou. Chybějící velikost predikci neblokuje. U epizod s výrazně odlišnou délkou lze vypnout."
+
+msgctxt "#32707"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  PREDICTION  :  SIZE TOLERANCE [ % ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  PREDICTION  :  TOLERANCE VELIKOSTI [ % ]"
+
+msgctxt "#32708"
+msgid "Maximum file size difference relative to the first selected episode. Candidates outside the tolerance are not preferred; the original selection remains available as fallback."
+msgstr "Největší rozdíl velikosti souboru vůči první vybrané epizodě. Kandidáty mimo toleranci neupřednostní; původní výběr zůstává dostupný jako záloha."
+
+msgctxt "#32709"
+msgid "[COLOR limegreen][    AUTOMATIC SOURCE SELECTION FOR NEXT EPISODES    ][/COLOR]"
+msgstr "[COLOR limegreen][    AUTOMATICKÝ VÝBĚR ZDROJŮ DALŠÍCH EPIZOD    ][/COLOR]"
+
+msgctxt "#32710"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  PREDICTION  :  NOTIFICATIONS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  PREDICTION  :  NOTIFIKACE"
+
+msgctxt "#32711"
+msgid "Show the PREDICTION result and the original filename selected for each automatic episode. Turning this off only hides these notifications; addon logging and global information notification settings still apply."
+msgstr "Zobrazí výsledek PREDICTION a původní název souboru vybraného pro každou automatickou epizodu. Vypnutí skryje pouze tyto notifikace; nastavení logování addonu a globální nastavení informačních notifikací zůstávají v platnosti."
+
+msgctxt "#32712"
+msgid "SELECTED BY SIMILARITY"
+msgstr "VYBRÁNO PODLE PODOBNOSTI"
+
+msgctxt "#32713"
+msgid "NO RELIABLE MATCH - STANDARD SELECTION"
+msgstr "BEZ SPOLEHLIVÉ SHODY - BĚŽNÝ VÝBĚR"
+
+msgctxt "#32714"
+msgid "NO REFERENCE - STANDARD SELECTION"
+msgstr "CHYBÍ REFERENCE - BĚŽNÝ VÝBĚR"
+
+msgctxt "#32715"
+msgid "NO SOURCES FOR PREDICTION"
+msgstr "ŽÁDNÉ ZDROJE PRO PREDIKCI"
+
+msgctxt "#32716"
+msgid "NO FILE SELECTED"
+msgstr "ŽÁDNÝ SOUBOR NEVYBRÁN"
+
+msgctxt "#32717"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  PREDICTION  :  STOP WHEN NO MATCH"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  PREDICTION  :  UKONČIT PŘI NESHODĚ"
+
+msgctxt "#32718"
+msgid "Only add automatic episodes that meet the configured prediction similarity and size criteria. If no source matches or the reference is missing, do not use the standard fallback. Keep earlier matching episodes and let playback finish at the last one. This does not verify the actual episode content."
+msgstr "Přidá pouze automatické epizody splňující nastavenou podobnost predikce a kritéria velikosti. Pokud žádný zdroj nevyhoví nebo chybí reference, nepoužije běžný náhradní výběr. Zachová předchozí vyhovující epizody a nechá přehrávání skončit poslední z nich. Skutečný obsah epizody neověřuje."
+
+msgctxt "#32719"
+msgid "NO RELIABLE MATCH - END OF PLAYLIST"
+msgstr "BEZ SPOLEHLIVÉ SHODY - KONEC PLAYLISTU"
+
+msgctxt "#32720"
+msgid "NO REFERENCE - END OF PLAYLIST"
+msgstr "CHYBÍ REFERENCE - KONEC PLAYLISTU"
+
+msgctxt "#32721"
+msgid "NO SOURCES - END OF PLAYLIST"
+msgstr "ŽÁDNÉ ZDROJE - KONEC PLAYLISTU"
+
+msgctxt "#32722"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  PREDICTION  :  MANUAL CHOICE AFTER END"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  PREDICTION  :  RUČNÍ VÝBĚR PO UKONČENÍ"
+
+msgctxt "#32723"
+msgid "After the last matching episode ends naturally, search for the rejected next episode and open the usual source list for manual selection. Does not open on Stop, error, or during playback. Requires strict prediction."
+msgstr "Po přirozeném konci poslední vyhovující epizody vyhledá odmítnutou následující epizodu a otevře běžný seznam zdrojů pro ruční volbu. Neotevírá se při Stop, chybě ani během přehrávání. Vyžaduje ukončení při neshodě."
+
+msgctxt "#32730"
+msgid "TRAKT.TV : RECENTLY WATCHED"
+msgstr "TRAKT.TV : ZHLÉDNUTÉ"
+
+msgctxt "#32731"
+msgid "TRAKT.TV : IN-PROGRESS"
+msgstr "TRAKT.TV : IN-PROGRESS"
+
+msgctxt "#32732"
+msgid "TRAKT.TV : MY RATINGS [ 7–10 ]"
+msgstr "TRAKT.TV : MOJE HODNOCENÍ [ 7–10 ]"
+
+msgctxt "#32733"
+msgid "Select a source for AI recommendations. Trakt sources require sign-in: recently watched titles, paused movies/episodes (IN-PROGRESS), or your own ratings of 7–10. Duplicate sources are used once. Context is cached in PLAY.ER per account; refresh runs during background generation, never while the Spotlight widget renders."
+msgstr "Vyberte zdroj pro AI doporučení. Trakt vyžaduje přihlášení: nedávno zhlédnuté tituly, rozkoukané filmy/epizody s uloženým průběhem (IN-PROGRESS) nebo vlastní hodnocení 7–10. Stejný zdroj se použije jen jednou. Kontext se cachuje v PLAY.ER odděleně podle účtu; obnova běží při generování na pozadí, nikdy při vykreslování widgetu Spotlight."
+
+msgctxt "#32734"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  GEMINI  :  MODEL ID"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  GEMINI  :  MODEL ID"
+
+msgctxt "#32735"
+msgid "Optional custom Gemini model ID. A filled MODEL ID takes priority over MODEL, just like OpenRouter. Leave empty to use the selected preset. The models/ prefix is optional. Existing fallback and rate-limit handling remain active."
+msgstr "Volitelné vlastní ID modelu Gemini. Vyplněné MODEL ID má přednost před MODEL, stejně jako u OpenRouteru. Prázdné pole použije vybranou předvolbu. Prefix models/ je volitelný. Stávající náhradní modely a zpracování limitů zůstávají aktivní."
+
+msgctxt "#32736"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  OPENROUTER  :  MODEL"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  OPENROUTER  :  MODEL"
+
+msgctxt "#32737"
+msgid "Select a free model preset. It is used when OPENROUTER : MODEL ID is empty; a filled ID takes priority, just like Gemini. Free Router chooses among currently available free models compatible with the request. Availability and limits can change; no model catalogue is downloaded when opening settings."
+msgstr "Vyberte bezplatnou předvolbu. Použije se při prázdném OPENROUTER : MODEL ID; vyplněné ID má přednost, stejně jako u Gemini. Free Router vybírá z právě dostupných bezplatných modelů vhodných pro požadavek. Dostupnost a limity se mohou měnit; katalog modelů se při otevření nastavení nestahuje."
+
+msgctxt "#32739"
+msgid "Optional custom OpenRouter model ID in provider/model format. A filled MODEL ID takes priority over MODEL, just like Gemini. Leave empty to use the selected preset. Existing saved custom IDs are preserved."
+msgstr "Volitelné vlastní ID modelu OpenRouter ve tvaru provider/model. Vyplněné MODEL ID má přednost před MODEL, stejně jako u Gemini. Prázdné pole použije vybranou předvolbu. Stávající uložená vlastní ID zůstávají zachována."
+
+msgctxt "#32740"
+msgid "Free Router [ AUTOMATIC ]"
+msgstr "Free Router [ AUTOMATICKY ]"
+
+msgctxt "#32741"
+msgid "Google : Gemma 4 31B [ FREE ]"
+msgstr "Google : Gemma 4 31B [ FREE ]"
+
+msgctxt "#32742"
+msgid "Google : Gemma 4 26B A4B [ FREE ]"
+msgstr "Google : Gemma 4 26B A4B [ FREE ]"
+
+msgctxt "#32743"
+msgid "NVIDIA : Nemotron 3.5 Super VL [ FREE ]"
+msgstr "NVIDIA : Nemotron 3.5 Super VL [ FREE ]"
+
+msgctxt "#32669"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TMDBHELP  :  SET TMDBHELPER"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  TMDBHELP  :  NASTAVIT TMDBHELPER"
+
+msgctxt "#32670"
+msgid "Back up TMDBHelper settings, restrict dummy resolution to library STRM files, and select the PLAY.ER SOURCES-PREDICTION player for movies and episodes. Requires the player to be installed. Other settings stay unchanged."
+msgstr "Zálohuje nastavení TMDBHelper, omezí dummy přehrávání na knihovní soubory STRM a nastaví PLAY.ER SOURCES-PREDICTION jako výchozí player pro filmy a epizody. Vyžaduje nainstalovaný player. Ostatní nastavení zachová."
+
+msgctxt "#32750"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  BACKUP  :  FILE #1"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  ZÁLOHA  :  SOUBOR #1"
+
+msgctxt "#32751"
+msgid "Single file to include in the Telegram ZIP backup  ( file #1 ). Select a file, not a folder; leave empty to skip. Default : TMDBHelper settings.xml."
+msgstr "Samostatný soubor zahrnutý do ZIP zálohy pro Telegram  ( soubor #1 ). Vyberte soubor, nikoli složku; prázdnou položku záloha vynechá. Výchozí : settings.xml doplňku TMDBHelper."
+
+msgctxt "#32752"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  BACKUP  :  FILE #2"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  ZÁLOHA  :  SOUBOR #2"
+
+msgctxt "#32753"
+msgid "Single file to include in the Telegram ZIP backup  ( file #2 ). Select a file, not a folder; leave empty to skip."
+msgstr "Samostatný soubor zahrnutý do ZIP zálohy pro Telegram  ( soubor #2 ). Vyberte soubor, nikoli složku; prázdnou položku záloha vynechá."
+
+msgctxt "#32754"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  BACKUP  :  FILE #3"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  ZÁLOHA  :  SOUBOR #3"
+
+msgctxt "#32755"
+msgid "Single file to include in the Telegram ZIP backup  ( file #3 ). Select a file, not a folder; leave empty to skip."
+msgstr "Samostatný soubor zahrnutý do ZIP zálohy pro Telegram  ( soubor #3 ). Vyberte soubor, nikoli složku; prázdnou položku záloha vynechá."
+
+msgctxt "#32756"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  BACKUP  :  FILE #4"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  ZÁLOHA  :  SOUBOR #4"
+
+msgctxt "#32757"
+msgid "Single file to include in the Telegram ZIP backup  ( file #4 ). Select a file, not a folder; leave empty to skip."
+msgstr "Samostatný soubor zahrnutý do ZIP zálohy pro Telegram  ( soubor #4 ). Vyberte soubor, nikoli složku; prázdnou položku záloha vynechá."
+
+msgctxt "#32758"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  BACKUP  :  FILE #5"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  ZÁLOHA  :  SOUBOR #5"
+
+msgctxt "#32759"
+msgid "Single file to include in the Telegram ZIP backup  ( file #5 ). Select a file, not a folder; leave empty to skip."
+msgstr "Samostatný soubor zahrnutý do ZIP zálohy pro Telegram  ( soubor #5 ). Vyberte soubor, nikoli složku; prázdnou položku záloha vynechá."
+
+msgctxt "#32800"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  AUTO  :  TMDB PLAYERS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  AUTO  :  TMDB PLAYERY"
+
+msgctxt "#32801"
+msgid "Fill missing bundled TMDBHelper player files automatically. Existing files are kept. Changes apply at the next Kodi session; manual Install players remains available. Disabling does not remove installed files."
+msgstr "Automaticky doplní chybějící soubory playerů TMDBHelperu. Existující soubory zachová. Změna platí od příští relace Kodi; ruční Instalovat playery zůstává dostupné. Vypnutí již instalované soubory neodebere."
+
+msgctxt "#32802"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  AUTO  :  TMDBHELP CZ"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  AUTO  :  TMDBHELP CZ"
+
+msgctxt "#32803"
+msgid "Automatically fill missing Czech TMDBHelper translations. Existing files are kept. Changes apply at the next Kodi session. Disabling does not remove installed files."
+msgstr "Automaticky doplní chybějící české překlady TMDBHelperu. Existující soubory zachová. Změna platí od příští relace Kodi. Vypnutí již instalované soubory neodebere."
+
+msgctxt "#32804"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  AUTO  :  ARCTIC FUSE 3 CZ"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  AUTO  :  ARCTIC FUSE 3 CZ"
+
+msgctxt "#32805"
+msgid "Automatically fill missing Czech Arctic Fuse 3 translations. Existing files are kept. Changes apply at the next Kodi session. Disabling does not remove installed files."
+msgstr "Automaticky doplní chybějící české překlady Arctic Fuse 3. Existující soubory zachová. Změna platí od příští relace Kodi. Vypnutí již instalované soubory neodebere."
+
+msgctxt "#32806"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  AUTO  :  MENU KEYMAP"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  AUTO  :  ZKRATKA MENU"
+
+msgctxt "#32807"
+msgid "Automatically create the missing PLAY.ER menu keymap file on addon startup. Existing files are kept. Disabling does not remove the file or disable shortcuts already configured in Kodi."
+msgstr "Při spuštění addonu automaticky vytvoří chybějící soubor klávesové zkratky menu PLAY.ER. Existující soubor zachová. Vypnutí soubor neodebere ani nevypne zkratky již nastavené v Kodi."
+
+msgctxt "#32808"
+msgid "[B][COLOR orange]○  [/B]ACCOUNT API KEYS  -  SERVICE  :  TRAKT.TV   ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]API KLÍČE ÚČTŮ  -  SLUŽBA  :  TRAKT.TV   ▼ [/COLOR]"
+
+msgctxt "#32809"
+msgid "Shows Trakt.tv account API settings. This switch only expands the menu; it does not disable synchronization."
+msgstr "Zobrazí nastavení API účtu Trakt.tv. Tento přepínač pouze rozbaluje nabídku; nevypíná synchronizaci."
+
+msgctxt "#32810"
+msgid "SELECT LIBRARY SOURCE"
+msgstr "VYBRAT ZDROJ Z KNIHOVNY"
+
+msgctxt "#32811"
+msgid "PREHRAJ.TO premium expires in {days} days."
+msgstr "PREHRAJ.TO premium končí za {days} dnů."

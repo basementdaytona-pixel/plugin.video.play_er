@@ -1,0 +1,18 @@
+{
+    "name": "[TMDBH]--AUTO-PLAY",
+    "plugin": "plugin.video.play_er",
+    "priority": 110,
+
+
+    "is_resolvable": "true",
+
+
+    "assert": {
+        "play_movie": ["tmdb"],
+        "play_episode": ["tmdb", "season", "episode"]
+    },
+
+
+    "play_movie": "plugin://plugin.video.play_er/?action=tmdbh_bridge&tmdb_id={tmdb}&media_type=movie&mode=play",
+    "play_episode": "plugin://plugin.video.play_er/?action=tmdbh_bridge&tmdb_id={tmdb}&media_type=episode&season={season}&episode={episode}&mode=play"
+}

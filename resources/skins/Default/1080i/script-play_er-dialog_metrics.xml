@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<window>
+    <defaultcontrol>2001</defaultcontrol>
+
+    <animation effect="fade" start="0" end="100" time="200">WindowOpen</animation>
+    <animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
+
+    <controls>
+        <control type="group">
+            <centerleft>50%</centerleft>
+            <centertop>50%</centertop>
+            <width>1400</width>
+            <height>900</height>
+
+            <!-- Pozadí dialogu -->
+            <control type="image">
+                <!-- Fade only the panel background; keep content fully opaque. -->
+                <animation effect="fade" start="70" end="70" condition="true">Conditional</animation>
+                <width>100%</width>
+                <height>100%</height>
+                <texture border="30" fallback="common/white.webp">common/dialog.webp</texture>
+                <colordiffuse>$INFO[Window.Property(play_er.Background)]</colordiffuse>
+            </control>
+
+            <!-- Titulek -->
+            <control type="label">
+                <left>50</left>
+                <top>30</top>
+                <width>1300</width>
+                <height>50</height>
+                <font>font_head_bold</font>
+                <textcolor>FFFF9900</textcolor>
+                <align>center</align>
+                <label>○ SYSTÉMOVÁ DIAGNOSTIKA A METRIKY ○</label>
+            </control>
+
+            <control type="image">
+                <left>30</left>
+                <top>85</top>
+                <width>1340</width>
+                <height>2</height>
+                <texture>common/white.webp</texture>
+                <colordiffuse>33FFFFFF</colordiffuse>
+            </control>
+
+            <!-- Seznam metrik -->
+            <control type="list" id="1000">
+                <left>50</left>
+                <top>110</top>
+                <width>1300</width>
+                <height>660</height>
+                <onup>1000</onup>
+                <ondown>2000</ondown>
+                <pagecontrol>60</pagecontrol>
+
+                <itemlayout height="60" width="1300">
+                    <control type="image">
+                        <left>0</left>
+                        <top>0</top>
+                        <width>100%</width>
+                        <height>50</height>
+                        <texture border="20" fallback="common/white.webp">common/selectbox_thin.webp</texture>
+                        <colordiffuse>26FFFFFF</colordiffuse>
+                        <visible>!String.IsEqual(ListItem.Property(IsHeader),true)</visible>
+                    </control>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>800</width>
+                        <height>50</height>
+                        <font>font14</font>
+                        <textcolor>$INFO[Window.Property(play_er.Muted)]</textcolor>
+                        <label>$INFO[ListItem.Label]</label>
+                        <aligny>center</aligny>
+                    </control>
+                    <control type="label">
+                        <right>30</right>
+                        <top>0</top>
+                        <width>450</width>
+                        <height>50</height>
+                        <font>font14</font>
+                        <textcolor>$INFO[Window.Property(play_er.Muted)]</textcolor>
+                        <label>$INFO[ListItem.Property(Value)]</label>
+                        <align>right</align>
+                        <aligny>center</aligny>
+                    </control>
+                </itemlayout>
+
+                <focusedlayout height="60" width="1300">
+                    <control type="image">
+                        <width>100%</width>
+                        <height>50</height>
+                        <texture border="20" fallback="common/white.webp">common/selectbox_thin.webp</texture>
+                        <colordiffuse>FFFF9900</colordiffuse>
+                        <visible>!String.IsEqual(ListItem.Property(IsHeader),true)</visible>
+                    </control>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>800</width>
+                        <height>50</height>
+                        <font>font14</font>
+                        <textcolor>$INFO[Window.Property(play_er.Text)]</textcolor>
+                        <label>$INFO[ListItem.Label]</label>
+                        <aligny>center</aligny>
+                    </control>
+                    <control type="label">
+                        <right>30</right>
+                        <top>0</top>
+                        <width>450</width>
+                        <height>50</height>
+                        <font>font14</font>
+                        <textcolor>$INFO[Window.Property(play_er.Text)]</textcolor>
+                        <label>$INFO[ListItem.Property(Value)]</label>
+                        <align>right</align>
+                        <aligny>center</aligny>
+                    </control>
+                </focusedlayout>
+            </control>
+
+            <!-- Nativní posuvník AF3 -->
+            <control type="scrollbar" id="60">
+                <!-- FIX PRE-EMPTIVE AND FILTERS: explicit focus return and visible scrollbar -->
+                <onleft>1000</onleft><onright>1000</onright>
+                <onup>1000</onup><ondown>1000</ondown>
+                <texturesliderbackground colordiffuse="33FFFFFF">common/white.webp</texturesliderbackground>
+                <texturesliderbar colordiffuse="FF999999">common/scrollv.webp</texturesliderbar>
+                <texturesliderbarfocus colordiffuse="FFFF9900">common/scrollv.webp</texturesliderbarfocus>
+                <left>1360</left>
+                <top>110</top>
+                <width>10</width>
+                <height>660</height>
+                <orientation>vertical</orientation>
+            </control>
+
+            <control type="image">
+                <left>30</left>
+                <top>770</top>
+                <width>1340</width>
+                <height>2</height>
+                <texture>common/white.webp</texture>
+                <colordiffuse>33FFFFFF</colordiffuse>
+            </control>
+
+            <!-- Akční tlačítka ve spodní části -->
+            <control type="grouplist" id="2000">
+                <left>50</left>
+                <top>795</top>
+                <width>1300</width>
+                <height>70</height>
+                <orientation>horizontal</orientation>
+                <align>center</align>
+                <itemgap>30</itemgap>
+                <onup>1000</onup>
+
+                <control type="button" id="2001">
+                    <width>250</width>
+                    <height>60</height>
+                    <label>[  ZAVŘÍT  ]</label>
+                    <font>font_main_bold</font>
+                    <textcolor>$INFO[Window.Property(play_er.Muted)]</textcolor>
+                    <focusedcolor>$INFO[Window.Property(play_er.Text)]</focusedcolor>
+                    <texturefocus border="20" colordiffuse="FFFF9900">common/selectbox_thin.webp</texturefocus>
+                    <texturenofocus border="20" colordiffuse="26FFFFFF">common/selectbox_thin.webp</texturenofocus>
+                    <align>center</align>
+                </control>
+
+                <control type="button" id="2002">
+                    <width>400</width>
+                    <height>60</height>
+                    <label>SBĚR METRIK [ ON/OFF ]</label>
+                    <font>font_main_bold</font>
+                    <textcolor>$INFO[Window.Property(play_er.Muted)]</textcolor>
+                    <focusedcolor>$INFO[Window.Property(play_er.Text)]</focusedcolor>
+                    <texturefocus border="20" colordiffuse="FFFF9900">common/selectbox_thin.webp</texturefocus>
+                    <texturenofocus border="20" colordiffuse="26FFFFFF">common/selectbox_thin.webp</texturenofocus>
+                    <align>center</align>
+                </control>
+
+                <control type="button" id="2003">
+                    <width>350</width>
+                    <height>60</height>
+                    <label>[ EXPORTOVAT ]</label>
+                    <font>font_main_bold</font>
+                    <textcolor>$INFO[Window.Property(play_er.Muted)]</textcolor>
+                    <focusedcolor>$INFO[Window.Property(play_er.Text)]</focusedcolor>
+                    <texturefocus border="20" colordiffuse="FFFF9900">common/selectbox_thin.webp</texturefocus>
+                    <texturenofocus border="20" colordiffuse="26FFFFFF">common/selectbox_thin.webp</texturenofocus>
+                    <align>center</align>
+                </control>
+            </control>
+        </control>
+    </controls>
+</window>

@@ -1,0 +1,3610 @@
+# Kodi Media Center language file
+# Addon Name: PLAY.ER
+# Addon id: plugin.video.play_er
+# Addon Provider: Mau!X ER
+
+msgid ""
+msgstr ""
+
+"Project-Id-Version: plugin.video.play_er\n"
+"Report-Msgid-Bugs-To: griperstone@gmail.com\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Language: en_gb\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+
+# ======================================================================================== #
+# --- ITEMS SETTINGS :: ESTUARY
+# ======================================================================================== #
+
+
+# msgctxt "#30000"
+# msgid "[B][COLOR orange]►  [/COLOR]  SETTINGS[/B]"
+# msgstr ""
+#
+# msgctxt "#30102"
+# msgid "[B][COLOR orange]►  [/COLOR]   AUTOLISTS[/B]"
+# msgstr ""
+#
+# msgctxt "#30121"
+# msgid "[B][COLOR orange]►  [/COLOR]EXPRESSION[/B]"
+# msgstr ""
+#
+# msgctxt "#31035"
+# msgid "[B][COLOR orange]►  [/COLOR] API-SPECIAL[/B]"
+# msgstr ""
+#
+# msgctxt "#31100"
+# msgid "[B][COLOR orange]►  [/COLOR]  API - AI[/B]"
+# msgstr ""
+#
+# msgctxt "#30504"
+# msgid "[B][COLOR orange]►  [/COLOR]  WATCH - IT[/B]"
+# msgstr ""
+#
+# msgctxt "#30157"
+# msgid "[B][COLOR orange]►  [/COLOR]  SYSTEM[/B]"
+# msgstr ""
+#
+# msgctxt "#30198"
+# msgid "[B][COLOR orange]►  [/COLOR]     FILES[/B]"
+# msgstr ""
+#
+# msgctxt "#30217"
+# msgid "[B][COLOR orange]►  [/COLOR]  DATABASE[/B]"
+# msgstr ""
+#
+# msgctxt "#30232"
+# msgid "[B][COLOR orange]►  [/COLOR]  PROVIDERS[/B]"
+# msgstr ""
+#
+# msgctxt "#30253"
+# msgid "[B][COLOR orange]►  [/COLOR]  INTEGRATION[/B]"
+# msgstr ""
+#
+# msgctxt "#30701"
+# msgid "[B][COLOR orange]►  [/COLOR]  ADDON-UI[/B]"
+# msgstr ""
+#
+# msgctxt "#30267"
+# msgid "[B][COLOR orange]►  [/COLOR]  VIEW MODE[/B]"
+# msgstr ""
+
+
+# ======================================================================================== #
+# --- ITEMS SETTINGS :: FUSE 3
+# ======================================================================================== #
+
+
+msgctxt "#30000"
+msgid "[COLOR orange]►[/COLOR] SETTINGS"
+msgstr ""
+
+msgctxt "#30102"
+msgid "[COLOR orange]►[/COLOR] AUTOLISTS"
+msgstr ""
+
+msgctxt "#30121"
+msgid "[COLOR orange]►[/COLOR] EXPRESSION"
+msgstr ""
+
+msgctxt "#31035"
+msgid "[COLOR orange]►[/COLOR] STREAMING"
+msgstr ""
+
+msgctxt "#31100"
+msgid "[COLOR orange]►[/COLOR] INTELLIGENCE"
+msgstr ""
+
+msgctxt "#30504"
+msgid "[COLOR orange]►[/COLOR] WATCH-IT"
+msgstr ""
+
+msgctxt "#30157"
+msgid "[COLOR orange]►[/COLOR] SYSTEM"
+msgstr ""
+
+msgctxt "#30198"
+msgid "[COLOR orange]►[/COLOR] FILES"
+msgstr ""
+
+msgctxt "#30217"
+msgid "[COLOR orange]►[/COLOR] DATABASE"
+msgstr ""
+
+msgctxt "#30232"
+msgid "[COLOR orange]►[/COLOR] PROVIDERS"
+msgstr ""
+
+msgctxt "#30253"
+msgid "[COLOR orange]►[/COLOR] INTEGRATION"
+msgstr ""
+
+msgctxt "#30701"
+msgid "[COLOR orange]►[/COLOR] ADDON-UI"
+msgstr ""
+
+msgctxt "#30267"
+msgid "[COLOR orange]►[/COLOR] VIEW MODE"
+msgstr ""
+
+
+# ======================================================================================== #
+# --- ITEMS SETTINGS :: GREEN
+# ======================================================================================== #
+
+
+msgctxt "#30507"
+msgid "[COLOR limegreen][    AUTOLIST GENERATOR  -  PREFERENCES FOR  :  CONTINUED    ][/COLOR]"
+msgstr ""
+
+msgctxt "#30972"
+msgid "[COLOR limegreen][    SPECIAL API FUNCTIONS AND SEARCH FILTERS  -  NETWORK SETUP    ][/COLOR]"
+msgstr ""
+
+msgctxt "#30702"
+msgid "[COLOR limegreen][    MENU  -  RENAME MAIN ITEMS    ][/COLOR]"
+msgstr ""
+
+msgctxt "#30533"
+msgid "[COLOR limegreen][    WATCH IT !  -  CATEGORY OPTIONS  :  RANDOMIZED    ][/COLOR]"
+msgstr ""
+
+msgctxt "#30119"
+msgid "[COLOR limegreen][    AUTOLIST GENERATOR  -  PREFERENCES FOR  :  LIBRARY    ][/COLOR]"
+msgstr ""
+
+msgctxt "#30184"
+msgid "[COLOR limegreen][    GLOBAL SETTINGS  -  DISPLAY CONTROL    ][/COLOR]"
+msgstr ""
+
+msgctxt "#30233"
+msgid "[COLOR limegreen][    PROVIDER SELECTION AND ACCOUNT LOGIN    ][/COLOR]"
+msgstr ""
+
+msgctxt "#30759"
+msgid "[COLOR limegreen][    MENU  -  SHOW / HIDE MENU ITEMS    ][/COLOR]"
+msgstr ""
+
+msgctxt "#30158"
+msgid "[COLOR limegreen][    CACHE  -  API REQUESTS    ][/COLOR]"
+msgstr ""
+
+msgctxt "#30732"
+msgid "[COLOR limegreen][    MENU  -  ITEM ORDER SETTINGS    ][/COLOR]"
+msgstr ""
+
+msgctxt "#31101"
+msgid "[COLOR limegreen][    AI INTELLIGENCE API SEARCH FILTERS  -  KEYS SETUP    ][/COLOR]"
+msgstr ""
+
+msgctxt "#30212"
+msgid "[COLOR limegreen][    LOCATION  -  PATHS FOR WORK FILES    ][/COLOR]"
+msgstr ""
+
+msgctxt "#30505"
+msgid "[COLOR limegreen][    WATCH IT !  -  OPTIONS FOR   :  MOVIES    ][/COLOR]"
+msgstr ""
+
+msgctxt "#30001"
+msgid "[COLOR limegreen][    BASIC SETTINGS AND DISPLAY LIMITS    ][/COLOR]"
+msgstr ""
+
+msgctxt "#30254"
+msgid "[COLOR limegreen][    NOTIFICATIONS AND EXTERNAL SERVICE LINKING    ][/COLOR]"
+msgstr ""
+
+msgctxt "#30500"
+msgid "[COLOR limegreen][    TRAKT.TV SOCIAL  -  SETTINGS AND LIST LIMITS    ][/COLOR]"
+msgstr ""
+
+msgctxt "#30174"
+msgid "[COLOR limegreen][    GLOBAL SETTINGS  -  NOTIFY CONTROL    ][/COLOR]"
+msgstr ""
+
+msgctxt "#30114"
+msgid "[COLOR limegreen][    AUTOLIST GENERATOR  -  PREFERENCES FOR  :  TV SHOWS    ][/COLOR]"
+msgstr ""
+
+msgctxt "#30268"
+msgid "[COLOR limegreen][    WINDOW APPEARANCE SETTINGS  -  MENU    ][/COLOR]"
+msgstr ""
+
+msgctxt "#30103"
+msgid "[COLOR limegreen][    AUTOLIST GENERATOR  -  PREFERENCES FOR  :  MOVIES    ][/COLOR]"
+msgstr ""
+
+msgctxt "#30260"
+msgid "[COLOR limegreen][    BACKING UP FILES  -  SETTINGS AND DATABASES    ][/COLOR]"
+msgstr ""
+
+msgctxt "#30126"
+msgid "[COLOR limegreen][    GLOBAL EXPRESSION  -  SEARCH FILTERS    ][/COLOR]"
+msgstr ""
+
+msgctxt "#30900"
+msgid "[COLOR limegreen][    SHARING CONTENT VIA COMMUNITY SERVER    ][/COLOR]"
+msgstr ""
+
+msgctxt "#30502"
+msgid "[COLOR limegreen][    LOCATION  -  TTL SETTINGS FOR CACHE    ][/COLOR]"
+msgstr ""
+
+msgctxt "#30218"
+msgid "[COLOR limegreen][    SQLITE SETTINGS  -  DATABASE CACHING    ][/COLOR]"
+msgstr ""
+
+msgctxt "#30141"
+msgid "[COLOR limegreen][    DISPLAY  -  MAIN MENU  AND  MEDIA ATTRIBUTES    ][/COLOR]"
+msgstr ""
+
+msgctxt "#30506"
+msgid "[COLOR limegreen][    WATCH IT !  -  OPTIONS FOR  :  TV-SHOWS    ][/COLOR]"
+msgstr ""
+
+msgctxt "#32510"
+msgid "[COLOR limegreen][    WATCH IT !  -  OPTIONS FOR   :  SIMILAR    ][/COLOR]"
+msgstr ""
+
+
+# ======================================================================================== #
+# --- ITEMS SETTINGS :: ORANGE :: ○
+# ======================================================================================== #
+
+
+msgctxt "#32511"
+msgid "[B][COLOR orange]○  [/B]ACCOUNT API KEYS  -  SERVICE  :  TRAKT.TV   ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#30247"
+msgid "[B][COLOR orange]○  [/B]ACCOUNT API KEYS  -  SERVICE  :  TMDB   ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#32512"
+msgid "[B][COLOR orange]○  [/B]ACCOUNT API KEYS  -  SERVICE  :  STREMIO   ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#30083"
+msgid "[B][COLOR orange]○  [/B]ADVANCED OPTIONS  -  MAIN FUNCTIONS   ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#30089"
+msgid "[B][COLOR orange]○  [/B]ADVANCED OPTIONS  -  SOCIAL FEED        ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#30501"
+msgid "[B][COLOR orange]○  [/B]ADVANCED OPTIONS  -  TRAKT.TV OPTIONS   ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#30794"
+msgid "[B][COLOR orange]○  [/B]AUTOLIST  -  CONTINUED FILTER    ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#31036"
+msgid "[B][COLOR orange]○  [/B]AUTOLIST  -  ENABLE FOR CONTINUED   ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#30104"
+msgid "[B][COLOR orange]○  [/B]AUTOLIST  -  ENABLE FOR MOVIES   ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#30115"
+msgid "[B][COLOR orange]○  [/B]AUTOLIST  -  ENABLE FOR TV SHOWS   ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#30120"
+msgid "[B][COLOR orange]○  [/B]AUTOLIST  -  ENABLE LIBRARY       ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#30133"
+msgid "[B][COLOR orange]○  [/B]AUTOLIST  -  FILTERS FOR MOVIES   ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#30136"
+msgid "[B][COLOR orange]○  [/B]AUTOLIST  -  FILTERS FOR TV SHOWS  ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#30137"
+msgid "[B][COLOR orange]○  [/B]AUTOLIST  -  LIBRARY FILTERS    ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#30790"
+msgid "[B][COLOR orange]○  [/B]AUTOLIST  -  SOURCES FOR CONTINUED     ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#30108"
+msgid "[B][COLOR orange]○  [/B]AUTOLIST  -  SOURCES FOR MOVIES     ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#30118"
+msgid "[B][COLOR orange]○  [/B]AUTOLIST  -  SOURCES FOR TV SHOWS     ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#30850"
+msgid "[B][COLOR orange]○  [/B]COMMUNITY SERVER  -  SHARING CONTENT      ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#30124"
+msgid "[B][COLOR orange]○  [/B]CREDITS  -  SKIP ENABLED     ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#30503"
+msgid "[B][COLOR orange]○  [/B]DATABASE TYPE  -  MYSQL | SQLITE   ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#30142"
+msgid "[B][COLOR orange]○  [/B]DISPLAY  -  MEDIA OPTIONS      ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#30300"
+msgid "[B][COLOR orange]○  [/B]DISPLAY  -  MOVIES     ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#30269"
+msgid "[B][COLOR orange]○  [/B]DISPLAY  -  TITLE     ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#30303"
+msgid "[B][COLOR orange]○  [/B]DISPLAY  -  TV SHOWS   ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#30002"
+msgid "[B][COLOR orange]○  [/B]DISPLAY LIMITS  -  SEARCHING    ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#30060"
+msgid "[B][COLOR orange]○  [/B]DISPLAY LIMITS  -  SETTINGS       ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#31080"
+msgid "[B][COLOR orange]○  [/B]INTELIGENCE AI  -  PROVIDER API        ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#30199"
+msgid "[B][COLOR orange]○  [/B]LOCATION  -  CACHE DIRECTORY   ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#30240"
+msgid "[B][COLOR orange]○  [/B]LOGIN CREDENTIALS  -  PREHRAJ.TO       ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#30243"
+msgid "[B][COLOR orange]○  [/B]LOGIN CREDENTIALS  -  WEBSHARE.CZ   ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#30145"
+msgid "[B][COLOR orange]○  [/B]MAIN MENU  -  ENABLE DISPLAY    ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#30123"
+msgid "[B][COLOR orange]○  [/B]PRE  -  EMPTIVE PRELOADING     ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#30234"
+msgid "[B][COLOR orange]○  [/B]SERVER SELECTION  -  PROVIDER OPTIONS     ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#30261"
+msgid "[B][COLOR orange]○  [/B]TELEGRAM BACKUP  -  FOLDERS   ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#30255"
+msgid "[B][COLOR orange]○  [/B]TELEGRAM NOTIFICATIONS  -  NEW EPISODES      ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#32050"
+msgid "[B][COLOR orange]○  [/B]API  -  STREAMING MODE   ▼ [/COLOR]"
+msgstr ""
+
+msgctxt "#32503"
+msgid "[B][COLOR orange]○  [/B]NETWORK  -  AUTO-DOWNGRADE QUALITY   ▼ [/COLOR]"
+msgstr ""
+
+
+# ======================================================================================== #
+# --- ITEMS SETTINGS :: ORANGE :: ►
+# ======================================================================================== #
+
+
+msgctxt "#31090"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   AI DAILY MIX"
+msgstr ""
+
+msgctxt "#31091"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   AI MOOD"
+msgstr ""
+
+msgctxt "#31053"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   AI RECOMMEND"
+msgstr ""
+
+msgctxt "#31089"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   AI RECOMMEND"
+msgstr ""
+
+msgctxt "#30713"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   CONTINUE"
+msgstr ""
+
+msgctxt "#30719"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   CSFD LISTS"
+msgstr ""
+
+msgctxt "#30718"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   CSFD TOPS"
+msgstr ""
+
+msgctxt "#30729"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   EPISODES"
+msgstr ""
+
+msgctxt "#31050"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   GEMINI AI"
+msgstr ""
+
+msgctxt "#30722"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   HISTORY"
+msgstr ""
+
+msgctxt "#30724"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   LAUNCHER"
+msgstr ""
+
+msgctxt "#30707"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   LIBRARY"
+msgstr ""
+
+msgctxt "#30723"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   MANAGER"
+msgstr ""
+
+msgctxt "#30714"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   MOVIES"
+msgstr ""
+
+msgctxt "#30706"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   PLAYBACK"
+msgstr ""
+
+msgctxt "#30726"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   PROVIDERS"
+msgstr ""
+
+msgctxt "#30712"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   RANDOMIZED"
+msgstr ""
+
+msgctxt "#30727"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   REGISTRATION"
+msgstr ""
+
+msgctxt "#30705"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   SEARCH"
+msgstr ""
+
+msgctxt "#30728"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   SETTINGS"
+msgstr ""
+
+msgctxt "#30725"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   SPEEDTEST"
+msgstr ""
+
+msgctxt "#30731"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   TAGS"
+msgstr ""
+
+msgctxt "#30717"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   TMDB EXTRA"
+msgstr ""
+
+msgctxt "#30716"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   TMDB USER"
+msgstr ""
+
+msgctxt "#30720"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   TRAKT.TV"
+msgstr ""
+
+msgctxt "#30715"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   TV SHOWS"
+msgstr ""
+
+msgctxt "#30730"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   WATCH LATER"
+msgstr ""
+
+msgctxt "#30710"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   WATCH LATER MOVIES"
+msgstr ""
+
+msgctxt "#30711"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   WATCH LATER SHOWS"
+msgstr ""
+
+msgctxt "#30708"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   WATCH MOVIES"
+msgstr ""
+
+msgctxt "#30709"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   WATCH SHOWS"
+msgstr ""
+
+msgctxt "#30721"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   WATCHED"
+msgstr ""
+
+msgctxt "#30270"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  [   MAIN MENU   ]"
+msgstr ""
+
+msgctxt "#30239"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  [B]PROVIDER  :  DEFAULT[/B]"
+msgstr ""
+
+msgctxt "#30235"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  [B]PROVIDER  :  MULTI-SEARCH[/B]"
+msgstr ""
+
+msgctxt "#30236"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  [B]PROVIDER  :  PREFERRED[/B]"
+msgstr ""
+
+msgctxt "#31044"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  AI  :  MAX RESULTS"
+msgstr ""
+
+msgctxt "#31095"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  AI  :  PROMPT"
+msgstr ""
+
+msgctxt "#31070"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  AI  :  SOURCE  [ 1 ]"
+msgstr ""
+
+msgctxt "#31078"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  AI  :  SOURCE  [ 2 ]"
+msgstr ""
+
+msgctxt "#31068"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  AI  :  TEMPERATURE"
+msgstr ""
+
+msgctxt "#30169"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  AIR-TIME  :  TMDB EPISODES  [ DAYS ]"
+msgstr ""
+
+msgctxt "#30970"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  API  :  FORCE AUTO-SUBTITLES"
+msgstr ""
+
+msgctxt "#30802"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  API  :  MARK MULTI-STREAM"
+msgstr ""
+
+msgctxt "#30159"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  API  :  SEARCH LANGUAGE  [ TMDB ]"
+msgstr ""
+
+msgctxt "#30164"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  API  :  SEARCH LANGUAGE  [ TRAKT ]"
+msgstr ""
+
+msgctxt "#30262"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  BACKUP  :  FOLDER #1"
+msgstr ""
+
+msgctxt "#30263"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  BACKUP  :  FOLDER #2"
+msgstr ""
+
+msgctxt "#30264"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  BACKUP  :  FOLDER #3"
+msgstr ""
+
+msgctxt "#30265"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  BACKUP  :  FOLDER #4"
+msgstr ""
+
+msgctxt "#30266"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  BACKUP  :  FOLDER #5"
+msgstr ""
+
+msgctxt "#30227"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MYSQL  :  DATABASE"
+msgstr ""
+
+msgctxt "#30106"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  DEFAULT STATE FOR MOVIES"
+msgstr ""
+
+msgctxt "#30116"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  DEFAULT STATE FOR TV SHOWS"
+msgstr ""
+
+msgctxt "#30182"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  DISABLE  :  NOTIFY  [ EPISODES ]"
+msgstr ""
+
+msgctxt "#30178"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  DISABLE  :  NOTIFY  [ ERROR ]"
+msgstr ""
+
+msgctxt "#30177"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  DISABLE  :  NOTIFY  [ INFO ]"
+msgstr ""
+
+msgctxt "#30179"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  DISABLE  :  NOTIFY  [ LOG-IN ]"
+msgstr ""
+
+msgctxt "#30176"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  DISABLE  :  NOTIFY  [ OK ]"
+msgstr ""
+
+msgctxt "#30692"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  DISABLE  :  NOTIFY  [ PREMIUM ]"
+msgstr ""
+
+msgctxt "#30942"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  EMPTIVE  :  THROTTLE  ( SECONDS )"
+msgstr ""
+
+msgctxt "#31060"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  ENABLE  :  AUTO-REPAIR PATCH"
+msgstr ""
+
+msgctxt "#30167"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  ENABLE  :  CACHE FOR WATCHED"
+msgstr ""
+
+msgctxt "#30084"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  ENABLE  :  EXPRESSION FILTERS"
+msgstr ""
+
+msgctxt "#30088"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  ENABLE  :  VIEW MODE FUNCTIONS"
+msgstr ""
+
+msgctxt "#30093"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  FEED  :  FEED LIMIT ITEMS"
+msgstr ""
+
+msgctxt "#30090"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  FEED  :  FOLLOW USER #1"
+msgstr ""
+
+msgctxt "#30091"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  FEED  :  FOLLOW USER #2"
+msgstr ""
+
+msgctxt "#30092"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  FEED  :  FOLLOW USER #3"
+msgstr ""
+
+msgctxt "#31042"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  GEMINI  :  API KEY"
+msgstr ""
+
+msgctxt "#31062"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  GEMINI  :  MODEL"
+msgstr ""
+
+msgctxt "#30190"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  GLOBAL  :  DISPLAY [ HISTORY ]"
+msgstr ""
+
+msgctxt "#30188"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  GLOBAL  :  DISPLAY [ LIBRARY ]"
+msgstr ""
+
+msgctxt "#30189"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  GLOBAL  :  DISPLAY [ MANAGER ]"
+msgstr ""
+
+msgctxt "#30186"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  GLOBAL  :  DISPLAY [ SEARCH ]"
+msgstr ""
+
+msgctxt "#30191"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  GLOBAL  :  DISPLAY [ TALK-SHOW ]"
+msgstr ""
+
+msgctxt "#30185"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  GLOBAL  :  DISPLAY [ TMDB ]"
+msgstr ""
+
+msgctxt "#30192"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  GLOBAL  :  DISPLAY [ VIETCONG ]"
+msgstr ""
+
+msgctxt "#30187"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  GLOBAL  :  DISPLAY [ WATCHED ]"
+msgstr ""
+
+msgctxt "#30197"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  GLOBAL  :  IP SECURITY BYPASS"
+msgstr ""
+
+msgctxt "#30297"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  HISTORY  :  PLAYBACK"
+msgstr ""
+
+msgctxt "#30225"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MYSQL  :  IP ADDRESS"
+msgstr ""
+
+msgctxt "#30226"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MYSQL  :  IP PORT"
+msgstr ""
+
+msgctxt "#30299"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  ITEM  :  CSFD TIPS"
+msgstr ""
+
+msgctxt "#30298"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  ITEM  :  WATCHED"
+msgstr ""
+
+msgctxt "#30213"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  LOCATION  :  DOWNLOADS"
+msgstr ""
+
+msgctxt "#30216"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  LOCATION  :  HISTORY"
+msgstr ""
+
+msgctxt "#30214"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  LOCATION  :  LIBRARY"
+msgstr ""
+
+msgctxt "#30196"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  LOGGING   :  DISPLAY [ LOG-LEVEL ]"
+msgstr ""
+
+msgctxt "#30950"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  LOGGING   :  ENABLE [ METRICS ]"
+msgstr ""
+
+msgctxt "#30143"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MEDIA  :  FILE SIZE"
+msgstr ""
+
+msgctxt "#30144"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MEDIA  :  VIDEO DURATION"
+msgstr ""
+
+msgctxt "#30147"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  HISTORY"
+msgstr ""
+
+msgctxt "#30471"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  LATER MOVIE"
+msgstr ""
+
+msgctxt "#30472"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  LATER SHOW"
+msgstr ""
+
+msgctxt "#30153"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  LAUNCHER"
+msgstr ""
+
+msgctxt "#30154"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  LIBRARY"
+msgstr ""
+
+msgctxt "#30151"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  MANAGER"
+msgstr ""
+
+msgctxt "#30150"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  PROVIDER"
+msgstr ""
+
+msgctxt "#30156"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  RANDOMIZED"
+msgstr ""
+
+msgctxt "#30155"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  REGISTRATION"
+msgstr ""
+
+msgctxt "#30148"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  SETTINGS"
+msgstr ""
+
+msgctxt "#30149"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  SPEEDTEST"
+msgstr ""
+
+msgctxt "#30152"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  TRAKT.TV"
+msgstr ""
+
+msgctxt "#30473"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  WATCH LATER LIST"
+msgstr ""
+
+msgctxt "#30454"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  WATCH-MOVIE"
+msgstr ""
+
+msgctxt "#30450"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  WATCH-SHOW"
+msgstr ""
+
+msgctxt "#30146"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MENU  :  WATCHED"
+msgstr ""
+
+msgctxt "#30301"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MOVIES  :  [  MAIN LISTS  ]"
+msgstr ""
+
+msgctxt "#30302"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MOVIES  :  SUBMENU  ( GENRES, YEARS )"
+msgstr ""
+
+msgctxt "#30117"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  NUMBER OF EPISODES IN PLAYLIST"
+msgstr ""
+
+msgctxt "#30788"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  NUMBER OF EPISODES IN PLAYLIST"
+msgstr ""
+
+msgctxt "#30107"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  NUMBER OF MOVIES IN PLAYLIST"
+msgstr ""
+
+msgctxt "#31081"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  OPENROUTER  :  API KEY"
+msgstr ""
+
+msgctxt "#31082"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  OPENROUTER  :  MODEL ID"
+msgstr ""
+
+msgctxt "#30229"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MYSQL  :  PASSWORD"
+msgstr ""
+
+msgctxt "#30064"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  PLAYBACK  :  HISTORY ITEMS"
+msgstr ""
+
+msgctxt "#30231"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MYSQL  :  POOL SIZE  ( THREADS )"
+msgstr ""
+
+msgctxt "#30241"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  PREHRAJ.TO  :  E-MAIL"
+msgstr ""
+
+msgctxt "#30242"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  PREHRAJ.TO  :  PASSWORD"
+msgstr ""
+
+msgctxt "#32620"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  PREHRAJ.TO  :  TTL"
+msgstr ""
+
+msgctxt "#30062"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  PREHRAJTO  :  PAGE COUNT"
+msgstr ""
+
+msgctxt "#30206"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  RAM  :  MEMORY [ ITEMS ]"
+msgstr ""
+
+msgctxt "#30205"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  RAM  :  MEMORY TTL [ HOURS ]"
+msgstr ""
+
+msgctxt "#30516"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  RANDOMIZED  :  CONTENT TYPE"
+msgstr ""
+
+msgctxt "#30515"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  RANDOMIZED  :  ENABLED"
+msgstr ""
+
+msgctxt "#30520"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  RANDOMIZED  :  EXCLUDE SEEN"
+msgstr ""
+
+msgctxt "#30518"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  RANDOMIZED  :  MAX ATTEMPTS"
+msgstr ""
+
+msgctxt "#30522"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  RANDOMIZED  :  REQUIRE DABING"
+msgstr ""
+
+msgctxt "#30523"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  RANDOMIZED  :  REQUIRE QUALITY"
+msgstr ""
+
+msgctxt "#30521"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  RANDOMIZED  :  SOURCE STRATEGY"
+msgstr ""
+
+msgctxt "#30519"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  RANDOMIZED  :  TRENDING PAGES"
+msgstr ""
+
+msgctxt "#30517"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  RANDOMIZED  :  TRENDING WINDOW"
+msgstr ""
+
+msgctxt "#30296"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SEARCH  :  HISTORY"
+msgstr ""
+
+msgctxt "#30047"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SEARCH  :  MANAGER TIMEOUT"
+msgstr ""
+
+msgctxt "#30004"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SEARCH  :  PAGE COUNT"
+msgstr ""
+
+msgctxt "#30295"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SEARCH  :  RESULTS"
+msgstr ""
+
+msgctxt "#30016"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SEARCH  :  RESULTS LIMIT"
+msgstr ""
+
+msgctxt "#30040"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SEARCH  :  WEBSHARE CATEGORY"
+msgstr ""
+
+msgctxt "#30031"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SEARCH  :  WEBSHARE LIMIT"
+msgstr ""
+
+msgctxt "#30033"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SEARCH  :  WEBSHARE SORTING"
+msgstr ""
+
+msgctxt "#30113"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SELECT RESULT POSITION"
+msgstr ""
+
+msgctxt "#30934"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SHARING  :  API KEY"
+msgstr ""
+
+msgctxt "#30860"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SHARING  :  HISTORY SIZE"
+msgstr ""
+
+msgctxt "#30936"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SHARING  :  TELEGRAM MASTER DEVICE"
+msgstr ""
+
+msgctxt "#30862"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SHARING  :  NOTIFY SOUND"
+msgstr ""
+
+msgctxt "#30932"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SHARING  :  SERVER API URL"
+msgstr ""
+
+msgctxt "#30960"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SHARING  :  SERVER CHECK INTERVAL"
+msgstr ""
+
+msgctxt "#31030"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SIMILAR  :  CONTENT SOURCE"
+msgstr ""
+
+msgctxt "#31010"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SIMILAR  :  MAX ITEM LIMIT"
+msgstr ""
+
+msgctxt "#31020"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SIMILAR  :  MINIMUM RATING"
+msgstr ""
+
+msgctxt "#30914"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SKIP CREDITS  :  DEFAULT ACTION"
+msgstr ""
+
+msgctxt "#30910"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SKIP CREDITS  :  TRIGGER TIME"
+msgstr ""
+
+msgctxt "#30940"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SKIP CREDITS  :  WHEN PLAYLIST PRESENT"
+msgstr ""
+
+msgctxt "#30125"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SORTING  :  SIZE"
+msgstr ""
+
+msgctxt "#30223"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SQLITE  :  CACHE LOCATION"
+msgstr ""
+
+msgctxt "#30918"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  STREMIO  :  CATALOGS"
+msgstr ""
+
+msgctxt "#30259"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TELEGRAM  :  BOT TOKEN"
+msgstr ""
+
+msgctxt "#30258"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TELEGRAM  :  CHAT ID"
+msgstr ""
+
+msgctxt "#30256"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TELEGRAM  :  NEW EPISODES"
+msgstr ""
+
+msgctxt "#30230"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MYSQL  :  TIMEOUT  ( SECONDS )"
+msgstr ""
+
+msgctxt "#30168"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TIMEOUT  :  NEW EPISODES  [ HOURS ]"
+msgstr ""
+
+msgctxt "#30248"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TMDB  :  API KEY"
+msgstr ""
+
+msgctxt "#30251"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TRAKT.TV  :  ACCESS TOKEN"
+msgstr ""
+
+msgctxt "#30249"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TRAKT.TV  :  CLIENT ID"
+msgstr ""
+
+msgctxt "#30250"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TRAKT.TV  :  CLIENT SECRET"
+msgstr ""
+
+msgctxt "#30101"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TRAKT.TV  :  CONTEXT MENU"
+msgstr ""
+
+msgctxt "#30100"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TRAKT.TV  :  EXTENDED INFO"
+msgstr ""
+
+msgctxt "#30099"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TRAKT.TV  :  PLAYBACK TIME"
+msgstr ""
+
+msgctxt "#30252"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TRAKT.TV  :  REFRESH TOKEN"
+msgstr ""
+
+msgctxt "#32513"
+msgid "[B][COLOR orange]    ►  [/COLOR]  TRAKT.TV  :  ACCOUNT LOGIN[/B]"
+msgstr ""
+
+msgctxt "#30086"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TRAKT.TV  :  SCROBBLING"
+msgstr ""
+
+msgctxt "#30098"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TRAKT.TV  :  SEARCH IN CZECH"
+msgstr ""
+
+msgctxt "#30097"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TRAKT.TV  :  TRAKT.TV LIMITS"
+msgstr ""
+
+msgctxt "#30201"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TTL  :  CSFD.CZ  [ HOURS ]"
+msgstr ""
+
+msgctxt "#30202"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TTL  :  TMDB.ORG  [ HOURS ]"
+msgstr ""
+
+msgctxt "#30203"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TTL  :  TRAKT.TV  [ HOURS ]"
+msgstr ""
+
+msgctxt "#30200"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TTL  :  USER DATA  [ DAYS ]"
+msgstr ""
+
+msgctxt "#30204"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TTL  :  WATCHED  [ HOURS ]"
+msgstr ""
+
+msgctxt "#30304"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TV SHOWS  :  [  MAIN LISTS  ]"
+msgstr ""
+
+msgctxt "#30307"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TV SHOWS  :  EPISODES"
+msgstr ""
+
+msgctxt "#30306"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TV SHOWS  :  SEASONS"
+msgstr ""
+
+msgctxt "#30305"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TV SHOWS  :  SUBMENU  ( GENRES, YEARS )"
+msgstr ""
+
+msgctxt "#30109"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  USE SELECTION METHOD"
+msgstr ""
+
+msgctxt "#30228"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  MYSQL  :  USER"
+msgstr ""
+
+msgctxt "#30452"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  WATCH-MOVIE  :  MAX RECOMMENDATIONS"
+msgstr ""
+
+msgctxt "#30451"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  WATCH-MOVIE  :  SEED LIMIT"
+msgstr ""
+
+msgctxt "#30453"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  WATCH-MOVIE  :  SKIP WATCHED"
+msgstr ""
+
+msgctxt "#30456"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  WATCH-SHOW  :  MAX RECOMMENDATIONS"
+msgstr ""
+
+msgctxt "#30455"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  WATCH-SHOW  :  SEED LIMIT"
+msgstr ""
+
+msgctxt "#30457"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  WATCH-SHOW  :  SKIP WATCHED"
+msgstr ""
+
+
+msgctxt "#30078"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  WATCHED  :  TIME RANGE"
+msgstr ""
+
+msgctxt "#30245"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  WEBSHARE.CZ  :  PASSWORD"
+msgstr ""
+
+msgctxt "#30246"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  WEBSHARE.CZ  :  TOKEN"
+msgstr ""
+
+msgctxt "#30244"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  WEBSHARE.CZ  :  USERNAME"
+msgstr ""
+
+msgctxt "#30912"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SKIP CREDITS  :  AUTO-CLOSE"
+msgstr ""
+
+msgctxt "#32000"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  API CALL  :  STREAM SHORTING"
+msgstr ""
+
+msgctxt "#32004"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  API CALL  :  QUALITY LIMIT"
+msgstr ""
+
+msgctxt "#32010"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SORTING  :  CZE DUBBING"
+msgstr ""
+
+msgctxt "#32054"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  API  :  PREFERRED QUALITY"
+msgstr ""
+
+msgctxt "#32062"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SORTING  :  LIKES  [ ANTI-FAKE ]"
+msgstr ""
+
+msgctxt "#32501"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  NETWORK  :  MAX BANDWIDTH  [ Mbps ]"
+msgstr ""
+
+msgctxt "#32505"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  NETWORK  :  BUFFERING TOLERANCE"
+msgstr ""
+
+msgctxt "#32507"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  [B]PREHRAJ.TO  :  AUTO-REGISTRATION[/B]"
+msgstr ""
+
+msgctxt "#30127"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B][COLOR green]  INCLUDE[/COLOR]  :  AUTO-LIST"
+msgstr ""
+
+msgctxt "#30134"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B][COLOR green]  INCLUDE[/COLOR]  :  AUTO-LIST"
+msgstr ""
+
+msgctxt "#30138"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B][COLOR green]  INCLUDE[/COLOR]  :  AUTO-LIST"
+msgstr ""
+
+msgctxt "#30129"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B][COLOR green]  INCLUDE[/COLOR]  :  FORMAT"
+msgstr ""
+
+msgctxt "#30128"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B][COLOR green]  INCLUDE[/COLOR]  :  LANGUAGES"
+msgstr ""
+
+msgctxt "#30130"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B][COLOR red]  EXCLUDE[/COLOR]  :  AUTO-LIST"
+msgstr ""
+
+msgctxt "#30135"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B][COLOR red]  EXCLUDE[/COLOR]  :  AUTO-LIST"
+msgstr ""
+
+msgctxt "#30139"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B][COLOR red]  EXCLUDE[/COLOR]  :  AUTO-LIST"
+msgstr ""
+
+msgctxt "#30132"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B][COLOR red]  EXCLUDE[/COLOR]  :  FORMAT"
+msgstr ""
+
+msgctxt "#30131"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B][COLOR red]  EXCLUDE[/COLOR]  :  LANGUAGES"
+msgstr ""
+
+
+# ======================================================================================== #
+# --- ITEMS SETTINGS :: ORANGE :: ▼
+# ======================================================================================== #
+
+
+msgctxt "#31093"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   AI DAILY MIX"
+msgstr ""
+
+msgctxt "#31094"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   AI MOOD"
+msgstr ""
+
+msgctxt "#31054"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   AI RECOMMEND"
+msgstr ""
+
+msgctxt "#31092"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   AI RECOMMEND"
+msgstr ""
+
+msgctxt "#30784"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   CONTINUE"
+msgstr ""
+
+msgctxt "#30783"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   CSFD LIST'S"
+msgstr ""
+
+msgctxt "#30782"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   CSFD TOP'S"
+msgstr ""
+
+msgctxt "#30920"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   STREMIO DUBBING"
+msgstr ""
+
+msgctxt "#30921"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   STREMIO CHARTS"
+msgstr ""
+
+msgctxt "#30785"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   EPISODES"
+msgstr ""
+
+msgctxt "#31051"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   GEMINI AI"
+msgstr ""
+
+msgctxt "#30761"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   HISTORY"
+msgstr ""
+
+msgctxt "#30772"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   LATER MOVIE"
+msgstr ""
+
+msgctxt "#30773"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   LATER SHOW"
+msgstr ""
+
+msgctxt "#30767"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   LAUNCHER"
+msgstr ""
+
+msgctxt "#30768"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   LIBRARY"
+msgstr ""
+
+msgctxt "#30765"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   MANAGER"
+msgstr ""
+
+msgctxt "#30778"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   MOVIES"
+msgstr ""
+
+msgctxt "#30764"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   PROVIDERS"
+msgstr ""
+
+msgctxt "#30775"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   RANDOMIZED"
+msgstr ""
+
+msgctxt "#30769"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   REGISTRATION"
+msgstr ""
+
+msgctxt "#30777"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   SEARCH"
+msgstr ""
+
+msgctxt "#30779"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   SERIES"
+msgstr ""
+
+msgctxt "#30762"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   SETTINGS"
+msgstr ""
+
+msgctxt "#30763"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   SPEEDTEST"
+msgstr ""
+
+msgctxt "#30776"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   TAGS"
+msgstr ""
+
+msgctxt "#30780"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   TMDB USER"
+msgstr ""
+
+msgctxt "#30781"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   TMDB XTRA"
+msgstr ""
+
+msgctxt "#30766"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   TRAKT.TV"
+msgstr ""
+
+msgctxt "#30922"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   STREMIO STUDIOS"
+msgstr ""
+
+msgctxt "#30923"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   STREMIO SERVICES"
+msgstr ""
+
+msgctxt "#30944"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   STREMIO SEARCH"
+msgstr ""
+
+msgctxt "#30949"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   STREMIO CSFD"
+msgstr ""
+
+msgctxt "#30954"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   STREMIO IMDB"
+msgstr ""
+
+msgctxt "#30774"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   WATCH LATER"
+msgstr ""
+
+msgctxt "#30770"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   WATCH MOVIE"
+msgstr ""
+
+msgctxt "#30771"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   WATCH SHOW"
+msgstr ""
+
+msgctxt "#30760"
+msgid "[B][COLOR orange]    ▼  [/COLOR][/B]  SHOW   :   WATCHED"
+msgstr ""
+
+
+# ======================================================================================== #
+# --- ITEMS SETTINGS :: SELECTION :: ▲
+# ======================================================================================== #
+
+
+msgctxt "#30928"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   STREMIO DUBBING"
+msgstr ""
+
+msgctxt "#30929"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   STREMIO CHARTS"
+msgstr ""
+
+msgctxt "#30939"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]   LABEL   :   SERVER-SHARE"
+msgstr ""
+
+msgctxt "#30930"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   STREMIO STUDIOS"
+msgstr ""
+
+msgctxt "#30931"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   STREMIO SERVICES"
+msgstr ""
+
+msgctxt "#30946"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   STREMIO SEARCH"
+msgstr ""
+
+msgctxt "#30948"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   STREMIO CSFD"
+msgstr ""
+
+msgctxt "#30953"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]   LABEL   :   STREMIO IMDB"
+msgstr ""
+
+msgctxt "#31087"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   AI DAILY MIX"
+msgstr ""
+
+msgctxt "#31088"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   AI MOOD"
+msgstr ""
+
+msgctxt "#31055"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   AI RECOMMEND"
+msgstr ""
+
+msgctxt "#31086"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   AI RECOMMEND"
+msgstr ""
+
+msgctxt "#30742"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   CONTINUE"
+msgstr ""
+
+msgctxt "#30748"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   CSFD LIST'S"
+msgstr ""
+
+msgctxt "#30747"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   CSFD TOP'S"
+msgstr ""
+
+msgctxt "#30924"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   STREMIO DUBBING"
+msgstr ""
+
+msgctxt "#30925"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   STREMIO CHARTS"
+msgstr ""
+
+msgctxt "#30757"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   EPISODES"
+msgstr ""
+
+msgctxt "#31052"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   GEMINI AI"
+msgstr ""
+
+msgctxt "#30751"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   HISTORY"
+msgstr ""
+
+msgctxt "#30739"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   LATER MOVIE"
+msgstr ""
+
+msgctxt "#30740"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   LATER SHOW"
+msgstr ""
+
+msgctxt "#30753"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   LAUNCHER"
+msgstr ""
+
+msgctxt "#30736"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   LIBRARY"
+msgstr ""
+
+msgctxt "#30752"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   MANAGER"
+msgstr ""
+
+msgctxt "#30750"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   MOST WATCHED"
+msgstr ""
+
+msgctxt "#30743"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   MOVIES"
+msgstr ""
+
+msgctxt "#30735"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   PLAYBACK"
+msgstr ""
+
+msgctxt "#30755"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   PROVIDERS"
+msgstr ""
+
+msgctxt "#30741"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   RANDOMIZED"
+msgstr ""
+
+msgctxt "#30756"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   REGISTRATION"
+msgstr ""
+
+msgctxt "#30734"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   SEARCH"
+msgstr ""
+
+msgctxt "#30938"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   SERVER-SHARE"
+msgstr ""
+
+msgctxt "#30754"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   SPEEDTEST"
+msgstr ""
+
+msgctxt "#30733"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   TAGS"
+msgstr ""
+
+msgctxt "#30745"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   TMDB USER"
+msgstr ""
+
+msgctxt "#30746"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   TMDB XTRA"
+msgstr ""
+
+msgctxt "#30749"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   TRAKT.TV"
+msgstr ""
+
+msgctxt "#30744"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   TV SHOWS"
+msgstr ""
+
+msgctxt "#30926"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   STREMIO STUDIOS"
+msgstr ""
+
+msgctxt "#30927"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   STREMIO SERVICES"
+msgstr ""
+
+msgctxt "#30945"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   STREMIO SEARCH"
+msgstr ""
+
+msgctxt "#30947"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   STREMIO CSFD"
+msgstr ""
+
+msgctxt "#30952"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   STREMIO IMDB"
+msgstr ""
+
+msgctxt "#30758"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   WATCH LATER"
+msgstr ""
+
+msgctxt "#30737"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   WATCH MOVIE"
+msgstr ""
+
+msgctxt "#30738"
+msgid "[B][COLOR orange]    ▲  [/COLOR][/B]  ORDER   :   WATCH SHOW"
+msgstr ""
+
+
+# ======================================================================================== #
+# --- ITEMS SETTINGS :: SELECTION :: NUMBER
+# ======================================================================================== #
+
+
+msgctxt "#30006"
+msgid "1"
+msgstr ""
+
+msgctxt "#30007"
+msgid "2"
+msgstr ""
+
+msgctxt "#30008"
+msgid "3"
+msgstr ""
+
+msgctxt "#30009"
+msgid "4"
+msgstr ""
+
+msgctxt "#30010"
+msgid "5"
+msgstr ""
+
+msgctxt "#30011"
+msgid "6"
+msgstr ""
+
+msgctxt "#30012"
+msgid "7"
+msgstr ""
+
+msgctxt "#30013"
+msgid "8"
+msgstr ""
+
+msgctxt "#30014"
+msgid "9"
+msgstr ""
+
+msgctxt "#30015"
+msgid "10"
+msgstr ""
+
+msgctxt "#30018"
+msgid "32"
+msgstr ""
+
+msgctxt "#30019"
+msgid "64"
+msgstr ""
+
+msgctxt "#30020"
+msgid "96"
+msgstr ""
+
+msgctxt "#30021"
+msgid "128"
+msgstr ""
+
+msgctxt "#30022"
+msgid "160"
+msgstr ""
+
+msgctxt "#30023"
+msgid "192"
+msgstr ""
+
+msgctxt "#30024"
+msgid "224"
+msgstr ""
+
+msgctxt "#30025"
+msgid "256"
+msgstr ""
+
+msgctxt "#30026"
+msgid "288"
+msgstr ""
+
+msgctxt "#30027"
+msgid "320"
+msgstr ""
+
+msgctxt "#30028"
+msgid "352"
+msgstr ""
+
+msgctxt "#30029"
+msgid "384"
+msgstr ""
+
+msgctxt "#30030"
+msgid "416"
+msgstr ""
+
+msgctxt "#30049"
+msgid "0"
+msgstr ""
+
+msgctxt "#30050"
+msgid "0.5"
+msgstr ""
+
+msgctxt "#30051"
+msgid "1.0"
+msgstr ""
+
+msgctxt "#30052"
+msgid "1.5"
+msgstr ""
+
+msgctxt "#30053"
+msgid "2.0"
+msgstr ""
+
+msgctxt "#30054"
+msgid "2.5"
+msgstr ""
+
+msgctxt "#30055"
+msgid "3.0"
+msgstr ""
+
+msgctxt "#30056"
+msgid "3.5"
+msgstr ""
+
+msgctxt "#30057"
+msgid "4.0"
+msgstr ""
+
+msgctxt "#30058"
+msgid "4.5"
+msgstr ""
+
+msgctxt "#30059"
+msgid "5.0"
+msgstr ""
+
+msgctxt "#30066"
+msgid "50"
+msgstr ""
+
+msgctxt "#30067"
+msgid "100"
+msgstr ""
+
+msgctxt "#30068"
+msgid "150"
+msgstr ""
+
+msgctxt "#30069"
+msgid "200"
+msgstr ""
+
+msgctxt "#30070"
+msgid "250"
+msgstr ""
+
+msgctxt "#30071"
+msgid "300"
+msgstr ""
+
+msgctxt "#30072"
+msgid "350"
+msgstr ""
+
+msgctxt "#30073"
+msgid "400"
+msgstr ""
+
+msgctxt "#30074"
+msgid "450"
+msgstr ""
+
+msgctxt "#30075"
+msgid "500"
+msgstr ""
+
+msgctxt "#30076"
+msgid "1000"
+msgstr ""
+
+msgctxt "#30077"
+msgid "5000"
+msgstr ""
+
+msgctxt "#30094"
+msgid "20"
+msgstr ""
+
+msgctxt "#30095"
+msgid "30"
+msgstr ""
+
+msgctxt "#30096"
+msgid "40"
+msgstr ""
+
+msgctxt "#30170"
+msgid "14"
+msgstr ""
+
+msgctxt "#30171"
+msgid "60"
+msgstr ""
+
+msgctxt "#30172"
+msgid "90"
+msgstr ""
+
+msgctxt "#30173"
+msgid "120"
+msgstr ""
+
+msgctxt "#30207"
+msgid "750"
+msgstr ""
+
+msgctxt "#30208"
+msgid "1500"
+msgstr ""
+
+msgctxt "#30209"
+msgid "2000"
+msgstr ""
+
+msgctxt "#30210"
+msgid "3000"
+msgstr ""
+
+msgctxt "#30211"
+msgid "4000"
+msgstr ""
+
+msgctxt "#31012"
+msgid "5"
+msgstr ""
+
+msgctxt "#31013"
+msgid "10"
+msgstr ""
+
+msgctxt "#31014"
+msgid "15"
+msgstr ""
+
+msgctxt "#31015"
+msgid "20"
+msgstr ""
+
+msgctxt "#31016"
+msgid "30"
+msgstr ""
+
+msgctxt "#31017"
+msgid "50"
+msgstr ""
+
+msgctxt "#31046"
+msgid "5"
+msgstr ""
+
+msgctxt "#31047"
+msgid "10"
+msgstr ""
+
+msgctxt "#31048"
+msgid "15"
+msgstr ""
+
+msgctxt "#31049"
+msgid "20"
+msgstr ""
+
+msgctxt "#32020"
+msgid "25"
+msgstr ""
+
+msgctxt "#32021"
+msgid "30"
+msgstr ""
+
+msgctxt "#32022"
+msgid "35"
+msgstr ""
+
+msgctxt "#32023"
+msgid "40"
+msgstr ""
+
+
+# ======================================================================================== #
+# --- ITEMS SETTINGS :: SELECTION
+# ======================================================================================== #
+
+
+msgctxt "#30035"
+msgid "RELEVANCE"
+msgstr ""
+
+msgctxt "#30036"
+msgid "RECENT"
+msgstr ""
+
+msgctxt "#30037"
+msgid "RATING"
+msgstr ""
+
+msgctxt "#30038"
+msgid "LARGEST"
+msgstr ""
+
+msgctxt "#30039"
+msgid "SMALLEST"
+msgstr ""
+
+msgctxt "#30041"
+msgid "VIDEO"
+msgstr ""
+
+msgctxt "#30042"
+msgid "IMAGES"
+msgstr ""
+
+msgctxt "#30043"
+msgid "AUDIO"
+msgstr ""
+
+msgctxt "#30044"
+msgid "ARCHIVES"
+msgstr ""
+
+msgctxt "#30045"
+msgid "DOCUMENTS"
+msgstr ""
+
+msgctxt "#30046"
+msgid "ADULT"
+msgstr ""
+
+msgctxt "#30080"
+msgid "24 HOURS"
+msgstr ""
+
+msgctxt "#30081"
+msgid "7 DAYS"
+msgstr ""
+
+msgctxt "#30082"
+msgid "14 DAYS"
+msgstr ""
+
+msgctxt "#30110"
+msgid "FIRST AVAILABLE"
+msgstr ""
+
+msgctxt "#30111"
+msgid "BY POSITION"
+msgstr ""
+
+msgctxt "#30112"
+msgid "INTELLIGENT"
+msgstr ""
+
+msgctxt "#30160"
+msgid "AUTO"
+msgstr ""
+
+msgctxt "#30161"
+msgid "cs_CZ"
+msgstr ""
+
+msgctxt "#30162"
+msgid "en_GB"
+msgstr ""
+
+msgctxt "#30163"
+msgid "en_US"
+msgstr ""
+
+msgctxt "#30165"
+msgid "cs"
+msgstr ""
+
+msgctxt "#30166"
+msgid "en"
+msgstr ""
+
+msgctxt "#30193"
+msgid "OFF"
+msgstr ""
+
+msgctxt "#30194"
+msgid "SOFT"
+msgstr ""
+
+msgctxt "#30195"
+msgid "HARD"
+msgstr ""
+
+msgctxt "#30221"
+msgid "SQLite"
+msgstr ""
+
+msgctxt "#30222"
+msgid "MySQL (MariaDB)"
+msgstr ""
+
+msgctxt "#30237"
+msgid "PREHRAJ.TO"
+msgstr ""
+
+msgctxt "#30238"
+msgid "WEBSHARE.CZ"
+msgstr ""
+
+msgctxt "#30510"
+msgid "DEBUG"
+msgstr ""
+
+msgctxt "#30511"
+msgid "INFO"
+msgstr ""
+
+msgctxt "#30512"
+msgid "WARNING"
+msgstr ""
+
+msgctxt "#30513"
+msgid "ERROR"
+msgstr ""
+
+msgctxt "#30514"
+msgid "OFF"
+msgstr ""
+
+msgctxt "#30805"
+msgid "[ -BEST- ]"
+msgstr ""
+
+msgctxt "#30806"
+msgid "[ 1080P ]"
+msgstr ""
+
+msgctxt "#30807"
+msgid "[ 720P ]"
+msgstr ""
+
+msgctxt "#30808"
+msgid "[ 480P ]"
+msgstr ""
+
+msgctxt "#30809"
+msgid "[ -AUTO- ]"
+msgstr ""
+
+msgctxt "#30810"
+msgid "[ ORIGINAL ]"
+msgstr ""
+
+msgctxt "#30916"
+msgid "SKIP CREDITS"
+msgstr ""
+
+msgctxt "#30917"
+msgid "CONTINUE"
+msgstr ""
+
+msgctxt "#30962"
+msgid "5 MINUTES"
+msgstr ""
+
+msgctxt "#30963"
+msgid "10 MINUTES"
+msgstr ""
+
+msgctxt "#30964"
+msgid "15 MINUTES"
+msgstr ""
+
+msgctxt "#30965"
+msgid "30 MINUTES"
+msgstr ""
+
+msgctxt "#30966"
+msgid "1 HOUR"
+msgstr ""
+
+msgctxt "#31022"
+msgid "NO FILTER"
+msgstr ""
+
+msgctxt "#31023"
+msgid "RATING 5.0 +"
+msgstr ""
+
+msgctxt "#31024"
+msgid "RATING 6.0 +"
+msgstr ""
+
+msgctxt "#31025"
+msgid "RATING 7.0 +"
+msgstr ""
+
+msgctxt "#31026"
+msgid "RATING 8.0 +"
+msgstr ""
+
+msgctxt "#31032"
+msgid "COMBO MODE"
+msgstr ""
+
+msgctxt "#31033"
+msgid "RECOMMENDED ONLY"
+msgstr ""
+
+msgctxt "#31034"
+msgid "SIMILAR ONLY"
+msgstr ""
+
+msgctxt "#31064"
+msgid "gemini-3.5-flash-lite [ RECOMMENDED ]"
+msgstr ""
+
+msgctxt "#31065"
+msgid "gemini-3.8-flash [ ADVANCED ]"
+msgstr ""
+
+msgctxt "#31066"
+msgid "gemini-3.6-flash [ BALANCED ]"
+msgstr ""
+
+msgctxt "#31067"
+msgid "gemini-3.1-flash-lite [ ALTERNATIVE ]"
+msgstr ""
+
+msgctxt "#31072"
+msgid "INTERNAL : PLAY BACK"
+msgstr ""
+
+msgctxt "#31073"
+msgid "INTERNAL : WATCH LATER"
+msgstr ""
+
+msgctxt "#31074"
+msgid "TRAKT.TV : WATCHLIST"
+msgstr ""
+
+msgctxt "#31075"
+msgid "TRAKT.TV : FAVOURITES"
+msgstr ""
+
+msgctxt "#31076"
+msgid "TMDB : WATCHLIST"
+msgstr ""
+
+msgctxt "#31077"
+msgid "NONE"
+msgstr ""
+
+msgctxt "#32001"
+msgid "DEFAULT"
+msgstr ""
+
+msgctxt "#32002"
+msgid "POPULARITY"
+msgstr ""
+
+msgctxt "#32003"
+msgid "RELEVANCE"
+msgstr ""
+
+msgctxt "#32005"
+msgid "ALL QUALITY"
+msgstr ""
+
+msgctxt "#32006"
+msgid "ONLY [ 4K UHD ]"
+msgstr ""
+
+msgctxt "#32007"
+msgid "ONLY [ 1080P FHD ]"
+msgstr ""
+
+msgctxt "#32008"
+msgid "ONLY [ 720P HD ]"
+msgstr ""
+
+msgctxt "#32052"
+msgid "ALWAYS ASK"
+msgstr ""
+
+msgctxt "#32053"
+msgid "AUTO-SELECT"
+msgstr ""
+
+msgctxt "#32056"
+msgid "[ ORIGINAL ]"
+msgstr ""
+
+msgctxt "#32057"
+msgid "[ HIGHEST ]"
+msgstr ""
+
+msgctxt "#32058"
+msgid "[ 1080P ]"
+msgstr ""
+
+msgctxt "#32059"
+msgid "[ 720P ]"
+msgstr ""
+
+msgctxt "#32060"
+msgid "[ 480P ]"
+msgstr ""
+
+msgctxt "#32061"
+msgid "[ LOWEST ]"
+msgstr ""
+
+
+# ======================================================================================== #
+# --- ITEMS SETTINGS :: SELECTION :: VIEW MODE
+# ======================================================================================== #
+
+
+msgctxt "#30272"
+msgid "List"
+msgstr ""
+
+msgctxt "#30273"
+msgid "Poster | Media list"
+msgstr ""
+
+msgctxt "#30274"
+msgid "Shift"
+msgstr ""
+
+msgctxt "#30275"
+msgid "InfoWall"
+msgstr ""
+
+msgctxt "#30276"
+msgid "WideList"
+msgstr ""
+
+msgctxt "#30277"
+msgid "Wall"
+msgstr ""
+
+msgctxt "#30278"
+msgid "Banner"
+msgstr ""
+
+msgctxt "#30279"
+msgid "Fanart"
+msgstr ""
+
+msgctxt "#30280"
+msgid "Big Banner"
+msgstr ""
+
+msgctxt "#30281"
+msgid "Low List"
+msgstr ""
+
+msgctxt "#30282"
+msgid "Gallery"
+msgstr ""
+
+msgctxt "#30283"
+msgid "Poster Info List"
+msgstr ""
+
+msgctxt "#30284"
+msgid "Tags"
+msgstr ""
+
+msgctxt "#30285"
+msgid "Submenu"
+msgstr ""
+
+msgctxt "#30286"
+msgid "Media Info Wall"
+msgstr ""
+
+msgctxt "#30287"
+msgid "Basic Media Info"
+msgstr ""
+
+msgctxt "#30288"
+msgid "Playlist with Info"
+msgstr ""
+
+msgctxt "#30289"
+msgid "Media Info List"
+msgstr ""
+
+msgctxt "#30290"
+msgid "Big Square Row"
+msgstr ""
+
+msgctxt "#30291"
+msgid "Square Wall"
+msgstr ""
+
+msgctxt "#30292"
+msgid "Big Landscape Wall"
+msgstr ""
+
+msgctxt "#30293"
+msgid "Poster Wall"
+msgstr ""
+
+msgctxt "#30294"
+msgid "Big Poster List"
+msgstr ""
+
+
+# ======================================================================================== #
+# --- ITEMS SETTINGS :: HELP
+# ======================================================================================== #
+
+
+msgctxt "#30003"
+msgid "Main switch to enable or disable limits when searching for content."
+msgstr ""
+
+msgctxt "#30005"
+msgid "Determines how many result pages to load from the source at once."
+msgstr ""
+
+msgctxt "#30017"
+msgid "Maximum number of results downloaded from Prehraj.to server."
+msgstr ""
+
+msgctxt "#30032"
+msgid "Maximum number of results downloaded from Webshare.cz server."
+msgstr ""
+
+msgctxt "#30034"
+msgid "Criterion for sorting search results on Webshare.cz."
+msgstr ""
+
+msgctxt "#30048"
+msgid "Waiting time in seconds before the next network request to avoid IP blocking."
+msgstr ""
+
+msgctxt "#30061"
+msgid "Settings for the watched and history section. Allows customization of the display."
+msgstr ""
+
+msgctxt "#30063"
+msgid "Maximum number of history or watched pages to load."
+msgstr ""
+
+msgctxt "#30065"
+msgid "Maximum number of items the plugin remembers in playback history."
+msgstr ""
+
+msgctxt "#30079"
+msgid "Over what period to display the most watched movies and series."
+msgstr ""
+
+msgctxt "#30085"
+msgid "Activates advanced content filtering using custom expressions."
+msgstr ""
+
+msgctxt "#30087"
+msgid "Enables automatic reporting of what you are currently watching to your Trakt.tv account."
+msgstr ""
+
+msgctxt "#30105"
+msgid "Automatically generates a playlist from found movies for continuous playback."
+msgstr ""
+
+msgctxt "#30215"
+msgid "Path where  ( STRM )  files will be saved for Kodi local library integration."
+msgstr ""
+
+msgctxt "#30220"
+msgid "SQLITE is sufficient for normal use. Choose MYSQL for sharing history between multiple devices."
+msgstr ""
+
+msgctxt "#30257"
+msgid "A message will be sent to Telegram when a new episode of a favorite series is released."
+msgstr ""
+
+msgctxt "#30271"
+msgid "Forces selected display mode  ( Posters, List )  for the Main Menu."
+msgstr ""
+
+msgctxt "#30308"
+msgid "Select the type of files to search for  ( VIDEO, AUDIO, ARCHIVES )."
+msgstr ""
+
+msgctxt "#30309"
+msgid "Displays advanced plugin settings  ( for experienced users )."
+msgstr ""
+
+msgctxt "#30310"
+msgid "Allows changing the display mode  ( Poster, List, Gallery )  in the plugin."
+msgstr ""
+
+msgctxt "#30311"
+msgid "Displays Trakt.tv integration settings  ( scrobbling, social feed )."
+msgstr ""
+
+msgctxt "#30312"
+msgid "First Trakt.tv user for social feed."
+msgstr ""
+
+msgctxt "#30313"
+msgid "Second Trakt.tv user for social feed."
+msgstr ""
+
+msgctxt "#30314"
+msgid "Third Trakt.tv user for social feed."
+msgstr ""
+
+msgctxt "#30315"
+msgid "How many items from Trakt.tv social feed to load in lists."
+msgstr ""
+
+msgctxt "#30316"
+msgid "How many pages of results to load when browsing on Trakt.tv."
+msgstr ""
+
+msgctxt "#30317"
+msgid "Prioritizes Czech results when searching on Trakt.tv for localization."
+msgstr ""
+
+msgctxt "#30318"
+msgid "Displays the release / update time of the item in the Trakt.tv feed."
+msgstr ""
+
+msgctxt "#30319"
+msgid "Displays additional information  ( description )  for Trakt.tv feed items."
+msgstr ""
+
+msgctxt "#30320"
+msgid "Displays additional context  ( rating, genres )  from Trakt.tv in details."
+msgstr ""
+
+msgctxt "#30321"
+msgid "Sets default movie auto-play behavior."
+msgstr ""
+
+msgctxt "#30322"
+msgid "Determines how many movies to pre-load into the playlist for smooth playback."
+msgstr ""
+
+msgctxt "#30323"
+msgid "Allows manual selection of the source for generating autolists."
+msgstr ""
+
+msgctxt "#30324"
+msgid "Method for selecting autolist source  ( first available, by order, intelligent )."
+msgstr ""
+
+msgctxt "#30325"
+msgid "Sets source priority when collecting results for autolist."
+msgstr ""
+
+msgctxt "#30326"
+msgid "Enables automatic creation of a video list  ( autolist )  from search results."
+msgstr ""
+
+msgctxt "#30327"
+msgid "Automatically plays the next episode of the series after the current episode ends."
+msgstr ""
+
+msgctxt "#30328"
+msgid "Number of items added to the autolist when it starts."
+msgstr ""
+
+msgctxt "#30329"
+msgid "Allows selecting a source for the series autolist."
+msgstr ""
+
+msgctxt "#30330"
+msgid "Source selection method for the series autolist."
+msgstr ""
+
+msgctxt "#30331"
+msgid "Source priority when creating the series autolist."
+msgstr ""
+
+msgctxt "#30332"
+msgid "Automatically selects a source for a library item. When disabled, shows a source selection dialog."
+msgstr "Automatically selects a source for a library item. When disabled, shows a source selection dialog."
+
+msgctxt "#30333"
+msgid "First available keeps provider/global ordering after library exclusions. Intelligent also ranks library keyword preferences."
+msgstr "First available keeps provider/global ordering after library exclusions. Intelligent also ranks library keyword preferences."
+
+msgctxt "#30334"
+msgid "Pre-loads available sources before item selection for faster result display \n[COLOR orange][  TURN OFF   |   PLAYER > VIDEO > PLAY NEXT   >   SERIES + EPISODES  ][/COLOR]"
+msgstr ""
+
+msgctxt "#30335"
+msgid "Displays option to skip end credits and immediately play the next episode."
+msgstr ""
+
+msgctxt "#30336"
+msgid "Sorts results by file size in ascending order  ( smaller files first )."
+msgstr ""
+
+msgctxt "#30337"
+msgid "Filter results by expressions from the following   „SMART TAG“   dictionary ... \n[ QUALITY ]  :  4K , 1080P , 720P , CAM , TS         [ CODEC ]  :  H264 , H265 \n[ AUDIO ]  :  DAB , SK         [ SUBS ]  :  SUB , MULTI"
+msgstr ""
+
+msgctxt "#30338"
+msgid "Filter results by expressions from the following   „SMART TAG“   dictionary ... \n[ QUALITY ]  :  4K , 1080P , 720P , CAM , TS         [ CODEC ]  :  H264 , H265 \n[ AUDIO ]  :  DAB , SK         [ SUBS ]  :  SUB , MULTI"
+msgstr ""
+
+msgctxt "#30339"
+msgid "Filter results by expressions from the following   „SMART TAG“   dictionary ... \n[ QUALITY ]  :  4K , 1080P , 720P , CAM , TS         [ CODEC ]  :  H264 , H265 \n[ AUDIO ]  :  DAB , SK         [ SUBS ]  :  SUB , MULTI"
+msgstr ""
+
+msgctxt "#30340"
+msgid "Exclude results containing expressions from the following   „SMART TAG“   dictionary  ... \n[ QUALITY ]  :  4K , 1080P , 720P , CAM , TS         [ CODEC ]  :  H264 , H265 \n[ AUDIO ]  :  DAB , SK         [ SUBS ]  :  SUB , MULTI"
+msgstr ""
+
+msgctxt "#30341"
+msgid "Exclude results containing expressions from the following   „SMART TAG“   dictionary  ... \n[ QUALITY ]  :  4K , 1080P , 720P , CAM , TS         [ CODEC ]  :  H264 , H265 \n[ AUDIO ]  :  DAB , SK         [ SUBS ]  :  SUB , MULTI"
+msgstr ""
+
+msgctxt "#30342"
+msgid "Exclude results containing expressions from the following   „SMART TAG“   dictionary  ... \n[ QUALITY ]  :  4K , 1080P , 720P , CAM , TS         [ CODEC ]  :  H264 , H265 \n[ AUDIO ]  :  DAB , SK         [ SUBS ]  :  SUB , MULTI"
+msgstr ""
+
+msgctxt "#30343"
+msgid "Enables filtering of movie results using   „SMART TAG“ "
+msgstr ""
+
+msgctxt "#30344"
+msgid "Filter results by expressions from the following   „SMART TAG“   dictionary ... \n[ QUALITY ]  :  4K , 1080P , 720P , CAM , TS         [ CODEC ]  :  H264 , H265 \n[ AUDIO ]  :  DAB , SK         [ SUBS ]  :  SUB , MULTI"
+msgstr ""
+
+msgctxt "#30345"
+msgid "Exclude results containing expressions from the following   „SMART TAG“   dictionary  ... \n[ QUALITY ]  :  4K , 1080P , 720P , CAM , TS         [ CODEC ]  :  H264 , H265 \n[ AUDIO ]  :  DAB , SK         [ SUBS ]  :  SUB , MULTI"
+msgstr ""
+
+msgctxt "#30346"
+msgid "Enables filtering of series results using   „SMART TAG“ "
+msgstr ""
+
+msgctxt "#30347"
+msgid "Filter results by expressions from the following   „SMART TAG“   dictionary ... \n[ QUALITY ]  :  4K , 1080P , 720P , CAM , TS         [ CODEC ]  :  H264 , H265 \n[ AUDIO ]  :  DAB , SK         [ SUBS ]  :  SUB , MULTI"
+msgstr ""
+
+msgctxt "#30348"
+msgid "Exclude results containing expressions from the following  „SMART TAG“  dictionary  ... \n[ QUALITY ]  :  4K , 1080P , 720P , CAM , TS         [ CODEC ]  :  H264 , H265 \n[ AUDIO ]  :  DAB , SK         [ SUBS ]  :  SUB , MULTI"
+msgstr ""
+
+msgctxt "#30349"
+msgid "Enables filtering of library results using   „SMART TAG“ "
+msgstr ""
+
+msgctxt "#30350"
+msgid "Filter results by expressions from the following   „SMART TAG“   dictionary ... \n[ QUALITY ]  :  4K , 1080P , 720P , CAM , TS         [ CODEC ]  :  H264 , H265 \n[ AUDIO ]  :  DAB , SK         [ SUBS ]  :  SUB , MULTI"
+msgstr ""
+
+msgctxt "#30351"
+msgid "Exclude results containing expressions from the following   „SMART TAG“   dictionary  ... \n[ QUALITY ]  :  4K , 1080P , 720P , CAM , TS         [ CODEC ]  :  H264 , H265 \n[ AUDIO ]  :  DAB , SK         [ SUBS ]  :  SUB , MULTI"
+msgstr ""
+
+msgctxt "#30353"
+msgid "Shows or hides the  \"SIZE ITEM\"  in the plugin menu."
+msgstr ""
+
+msgctxt "#30354"
+msgid "Shows or hides the  \"DURATION TIME\"  item in the plugin menu."
+msgstr ""
+
+msgctxt "#30356"
+msgid "Shows or hides the most watched item in the plugin menu."
+msgstr ""
+
+msgctxt "#30357"
+msgid "Shows or hides the prehrajto history item in the plugin menu."
+msgstr ""
+
+msgctxt "#30358"
+msgid "Shows or hides the settings menu item in the plugin menu."
+msgstr ""
+
+msgctxt "#30359"
+msgid "Shows or hides the speedtest menu item in the plugin menu."
+msgstr ""
+
+msgctxt "#30360"
+msgid "Shows or hides the select provider item in the plugin menu."
+msgstr ""
+
+msgctxt "#30361"
+msgid "Shows or hides the manager menu item in the plugin menu."
+msgstr ""
+
+msgctxt "#30362"
+msgid "Shows or hides the trakt menu item in the plugin menu."
+msgstr ""
+
+msgctxt "#30363"
+msgid "Shows or hides the launcher menu item in the plugin menu."
+msgstr ""
+
+msgctxt "#30364"
+msgid "Shows or hides the library menu item in the plugin menu."
+msgstr ""
+
+msgctxt "#30365"
+msgid "Shows or hides the play mail menu item in the plugin menu."
+msgstr ""
+
+msgctxt "#30366"
+msgid "Shows or hides the random play menu item in the plugin menu."
+msgstr ""
+
+msgctxt "#30367"
+msgid "TMDB language search settings  ( see plugin documentation )."
+msgstr ""
+
+msgctxt "#30368"
+msgid "Trakt.tv settings : language."
+msgstr ""
+
+msgctxt "#30369"
+msgid "Caches data for the  \"MOST WATCHED\"  section for faster loading."
+msgstr ""
+
+msgctxt "#30370"
+msgid "Episode notify interval settings  ( see plugin documentation )."
+msgstr ""
+
+msgctxt "#30371"
+msgid "Episode air time  ( see plugin documentation )."
+msgstr ""
+
+msgctxt "#30373"
+msgid "Disables display or notification of 'notify ok'."
+msgstr ""
+
+msgctxt "#30374"
+msgid "Disables display or notification of 'notify info'."
+msgstr ""
+
+msgctxt "#30375"
+msgid "Disables display or notification of 'notify error'."
+msgstr ""
+
+msgctxt "#30376"
+msgid "Disables display or notification of 'notify acc'."
+msgstr ""
+
+msgctxt "#30379"
+msgid "Disables display or notification of 'episode notify'."
+msgstr ""
+
+msgctxt "#30381"
+msgid "Enables or disables  \"TMDB\"  title display filter."
+msgstr ""
+
+msgctxt "#30382"
+msgid "Enables or disables search title display filter."
+msgstr ""
+
+msgctxt "#30383"
+msgid "Enables or disables watched title display filter."
+msgstr ""
+
+msgctxt "#30384"
+msgid "Enables or disables library title display filter."
+msgstr ""
+
+msgctxt "#30385"
+msgid "Enables or disables manager title display filter."
+msgstr ""
+
+msgctxt "#30386"
+msgid "Enables or disables history title display filter."
+msgstr ""
+
+msgctxt "#30387"
+msgid "Enables or disables actor tv shows filter."
+msgstr ""
+
+msgctxt "#30388"
+msgid "Filter results by TMDB language (language, quality, extension)."
+msgstr ""
+
+msgctxt "#30389"
+msgid "Logging level settings (see plugin documentation)."
+msgstr ""
+
+msgctxt "#30390"
+msgid "Enables or disables security bypass function."
+msgstr ""
+
+msgctxt "#30392"
+msgid "Cache validity for userdata (in days)."
+msgstr ""
+
+msgctxt "#30393"
+msgid "Cache validity for csfd (in hours)."
+msgstr ""
+
+msgctxt "#30394"
+msgid "Cache validity for tmdb (in hours)."
+msgstr ""
+
+msgctxt "#30395"
+msgid "Cache validity for trakt (in hours)."
+msgstr ""
+
+msgctxt "#30396"
+msgid "Cache validity for watch (in hours)."
+msgstr ""
+
+msgctxt "#30397"
+msgid "RAM cache TTL settings (see plugin documentation)."
+msgstr ""
+
+msgctxt "#30398"
+msgid "Maximum number of items to keep in RAM cache (memory amount)."
+msgstr ""
+
+msgctxt "#30399"
+msgid "Folder for downloaded files."
+msgstr ""
+
+msgctxt "#30400"
+msgid "Folder for storing playback history."
+msgstr ""
+
+msgctxt "#30401"
+msgid "Folder for storing cache data."
+msgstr ""
+
+msgctxt "#30402"
+msgid "Database settings  \"MYSQL\"  :  HOST IP"
+msgstr ""
+
+msgctxt "#30403"
+msgid "Database settings  \"MYSQL\"  :  PORT"
+msgstr ""
+
+msgctxt "#30404"
+msgid "Database settings  \"MYSQL\"  :  DATABASE"
+msgstr ""
+
+msgctxt "#30405"
+msgid "Database settings  \"MYSQL\"  :  USERNAME"
+msgstr ""
+
+msgctxt "#30406"
+msgid "Database settings  \"MYSQL\"  :  PASSWORD"
+msgstr ""
+
+msgctxt "#30407"
+msgid "Database settings  \"MYSQL\"  :  TIMEOUT"
+msgstr ""
+
+msgctxt "#30408"
+msgid "Database settings  \"MYSQL\"  :  POOL SIZE"
+msgstr ""
+
+msgctxt "#30410"
+msgid "Allows using multiple providers simultaneously when searching for sources."
+msgstr ""
+
+msgctxt "#30411"
+msgid "Multi-provider sort settings  ( see plugin documentation )."
+msgstr ""
+
+msgctxt "#30412"
+msgid "Active provider settings  ( see plugin documentation )."
+msgstr ""
+
+msgctxt "#30414"
+msgid "Login / configuration settings for Prehraj.to : e-mail."
+msgstr ""
+
+msgctxt "#30415"
+msgid "Login / configuration settings for Prehraj.to : password."
+msgstr ""
+
+msgctxt "#32621"
+msgid "Maximum access token age in minutes before automatic renewal. The server token expiry always takes precedence."
+msgstr ""
+
+msgctxt "#30417"
+msgid "Login / configuration settings for Webshare.cz : username."
+msgstr ""
+
+msgctxt "#30418"
+msgid "Login / configuration settings for Webshare.cz : password."
+msgstr ""
+
+msgctxt "#30419"
+msgid "Login / configuration settings for Webshare.cz : token."
+msgstr ""
+
+msgctxt "#30421"
+msgid "TMDB api key settings  ( see plugin documentation )."
+msgstr ""
+
+msgctxt "#30422"
+msgid "Trakt.tv settings : client id."
+msgstr ""
+
+msgctxt "#30423"
+msgid "Trakt.tv settings : client secret."
+msgstr ""
+
+msgctxt "#30424"
+msgid "Trakt.tv settings : access token."
+msgstr ""
+
+msgctxt "#30425"
+msgid "Trakt.tv settings : refresh token."
+msgstr ""
+
+msgctxt "#32514"
+msgid "Connect your Trakt.tv account using the code at trakt.tv/activate."
+msgstr ""
+
+msgctxt "#30427"
+msgid "Telegram notifications settings : chat id."
+msgstr ""
+
+msgctxt "#30428"
+msgid "Telegram notifications settings : bot token."
+msgstr ""
+
+msgctxt "#30430"
+msgid "Kodi folder to include in the Telegram ZIP backup  ( folder #1 )."
+msgstr ""
+
+msgctxt "#30431"
+msgid "Kodi folder to include in the Telegram ZIP backup  ( folder #2 )."
+msgstr ""
+
+msgctxt "#30432"
+msgid "Kodi folder to include in the Telegram ZIP backup  ( folder #3 )."
+msgstr ""
+
+msgctxt "#30433"
+msgid "Kodi folder to include in the Telegram ZIP backup  ( folder #4 )."
+msgstr ""
+
+msgctxt "#30434"
+msgid "Kodi folder to include in the Telegram ZIP backup  ( folder #5 )."
+msgstr ""
+
+msgctxt "#30436"
+msgid "Default display mode for search  ( ESTUARY : Poster  |  ARCTIC FUSE 3 : Media List )."
+msgstr ""
+
+msgctxt "#30437"
+msgid "Default display mode for search history  ( Poster, List )."
+msgstr ""
+
+msgctxt "#30438"
+msgid "Default display mode for playback history  ( Poster, List )."
+msgstr ""
+
+msgctxt "#30439"
+msgid "Default display mode for most watched  ( Poster, List )."
+msgstr ""
+
+msgctxt "#30440"
+msgid "Default display mode for csfd tips  ( Poster, List )."
+msgstr ""
+
+msgctxt "#30442"
+msgid "Default display mode for movies  ( Poster, List )."
+msgstr ""
+
+msgctxt "#30443"
+msgid "Default display mode for movies submenu  ( Poster, List )."
+msgstr ""
+
+msgctxt "#30445"
+msgid "Default display mode for tvshows  ( Poster, List )."
+msgstr ""
+
+msgctxt "#30446"
+msgid "Default display mode for tvshows submenu  ( Poster, List )."
+msgstr ""
+
+msgctxt "#30447"
+msgid "Default display mode for seasons  ( Poster, List )."
+msgstr ""
+
+msgctxt "#30448"
+msgid "Default display mode for episodes  ( Poster, List )."
+msgstr ""
+
+msgctxt "#30460"
+msgid "Enable  \"WATCH MOVIE\"  recommendations feature in main menu"
+msgstr ""
+
+msgctxt "#30461"
+msgid "Maximum number of movies from  \"PLAYBACK\"  history to use as seed for recommendations"
+msgstr ""
+
+msgctxt "#30462"
+msgid "Maximum number of movie recommendations to display"
+msgstr ""
+
+msgctxt "#30463"
+msgid "Skip movies that are already in  \"PLAYBACK\"  watch history"
+msgstr ""
+
+msgctxt "#30464"
+msgid "Enable  \"WATCH SHOW\"  recommendations feature in main menu"
+msgstr ""
+
+msgctxt "#30465"
+msgid "Maximum number of series from  \"PLAYBACK\"  history to use as seed for recommendations"
+msgstr ""
+
+msgctxt "#30466"
+msgid "Maximum number of series recommendations to display"
+msgstr ""
+
+msgctxt "#30467"
+msgid "Skip series that are already in  \"PLAYBACK\"  watch history"
+msgstr ""
+
+
+msgctxt "#30681"
+msgid "Enable  \"LATER MOVIE\"  recommendations feature in main menu"
+msgstr ""
+
+msgctxt "#30682"
+msgid "Enable  \"LATER SHOW\"  recommendations feature in main menu"
+msgstr ""
+
+msgctxt "#30683"
+msgid "Shows or hides the  \"WATCH LATER\"  list item in the plugin menu."
+msgstr ""
+
+msgctxt "#30524"
+msgid "Enable/disable  \"RANDOMIZED\"  play feature"
+msgstr ""
+
+msgctxt "#30525"
+msgid "Select content type for  \"RANDOMIZED\"  selection"
+msgstr ""
+
+msgctxt "#30526"
+msgid "Time window for trending content  ( day / week )"
+msgstr ""
+
+msgctxt "#30527"
+msgid "Maximum number of attempts to find playable content"
+msgstr ""
+
+msgctxt "#30528"
+msgid "Number of trending pages to search through"
+msgstr ""
+
+msgctxt "#30529"
+msgid "Skip content already in  \"PLAYBACK\"  history"
+msgstr ""
+
+msgctxt "#30530"
+msgid "Strategy for selecting video sources"
+msgstr ""
+
+msgctxt "#30531"
+msgid "Require Czech dubbing in video filenames"
+msgstr ""
+
+msgctxt "#30532"
+msgid "Require minimum quality  ( 1080P )  in video filenames"
+msgstr ""
+
+msgctxt "#30693"
+msgid "Warns when PREHRAJ.TO premium has two days or less remaining. Account renewal is independent."
+msgstr "Warns when PREHRAJ.TO premium has two days or less remaining. Account renewal is independent."
+
+msgctxt "#30789"
+msgid "Number of episodes to play in  \"CONTINUED\"  playlist"
+msgstr ""
+
+msgctxt "#30971"
+msgid "Automatically turn on subtitles for foreign language content without dubbing."
+msgstr ""
+
+msgctxt "#30911"
+msgid "How many seconds before the end of the episode the dialog should appear."
+msgstr ""
+
+msgctxt "#30913"
+msgid "How many seconds the dialog will stay on screen."
+msgstr ""
+
+msgctxt "#30915"
+msgid "Action to perform when the dialog auto-closes."
+msgstr ""
+
+msgctxt "#30919"
+msgid "Enter URL of manifest manifest.json file  ( Streamstr or Cyberflix )."
+msgstr ""
+
+msgctxt "#30933"
+msgid "Enter API URL of sharing server   [ addon-sharing.php ]"
+msgstr ""
+
+msgctxt "#30851"
+msgid "Enable context sharing via Community Server"
+msgstr ""
+
+msgctxt "#30861"
+msgid "Maximum number of stored shares"
+msgstr ""
+
+msgctxt "#30863"
+msgid "Play notification sound on incoming share"
+msgstr ""
+
+msgctxt "#30935"
+msgid "Secret key for community server authentication"
+msgstr ""
+
+msgctxt "#30937"
+msgid "This is default device used to sharing community content in local network ( MESSAGE SPAM FIX )"
+msgstr ""
+
+msgctxt "#30941"
+msgid "If enabled and the Kodi playlist contains a next item, automatically perform Next instead of showing the dialog."
+msgstr ""
+
+msgctxt "#30943"
+msgid "Minimum interval between pre-emptive scrape triggers for the same show (seconds)."
+msgstr ""
+
+msgctxt "#30951"
+msgid "Enable system metrics for diagnostic CONTEXT menu - settings option."
+msgstr ""
+
+msgctxt "#30961"
+msgid "Time in minutes how often to check server for new shared content"
+msgstr ""
+
+msgctxt "#31011"
+msgid "Maximum number of similar items returned by TMDB recommendations"
+msgstr ""
+
+msgctxt "#31021"
+msgid "Only show items with a TMDB rating above the selected value. 'No filter' shows all items."
+msgstr ""
+
+msgctxt "#31031"
+msgid "Choose the source for similar items. A 'COMBO MODE' provides more results, but 'SIMILAR ONLY' is often more accurate."
+msgstr ""
+
+msgctxt "#31037"
+msgid "Automatically generates a playlist from found epizodes for continuous playback."
+msgstr ""
+
+msgctxt "#31041"
+msgid "Settings for Gemini and OpenRouter AI integrations."
+msgstr ""
+
+msgctxt "#31043"
+msgid "Google Gemini API Key  ( Get from  -  https://aistudio.google.com )"
+msgstr ""
+
+msgctxt "#31045"
+msgid "Maximum number of AI recommendations to process."
+msgstr ""
+
+msgctxt "#31061"
+msgid "Enables automatic copying of localizations and modules to target addons after updates."
+msgstr ""
+
+msgctxt "#31063"
+msgid "Select the AI engine for responses."
+msgstr ""
+
+msgctxt "#31069"
+msgid "AI Temperature  ( 0 = Strict facts , 10 = High creativity )"
+msgstr ""
+
+msgctxt "#31071"
+msgid "Select which list to send to Gemini as user context."
+msgstr ""
+
+msgctxt "#31096"
+msgid "Add custom rules for AI  ( 'I hate horror' , 'Speak in Slovak' , 'Act like Deadpool' )"
+msgstr ""
+
+msgctxt "#31097"
+msgid "FREE MODEL : 'https://openrouter.ai/models?q=free' \n1) 'openrouter/free' \n2) 'openai/gpt-oss-120b:free' \n3) 'google/gemini-2.5-flash:free' \n4) 'google/gemma-4-31b-it:free' \n5) 'nvidia/nemotron-3-super-120b-a12b:free' "
+msgstr ""
+
+msgctxt "#31098"
+msgid "OpenRouter API Key  ( Get from  -  https://openrouter.ai )"
+msgstr ""
+
+msgctxt "#32051"
+msgid "Set how to handle playback when multiple stream qualities are available."
+msgstr ""
+
+msgctxt "#32055"
+msgid "Select preferred quality for auto-select mode."
+msgstr ""
+
+msgctxt "#32063"
+msgid "Prioritize files with more user likes to avoid fake uploads."
+msgstr ""
+
+msgctxt "#32502"
+msgid "Set maximum network bandwidth for adaptive stream selection ( 0 = Unlimited )"
+msgstr ""
+
+msgctxt "#32504"
+msgid "Automatically switch to a lower quality stream if the video is buffering ( stuttering )."
+msgstr ""
+
+msgctxt "#32506"
+msgid "How many seconds to wait during buffering before triggering quality downgrade."
+msgstr ""
+
+msgctxt "#32508"
+msgid "Automatically creates a new Prehraj.to VIP account when the current one is about to expire."
+msgstr ""
+
+msgctxt "#32630"
+msgid "[COLOR orange]►[/COLOR] TMDBHELP"
+msgstr ""
+
+msgctxt "#32631"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TMDBHELP  :  SET LIBRARY"
+msgstr ""
+
+msgctxt "#32632"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TMDBHELP  :  SET SEARCH"
+msgstr ""
+
+msgctxt "#32633"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TMDBHELP  :  SET API KEYS"
+msgstr ""
+
+msgctxt "#32634"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TMDBHELP  :  INSTALL PLAYERS"
+msgstr ""
+
+msgctxt "#32641"
+msgid "Back up TMDBHelper settings, then set its Movies and TV Shows folders from the PLAY.ER library path. This does not change MySQL settings."
+msgstr ""
+
+msgctxt "#32642"
+msgid "Back up TMDBHelper settings, then set dummy duration and delay to 0.1 seconds and enable Restrict to library strm. Normal menu playback skips the dummy video."
+msgstr ""
+
+msgctxt "#32643"
+msgid "Back up TMDBHelper settings, then copy the nonempty PLAY.ER Gemini API key. Other API keys do not have matching settings."
+msgstr ""
+
+msgctxt "#32644"
+msgid "Back up TMDBHelper settings and any replaced players, then install the three TMDBH players from resources/custom/players."
+msgstr ""
+
+msgctxt "#32645"
+msgid "[B][COLOR orange]    ►  [/COLOR]  TMDB  :  ACCOUNT LOGIN[/B]"
+msgstr ""
+
+msgctxt "#32646"
+msgid "Connect your TMDB account using the authorization link shown in Kodi."
+msgstr ""
+
+msgctxt "#30391"
+msgid "Show or hide the settings in the Files section."
+msgstr ""
+
+msgctxt "#30409"
+msgid "Show or hide the provider settings section."
+msgstr ""
+
+msgctxt "#30413"
+msgid "Show or hide the Prehraj.to provider settings."
+msgstr ""
+
+msgctxt "#30416"
+msgid "Show or hide the Webshare provider settings."
+msgstr ""
+
+msgctxt "#30426"
+msgid "Show or hide the Telegram notification settings."
+msgstr ""
+
+msgctxt "#30429"
+msgid "Show or hide the Telegram backup settings."
+msgstr ""
+
+msgctxt "#30435"
+msgid "Show or hide title filtering settings."
+msgstr ""
+
+msgctxt "#30441"
+msgid "Show or hide movie view settings."
+msgstr ""
+
+msgctxt "#30444"
+msgid "Show or hide TV show view settings."
+msgstr ""
+
+
+msgctxt "#32650"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  AI  :  REASON LENGTH [ WORDS ]"
+msgstr ""
+
+
+msgctxt "#32651"
+msgid "Maximum length of each recommendation reason, in words. Applied when generating a new selection. Your custom prompt and style remain active."
+msgstr ""
+
+
+msgctxt "#32652"
+msgid "EL BASTARDO :"
+msgstr ""
+
+
+msgctxt "#32654"
+msgid "AI-TODAY: Preparing a new selection."
+msgstr ""
+
+
+msgctxt "#32655"
+msgid "AI-TODAY: A refresh is already in progress."
+msgstr ""
+
+
+msgctxt "#32656"
+msgid "AI-TODAY – preparing today's selection…"
+msgstr ""
+
+
+msgctxt "#32657"
+msgid "Refresh failed – use Refresh AI-TODAY"
+msgstr ""
+
+msgctxt "#32658"
+msgid "AI settings changed. Use Refresh AI-TODAY to apply them to a new selection."
+msgstr ""
+
+msgctxt "#32661"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TMDBH PLAYER  :  WAIT FOR CLOSE MODAL DIALOG"
+msgstr ""
+
+
+msgctxt "#32662"
+msgid "Waits for the active TMDbHelper modal dialog to close before opening search results."
+msgstr ""
+
+
+msgctxt "#32663"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TMDBH PLAYER  :  MAX WAIT TIME [ S ]"
+msgstr ""
+
+
+msgctxt "#32664"
+msgid "Maximum time in seconds to wait for the modal dialog to close (1 to 15 s)."
+msgstr ""
+
+
+msgctxt "#32665"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TMDBH PLAYER  :  CHECK INTERVAL [ MS ]"
+msgstr ""
+
+
+msgctxt "#32666"
+msgid "Time interval in milliseconds between dialog status checks (25 to 500 ms)."
+msgstr ""
+
+
+msgctxt "#32667"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TMDBH PLAYER  :  OPEN EVEN AFTER TIMEOUT"
+msgstr ""
+
+
+msgctxt "#32668"
+msgid "If the modal dialog does not close within the specified timeout, attempt to open the results window anyway."
+msgstr ""
+
+
+msgctxt "#32700"
+msgid "[COLOR orange]►[/COLOR] PREDICTION"
+msgstr "[COLOR orange]►[/COLOR] PREDICTION"
+
+
+msgctxt "#32701"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  PREDICTION  :  ENABLE"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  PREDICTION  :  ENABLE"
+
+
+msgctxt "#32702"
+msgid "Prefer the release style of the first selected episode for automatic CONTINUE and SKIP CREDITS queues. Existing filters and manual source lists stay unchanged. Without a reliable match, use the existing selection."
+msgstr "Prefer the release style of the first selected episode for automatic CONTINUE and SKIP CREDITS queues. Existing filters and manual source lists stay unchanged. Without a reliable match, use the existing selection."
+
+
+msgctxt "#32703"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  PREDICTION  :  MIN TITLE SIMILARITY [ % ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  PREDICTION  :  MIN TITLE SIMILARITY [ % ]"
+
+
+msgctxt "#32704"
+msgid "Higher values require closer release filename matches. Episode numbering and episode-specific titles before quality tags are ignored. This is a similarity score, not a probability."
+msgstr "Higher values require closer release filename matches. Episode numbering and episode-specific titles before quality tags are ignored. This is a similarity score, not a probability."
+
+
+msgctxt "#32705"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  PREDICTION  :  COMPARE FILE SIZE"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  PREDICTION  :  COMPARE FILE SIZE"
+
+
+msgctxt "#32706"
+msgid "Also compare the file size with the first selected episode. Missing sizes do not block prediction. Turn off for episodes with very different lengths."
+msgstr "Also compare the file size with the first selected episode. Missing sizes do not block prediction. Turn off for episodes with very different lengths."
+
+
+msgctxt "#32707"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  PREDICTION  :  SIZE TOLERANCE [ % ]"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  PREDICTION  :  SIZE TOLERANCE [ % ]"
+
+
+msgctxt "#32708"
+msgid "Maximum file size difference relative to the first selected episode. Candidates outside the tolerance are not preferred; the original selection remains available as fallback."
+msgstr "Maximum file size difference relative to the first selected episode. Candidates outside the tolerance are not preferred; the original selection remains available as fallback."
+
+
+msgctxt "#32709"
+msgid "[COLOR limegreen][    AUTOMATIC SOURCE SELECTION FOR NEXT EPISODES    ][/COLOR]"
+msgstr "[COLOR limegreen][    AUTOMATIC SOURCE SELECTION FOR NEXT EPISODES    ][/COLOR]"
+
+
+msgctxt "#32710"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  PREDICTION  :  NOTIFICATIONS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  PREDICTION  :  NOTIFICATIONS"
+
+
+msgctxt "#32711"
+msgid "Show the PREDICTION result and the original filename selected for each automatic episode. Turning this off only hides these notifications; addon logging and global information notification settings still apply."
+msgstr "Show the PREDICTION result and the original filename selected for each automatic episode. Turning this off only hides these notifications; addon logging and global information notification settings still apply."
+
+
+msgctxt "#32712"
+msgid "SELECTED BY SIMILARITY"
+msgstr "SELECTED BY SIMILARITY"
+
+
+msgctxt "#32713"
+msgid "NO RELIABLE MATCH - STANDARD SELECTION"
+msgstr "NO RELIABLE MATCH - STANDARD SELECTION"
+
+
+msgctxt "#32714"
+msgid "NO REFERENCE - STANDARD SELECTION"
+msgstr "NO REFERENCE - STANDARD SELECTION"
+
+
+msgctxt "#32715"
+msgid "NO SOURCES FOR PREDICTION"
+msgstr "NO SOURCES FOR PREDICTION"
+
+
+msgctxt "#32716"
+msgid "NO FILE SELECTED"
+msgstr "NO FILE SELECTED"
+
+
+msgctxt "#32717"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  PREDICTION  :  STOP WHEN NO MATCH"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  PREDICTION  :  STOP WHEN NO MATCH"
+
+
+msgctxt "#32718"
+msgid "Only add automatic episodes that meet the configured prediction similarity and size criteria. If no source matches or the reference is missing, do not use the standard fallback. Keep earlier matching episodes and let playback finish at the last one. This does not verify the actual episode content."
+msgstr "Only add automatic episodes that meet the configured prediction similarity and size criteria. If no source matches or the reference is missing, do not use the standard fallback. Keep earlier matching episodes and let playback finish at the last one. This does not verify the actual episode content."
+
+
+msgctxt "#32719"
+msgid "NO RELIABLE MATCH - END OF PLAYLIST"
+msgstr "NO RELIABLE MATCH - END OF PLAYLIST"
+
+
+msgctxt "#32720"
+msgid "NO REFERENCE - END OF PLAYLIST"
+msgstr "NO REFERENCE - END OF PLAYLIST"
+
+
+msgctxt "#32721"
+msgid "NO SOURCES - END OF PLAYLIST"
+msgstr "NO SOURCES - END OF PLAYLIST"
+
+
+msgctxt "#32722"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  PREDICTION  :  MANUAL CHOICE AFTER END"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  PREDICTION  :  MANUAL CHOICE AFTER END"
+
+
+msgctxt "#32723"
+msgid "After the last matching episode ends naturally, search for the rejected next episode and open the usual source list for manual selection. Does not open on Stop, error, or during playback. Requires strict prediction."
+msgstr "After the last matching episode ends naturally, search for the rejected next episode and open the usual source list for manual selection. Does not open on Stop, error, or during playback. Requires strict prediction."
+
+
+msgctxt "#32730"
+msgid "TRAKT.TV : RECENTLY WATCHED"
+msgstr "TRAKT.TV : RECENTLY WATCHED"
+
+
+msgctxt "#32731"
+msgid "TRAKT.TV : IN-PROGRESS"
+msgstr "TRAKT.TV : IN-PROGRESS"
+
+
+msgctxt "#32732"
+msgid "TRAKT.TV : MY RATINGS [ 7–10 ]"
+msgstr "TRAKT.TV : MY RATINGS [ 7–10 ]"
+
+
+msgctxt "#32733"
+msgid "Select a source for AI recommendations. Trakt sources require sign-in: recently watched titles, paused movies/episodes (IN-PROGRESS), or your own ratings of 7–10. Duplicate sources are used once. Context is cached in PLAY.ER per account; refresh runs during background generation, never while the Spotlight widget renders."
+msgstr "Select a source for AI recommendations. Trakt sources require sign-in: recently watched titles, paused movies/episodes (IN-PROGRESS), or your own ratings of 7–10. Duplicate sources are used once. Context is cached in PLAY.ER per account; refresh runs during background generation, never while the Spotlight widget renders."
+
+
+msgctxt "#32734"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  GEMINI  :  MODEL ID"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  GEMINI  :  MODEL ID"
+
+
+msgctxt "#32735"
+msgid "Optional custom Gemini model ID. A filled MODEL ID takes priority over MODEL, just like OpenRouter. Leave empty to use the selected preset. The models/ prefix is optional. Existing fallback and rate-limit handling remain active."
+msgstr "Optional custom Gemini model ID. A filled MODEL ID takes priority over MODEL, just like OpenRouter. Leave empty to use the selected preset. The models/ prefix is optional. Existing fallback and rate-limit handling remain active."
+
+
+msgctxt "#32736"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  OPENROUTER  :  MODEL"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  OPENROUTER  :  MODEL"
+
+
+msgctxt "#32737"
+msgid "Select a free model preset. It is used when OPENROUTER : MODEL ID is empty; a filled ID takes priority, just like Gemini. Free Router chooses among currently available free models compatible with the request. Availability and limits can change; no model catalogue is downloaded when opening settings."
+msgstr "Select a free model preset. It is used when OPENROUTER : MODEL ID is empty; a filled ID takes priority, just like Gemini. Free Router chooses among currently available free models compatible with the request. Availability and limits can change; no model catalogue is downloaded when opening settings."
+
+
+msgctxt "#32739"
+msgid "Optional custom OpenRouter model ID in provider/model format. A filled MODEL ID takes priority over MODEL, just like Gemini. Leave empty to use the selected preset. Existing saved custom IDs are preserved."
+msgstr "Optional custom OpenRouter model ID in provider/model format. A filled MODEL ID takes priority over MODEL, just like Gemini. Leave empty to use the selected preset. Existing saved custom IDs are preserved."
+
+
+msgctxt "#32740"
+msgid "Free Router [ AUTOMATIC ]"
+msgstr "Free Router [ AUTOMATIC ]"
+
+
+msgctxt "#32741"
+msgid "Google : Gemma 4 31B [ FREE ]"
+msgstr "Google : Gemma 4 31B [ FREE ]"
+
+
+msgctxt "#32742"
+msgid "Google : Gemma 4 26B A4B [ FREE ]"
+msgstr "Google : Gemma 4 26B A4B [ FREE ]"
+
+
+msgctxt "#32743"
+msgid "NVIDIA : Nemotron 3.5 Super VL [ FREE ]"
+msgstr "NVIDIA : Nemotron 3.5 Super VL [ FREE ]"
+
+
+msgctxt "#32669"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  TMDBHELP  :  SET TMDBHELPER"
+msgstr ""
+
+
+msgctxt "#32670"
+msgid "Back up TMDBHelper settings, restrict dummy resolution to library STRM files, and select the PLAY.ER SOURCES-PREDICTION player for movies and episodes. Requires the player to be installed. Other settings stay unchanged."
+msgstr ""
+
+
+msgctxt "#32750"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  BACKUP  :  FILE #1"
+msgstr ""
+
+
+msgctxt "#32751"
+msgid "Single file to include in the Telegram ZIP backup  ( file #1 ). Select a file, not a folder; leave empty to skip. Default : TMDBHelper settings.xml."
+msgstr ""
+
+
+msgctxt "#32752"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  BACKUP  :  FILE #2"
+msgstr ""
+
+
+msgctxt "#32753"
+msgid "Single file to include in the Telegram ZIP backup  ( file #2 ). Select a file, not a folder; leave empty to skip."
+msgstr ""
+
+
+msgctxt "#32754"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  BACKUP  :  FILE #3"
+msgstr ""
+
+
+msgctxt "#32755"
+msgid "Single file to include in the Telegram ZIP backup  ( file #3 ). Select a file, not a folder; leave empty to skip."
+msgstr ""
+
+
+msgctxt "#32756"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  BACKUP  :  FILE #4"
+msgstr ""
+
+
+msgctxt "#32757"
+msgid "Single file to include in the Telegram ZIP backup  ( file #4 ). Select a file, not a folder; leave empty to skip."
+msgstr ""
+
+
+msgctxt "#32758"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  BACKUP  :  FILE #5"
+msgstr ""
+
+
+msgctxt "#32759"
+msgid "Single file to include in the Telegram ZIP backup  ( file #5 ). Select a file, not a folder; leave empty to skip."
+msgstr ""
+
+msgctxt "#32800"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  AUTO  :  TMDB PLAYERS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  AUTO  :  TMDB PLAYERS"
+
+msgctxt "#32801"
+msgid "Fill missing bundled TMDBHelper player files automatically. Existing files are kept. Changes apply at the next Kodi session; manual Install players remains available. Disabling does not remove installed files."
+msgstr "Fill missing bundled TMDBHelper player files automatically. Existing files are kept. Changes apply at the next Kodi session; manual Install players remains available. Disabling does not remove installed files."
+
+msgctxt "#32802"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  AUTO  :  TMDBHELP CZ"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  AUTO  :  TMDBHELP CZ"
+
+msgctxt "#32803"
+msgid "Automatically fill missing Czech TMDBHelper translations. Existing files are kept. Changes apply at the next Kodi session. Disabling does not remove installed files."
+msgstr "Automatically fill missing Czech TMDBHelper translations. Existing files are kept. Changes apply at the next Kodi session. Disabling does not remove installed files."
+
+msgctxt "#32804"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  AUTO  :  ARCTIC FUSE 3 CZ"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  AUTO  :  ARCTIC FUSE 3 CZ"
+
+msgctxt "#32805"
+msgid "Automatically fill missing Czech Arctic Fuse 3 translations. Existing files are kept. Changes apply at the next Kodi session. Disabling does not remove installed files."
+msgstr "Automatically fill missing Czech Arctic Fuse 3 translations. Existing files are kept. Changes apply at the next Kodi session. Disabling does not remove installed files."
+
+msgctxt "#32806"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  AUTO  :  MENU KEYMAP"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  AUTO  :  MENU KEYMAP"
+
+msgctxt "#32807"
+msgid "Automatically create the missing PLAY.ER menu keymap file on addon startup. Existing files are kept. Disabling does not remove the file or disable shortcuts already configured in Kodi."
+msgstr "Automatically create the missing PLAY.ER menu keymap file on addon startup. Existing files are kept. Disabling does not remove the file or disable shortcuts already configured in Kodi."
+
+msgctxt "#32808"
+msgid "[B][COLOR orange]○  [/B]ACCOUNT API KEYS  -  SERVICE  :  TRAKT.TV   ▼ [/COLOR]"
+msgstr "[B][COLOR orange]○  [/B]ACCOUNT API KEYS  -  SERVICE  :  TRAKT.TV   ▼ [/COLOR]"
+
+msgctxt "#32809"
+msgid "Shows Trakt.tv account API settings. This switch only expands the menu; it does not disable synchronization."
+msgstr "Shows Trakt.tv account API settings. This switch only expands the menu; it does not disable synchronization."
+
+
+msgctxt "#32810"
+msgid "SELECT LIBRARY SOURCE"
+msgstr "SELECT LIBRARY SOURCE"
+
+
+msgctxt "#32811"
+msgid "PREHRAJ.TO premium expires in {days} days."
+msgstr "PREHRAJ.TO premium expires in {days} days."

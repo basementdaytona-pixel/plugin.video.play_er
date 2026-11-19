@@ -1,0 +1,3803 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings version="1">
+    <section id="plugin.video.play_er">
+
+        <!--  NASTAVENÍ  -->
+
+        <category id="category_1" label="30000">
+            <group id="1"/>
+            <group id="2" label="30001">
+                <setting id="FAKE-SEARCH" label="30002" help="30003" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="search_pages" label="30004" help="30005" type="integer">
+                    <level>0</level>
+                    <default>1</default>
+                    <constraints>
+                        <options>
+                            <option label="30006">1</option>
+                            <option label="30007">2</option>
+                            <option label="30008">3</option>
+                            <option label="30009">4</option>
+                            <option label="30010">5</option>
+                        </options>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-SEARCH">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="search_ls" label="30016" help="30017" type="string">
+                    <level>0</level>
+                    <default>32</default>
+                    <constraints>
+                        <options>
+                            <option label="30018">32</option>
+                            <option label="30019">64</option>
+                            <option label="30020">96</option>
+                            <option label="30021">128</option>
+                            <option label="30022">160</option>
+                            <option label="30023">192</option>
+                            <option label="30024">224</option>
+                            <option label="30025">256</option>
+                            <option label="30026">288</option>
+                            <option label="30027">320</option>
+                            <option label="30028">352</option>
+                            <option label="30029">384</option>
+                            <option label="30030">416</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-SEARCH">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="webshare_search_limit" label="30031" help="30032" type="string">
+                    <level>0</level>
+                    <default>32</default>
+                    <constraints>
+                        <options>
+                            <option label="30018">32</option>
+                            <option label="30019">64</option>
+                            <option label="30020">96</option>
+                            <option label="30021">128</option>
+                            <option label="30022">160</option>
+                            <option label="30023">192</option>
+                            <option label="30024">224</option>
+                            <option label="30025">256</option>
+                            <option label="30026">288</option>
+                            <option label="30027">320</option>
+                            <option label="30028">352</option>
+                            <option label="30029">384</option>
+                            <option label="30030">416</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-SEARCH">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="webshare_sort" label="30033" help="30034" type="string">
+                    <level>0</level>
+                    <default>RELEVANCE</default>
+                    <constraints>
+                        <options>
+                            <option label="30035">RELEVANCE</option>
+                            <option label="30036">RECENT</option>
+                            <option label="30037">HODNOCENÍ</option>
+                            <option label="30038">NEJVETŠÍ</option>
+                            <option label="30039">NEJMENŠÍ</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-SEARCH">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="webshare_category" label="30040" help="30308" type="string">
+                    <level>0</level>
+                    <default>VIDEO</default>
+                    <constraints>
+                        <options>
+                            <option label="30041">VIDEO</option>
+                            <option label="30042">OBRÁZKY</option>
+                            <option label="30043">AUDIO</option>
+                            <option label="30044">ARCHIVY</option>
+                            <option label="30045">DOKUMENTY</option>
+                            <option label="30046">PRO DOSPĚLÉ</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-SEARCH">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="manager_search_delay" label="30047" help="30048" type="string">
+                    <level>0</level>
+                    <default>0.5</default>
+                    <constraints>
+                        <options>
+                            <option label="30049">0</option>
+                            <option label="30050">0.5</option>
+                            <option label="30051">1.0</option>
+                            <option label="30052">1.5</option>
+                            <option label="30053">2.0</option>
+                            <option label="30054">2.5</option>
+                            <option label="30055">3.0</option>
+                            <option label="30056">3.5</option>
+                            <option label="30057">4.0</option>
+                            <option label="30058">4.5</option>
+                            <option label="30059">5.0</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-SEARCH">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="show_section_mostwatched" label="30060" help="30061" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="max_pages" label="30062" help="30063" type="string">
+                    <level>0</level>
+                    <default>5</default>
+                    <constraints>
+                        <options>
+                            <option label="30006">1</option>
+                            <option label="30007">2</option>
+                            <option label="30008">3</option>
+                            <option label="30009">4</option>
+                            <option label="30010">5</option>
+                            <option label="30011">6</option>
+                            <option label="30012">7</option>
+                            <option label="30013">8</option>
+                            <option label="30014">9</option>
+                            <option label="30015">10</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="show_section_mostwatched">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="playback_history_limit" label="30064" help="30065" type="string">
+                    <level>0</level>
+                    <default>500</default>
+                    <constraints>
+                        <options>
+                            <option label="30066">50</option>
+                            <option label="30067">100</option>
+                            <option label="30068">150</option>
+                            <option label="30069">200</option>
+                            <option label="30070">250</option>
+                            <option label="30071">300</option>
+                            <option label="30072">350</option>
+                            <option label="30073">400</option>
+                            <option label="30074">450</option>
+                            <option label="30075">500</option>
+                            <option label="30076">1000</option>
+                            <option label="30077">5000</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="show_section_mostwatched">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="most_watched_time_range" label="30078" help="30079" type="string">
+                    <level>0</level>
+                    <default>7 Dní</default>
+                    <constraints>
+                        <options>
+                            <option label="30080">24 Hodin</option>
+                            <option label="30081">7 Dní</option>
+                            <option label="30082">14 Dní</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="show_section_mostwatched">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="show_size" label="30143" help="30353" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="show_duration_time" label="30144" help="30354" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="FAKE-ENABLE" label="30083" help="30309" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="enable_filtering" label="30084" help="30085" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-ENABLE">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="enable_view_modes" label="30088" help="30310" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-ENABLE">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+            </group>
+            <group id="3" label="30500">
+                <setting id="FAKE-TRAKT" label="30501" help="30309" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="enable_trakt_scrobbling" label="30086" help="30087" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-TRAKT">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="trakt_prefer_czech_search" label="30098" help="30317" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-TRAKT">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="trakt_show_time" label="30099" help="30318" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-TRAKT">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="trakt_show_info" label="30100" help="30319" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-TRAKT">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="enable_trakt_context" label="30101" help="30320" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-TRAKT">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="trakt_page_limit" label="30097" help="30316" type="integer">
+                    <level>0</level>
+                    <default>20</default>
+                    <constraints>
+                        <options>
+                            <option label="30015">10</option>
+                            <option label="30094">20</option>
+                            <option label="30095">30</option>
+                            <option label="30096">40</option>
+                            <option label="30066">50</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-TRAKT">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="FAKE-SOCIAL" label="30089" help="30311" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="trakt_social_user" label="30090" help="30312" type="string">
+                    <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-SOCIAL">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="trakt_social_user_2" label="30091" help="30313" type="string">
+                    <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-SOCIAL">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="trakt_social_user_3" label="30092" help="30314" type="string">
+                    <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-SOCIAL">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="trakt_social_feed_limit" label="30093" help="30315" type="string">
+                    <level>0</level>
+                    <default>20</default>
+                    <constraints>
+                        <options>
+                            <option label="30015">10</option>
+                            <option label="30094">20</option>
+                            <option label="30095">30</option>
+                            <option label="30096">40</option>
+                            <option label="30066">50</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-SOCIAL">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+            </group>
+        </category>
+
+        <!--  AUTOLISTS  -->
+
+        <category id="category_2" label="30102">
+            <group id="1"/>
+            <group id="2" label="30103">
+                <setting id="movie_autoplay_enable" label="30104" help="30105" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="movie_autoplay_default" label="30106" help="30321" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="movie_autoplay_enable">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="movie_autoplay_erems" label="30107" help="30322" type="string">
+                    <level>0</level>
+                    <default>3</default>
+                    <constraints>
+                        <options>
+                            <option label="30007">2</option>
+                            <option label="30008">3</option>
+                            <option label="30009">4</option>
+                            <option label="30010">5</option>
+                            <option label="30011">6</option>
+                            <option label="30012">7</option>
+                            <option label="30013">8</option>
+                            <option label="30014">9</option>
+                            <option label="30015">10</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="movie_autoplay_enable">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="autolist_source_selection_enable" label="30108" help="30323" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="movie_autoplay_enable">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="autolist_source_method" label="30109" help="30324" type="string">
+                    <level>0</level>
+                    <default>INTELIGENTNÍ</default>
+                    <constraints>
+                        <options>
+                            <option label="30110">PRVNÍ DOSTUPNÝ</option>
+                            <option label="30111">PODLE POZICE</option>
+                            <option label="30112">INTELIGENTNÍ</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="autolist_source_selection_enable">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="autolist_result_priority" label="30113" help="30325" type="string">
+                    <level>0</level>
+                    <default>1</default>
+                    <constraints>
+                        <options>
+                            <option label="30006">1</option>
+                            <option label="30007">2</option>
+                            <option label="30008">3</option>
+                            <option label="30009">4</option>
+                            <option label="30010">5</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="autolist_source_selection_enable">true</condition>
+                        </dependency>
+                        <dependency type="visible">
+                            <condition operator="is" setting="autolist_source_method">PODLE POZICE</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+            </group>
+            <group id="3" label="30114">
+                <setting id="autolist_enable" label="30115" help="30326" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="series_autoplay_default" label="30116" help="30327" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="autolist_enable">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="autolist_items" label="30117" help="30328" type="string">
+                    <level>0</level>
+                    <default>3</default>
+                    <constraints>
+                        <options>
+                            <option label="30006">1</option>
+                            <option label="30007">2</option>
+                            <option label="30008">3</option>
+                            <option label="30009">4</option>
+                            <option label="30010">5</option>
+                            <option label="30011">6</option>
+                            <option label="30012">7</option>
+                            <option label="30013">8</option>
+                            <option label="30014">9</option>
+                            <option label="30015">10</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="autolist_enable">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="autolist_source_selection_enable_ser" label="30118" help="30329" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="autolist_source_method_ser" label="30109" help="30330" type="string">
+                    <level>0</level>
+                    <default>INTELIGENTNÍ</default>
+                    <constraints>
+                        <options>
+                            <option label="30110">PRVNÍ DOSTUPNÝ</option>
+                            <option label="30111">PODLE POZICE</option>
+                            <option label="30112">INTELIGENTNÍ</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="autolist_source_selection_enable_ser">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="autolist_result_priority_ser" label="30113" help="30331" type="string">
+                    <level>0</level>
+                    <default>1</default>
+                    <constraints>
+                        <options>
+                            <option label="30006">1</option>
+                            <option label="30007">2</option>
+                            <option label="30008">3</option>
+                            <option label="30009">4</option>
+                            <option label="30010">5</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="autolist_source_selection_enable_ser">true</condition>
+                        </dependency>
+                        <dependency type="visible">
+                            <condition operator="is" setting="autolist_source_method_ser">PODLE POZICE</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+            </group>
+            <group id="4" label="30119">
+                <setting id="library_autoplay_enable" label="30120" help="30332" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="library_source_method" label="30109" help="30333" type="string">
+                    <level>0</level>
+                    <default>INTELIGENTNÍ</default>
+                    <constraints>
+                        <options>
+                            <option label="30110">PRVNÍ DOSTUPNÝ</option>
+                            <option label="30112">INTELIGENTNÍ</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="library_autoplay_enable">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+            </group>
+            <group id="5" label="30507">
+                <setting id="FAKE-CONTINUED" label="31036" help="31037" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="continue_episodes_count" label="30788" help="30789" type="string">
+                    <level>0</level>
+                    <default>3</default>
+                    <constraints>
+                        <options>
+                            <option label="30006">1</option>
+                            <option label="30007">2</option>
+                            <option label="30008">3</option>
+                            <option label="30009">4</option>
+                            <option label="30010">5</option>
+                            <option label="30011">6</option>
+                            <option label="30012">7</option>
+                            <option label="30013">8</option>
+                            <option label="30014">9</option>
+                            <option label="30015">10</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                </setting>
+                <setting id="continue_source_selection_enable" label="30790" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="continue_source_method" label="30109" type="string">
+                    <level>0</level>
+                    <default>INTELIGENTNÍ</default>
+                    <constraints>
+                        <options>
+                            <option label="30110">PRVNÍ DOSTUPNÝ</option>
+                            <option label="30111">PODLE POZICE</option>
+                            <option label="30112">INTELIGENTNÍ</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="continue_source_selection_enable">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="continue_result_priority" label="30113" type="string">
+                    <level>0</level>
+                    <default>1</default>
+                    <constraints>
+                        <options>
+                            <option label="30006">1</option>
+                            <option label="30007">2</option>
+                            <option label="30008">3</option>
+                            <option label="30009">4</option>
+                            <option label="30010">5</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="continue_source_selection_enable">true</condition>
+                        </dependency>
+                        <dependency type="visible">
+                            <condition operator="is" setting="continue_source_method">PODLE POZICE</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+            </group>
+        </category>
+
+        <!--  EXPRESSION  -->
+
+        <category id="category_3" label="30121">
+            <group id="1"/>
+            <group id="2" label="30126">
+                <setting id="filter_global" label="30127" help="30337" type="string">
+                    <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="exclude_global" label="30130" help="30340" type="string">
+                    <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="enable_autolist_filters" label="30133" help="30343" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="include_autolist" label="30134" help="30344" type="string">
+                    <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="enable_autolist_filters">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="exclude_autolist" label="30135" help="30345" type="string">
+                    <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="enable_autolist_filters">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="enable_autolist_filters_ser" label="30136" help="30346" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="include_autolist_ser" label="30134" help="30347" type="string">
+                    <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="enable_autolist_filters_ser">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="exclude_autolist_ser" label="30135" help="30348" type="string">
+                    <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="enable_autolist_filters_ser">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="library_filters_header" label="30137" help="30349" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="include_library" label="30138" help="30350" type="string">
+                    <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="library_filters_header">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="exclude_library" label="30139" help="30351" type="string">
+                    <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="library_filters_header">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="enable_continue_filters" label="30794" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="include_continue" label="30134" type="string">
+                    <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="enable_continue_filters">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="exclude_continue" label="30135" type="string">
+                    <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="enable_continue_filters">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+            </group>
+        </category>
+
+        <!--  PREDICTION  -->
+        <category id="category_auto_prediction" label="32700">
+            <group id="1"/>
+            <group id="2" label="32709">
+                <setting id="auto_prediction_enable" label="32701" help="32702" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="auto_prediction_stop_on_no_match" label="32717" help="32718" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="auto_prediction_enable">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="auto_prediction_manual_on_stop" label="32722" help="32723" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="auto_prediction_enable">true</condition>
+                            <condition operator="is" setting="auto_prediction_stop_on_no_match">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="auto_prediction_notifications" label="32710" help="32711" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="auto_prediction_enable">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="auto_prediction_min_similarity" label="32703" help="32704" type="integer">
+                    <level>0</level>
+                    <default>65</default>
+                    <constraints>
+                        <minimum>40</minimum>
+                        <maximum>95</maximum>
+                        <step>5</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="auto_prediction_enable">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="auto_prediction_compare_size" label="32705" help="32706" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="auto_prediction_enable">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="auto_prediction_size_tolerance" label="32707" help="32708" type="integer">
+                    <level>0</level>
+                    <default>40</default>
+                    <constraints>
+                        <minimum>10</minimum>
+                        <maximum>100</maximum>
+                        <step>5</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="auto_prediction_enable">true</condition>
+                            <condition operator="is" setting="auto_prediction_compare_size">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+            </group>
+        </category>
+
+        <!--  API SPECIAL  -->
+
+        <category id="category_5" label="31035">
+            <group id="1"/>
+            <group id="2" label="30972">
+                <setting id="enable_auto_downgrade" label="32503" help="32504" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="downgrade_tolerance" label="32505" help="32506" type="integer">
+                    <level>0</level>
+                    <default>5</default>
+                    <constraints>
+                        <minimum>2</minimum>
+                        <step>1</step>
+                        <maximum>15</maximum>
+                    </constraints>
+                    <control type="slider" format="integer"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="enable_auto_downgrade">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="max_bandwidth_mbps" label="32501" help="32502" type="integer">
+                    <level>0</level>
+                    <default>0</default>
+                    <constraints>
+                        <minimum>0</minimum>
+                        <step>1</step>
+                        <maximum>1000</maximum>
+                    </constraints>
+                    <control type="slider" format="integer"/>
+                </setting>
+                <setting id="prehrajto_stream_mode" label="32050" help="32051" type="string">
+                    <level>0</level>
+                    <default>ask</default>
+                    <constraints>
+                        <options>
+                            <option label="32052">ask</option>
+                            <option label="32053">auto</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                </setting>
+                <setting id="prehrajto_pref_quality" label="32054" help="32055" type="string">
+                    <level>0</level>
+                    <default>original</default>
+                    <constraints>
+                        <options>
+                            <option label="32056">original</option>
+                            <option label="32057">highest</option>
+                            <option label="32058">1080p</option>
+                            <option label="32059">720p</option>
+                            <option label="32060">480p</option>
+                            <option label="32061">lowest</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="prehrajto_stream_mode">auto</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="prehrajto_mark_multi_streams" label="30802" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="auto_subtitles" label="30970" help="30971" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="prehrajto_api_sort" label="32000" type="string">
+                    <level>0</level>
+                    <default>0</default>
+                    <constraints>
+                        <options>
+                            <option label="32001">0</option>
+                            <option label="32002">1</option>
+                            <option label="32003">2</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                </setting>
+                <setting id="prehrajto_api_quality" label="32004" type="string">
+                    <level>0</level>
+                    <default>0</default>
+                    <constraints>
+                        <options>
+                            <option label="32005">0</option>
+                            <option label="32006">1</option>
+                            <option label="32007">2</option>
+                            <option label="32008">3</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                </setting>
+                <setting id="sort_by_likes" label="32062" help="32063" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="prioritize_dubbing" label="32010" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="sort_by_size_asc" label="30125" help="30336" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="enable_pre_emptive_scrape" label="30123" help="30334" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="pre_emptive_throttle" label="30942" help="30943" type="integer">
+                    <level>0</level>
+                    <default>600</default>
+                    <constraints>
+                        <minimum>10</minimum>
+                        <maximum>3600</maximum>
+                        <step>10</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="enable_pre_emptive_scrape">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="enable_skip_credits" label="30124" help="30335" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="skip_credits_trigger" label="30910" help="30911" type="integer">
+                    <level>0</level>
+                    <default>120</default>
+                    <constraints>
+                        <minimum>10</minimum>
+                        <maximum>600</maximum>
+                        <step>5</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="enable_skip_credits">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="skip_credits_autoclose" label="30912" help="30913" type="integer">
+                    <level>0</level>
+                    <default>15</default>
+                    <constraints>
+                        <minimum>5</minimum>
+                        <maximum>60</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="enable_skip_credits">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="skip_credits_default" label="30914" help="30915" type="string">
+                    <level>0</level>
+                    <default>PRESKOCIT</default>
+                    <constraints>
+                        <options>
+                            <option label="30916">PRESKOCIT</option>
+                            <option label="30917">POKRACOVAT</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="enable_skip_credits">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="skip_credits_auto_when_playlist" label="30940" help="30941" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="enable_skip_credits">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+            </group>
+        </category>
+
+        <!--  INTELLIGENCE  -->
+
+        <category id="category_6" label="31100">
+            <group id="1"/>
+            <group id="2" label="31101">
+                <setting id="ai_provider" label="31080" help="31041" type="string">
+                    <level>0</level>
+                    <default>GEMINI</default>
+                    <constraints>
+                        <options>
+                            <option label="Google Gemini API">GEMINI</option>
+                            <option label="OpenRouter.ai API">OPENROUTER</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                </setting>
+                <setting id="gemini_api_key" label="31042" help="31043" type="string">
+                    <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="ai_provider">GEMINI</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="gemini_model" label="31062" help="31063" type="string">
+                    <level>0</level>
+                    <default>gemini-3.5-flash-lite</default>
+                    <constraints>
+                        <options>
+                            <option label="31064">gemini-3.5-flash-lite</option>
+                            <option label="31065">gemini-3.8-flash</option>
+                            <option label="31066">gemini-3.6-flash</option>
+                            <option label="31067">gemini-3.1-flash-lite</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="ai_provider">GEMINI</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="gemini_model_id" label="32734" help="32735" type="string">
+                    <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="ai_provider">GEMINI</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="openrouter_api_key" label="31081" help="31098" type="string">
+                    <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="ai_provider">OPENROUTER</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="openrouter_model_preset" label="32736" help="32737" type="string">
+                    <level>0</level>
+                    <default>google/gemma-4-31b-it:free</default>
+                    <constraints>
+                        <options>
+                            <option label="32740">openrouter/free</option>
+                            <option label="32741">google/gemma-4-31b-it:free</option>
+                            <option label="32742">google/gemma-4-26b-a4b-it:free</option>
+                            <option label="32743">nvidia/nemotron-3.5-super-vl:free</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="ai_provider">OPENROUTER</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="openrouter_model" label="31082" help="32739" type="string">
+                    <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="ai_provider">OPENROUTER</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="gemini_context_source_1" label="31070" help="32733" type="string">
+                    <level>0</level>
+                    <default>internal_history</default>
+                    <constraints>
+                        <options>
+                            <option label="31072">internal_history</option>
+                            <option label="31073">internal_wl</option>
+                            <option label="31074">trakt_watchlist</option>
+                            <option label="31075">trakt_favorites</option>
+                            <option label="32730">trakt_watched</option>
+                            <option label="32731">trakt_in_progress</option>
+                            <option label="32732">trakt_ratings</option>
+                            <option label="31076">tmdb_watchlist</option>
+                            <option label="31077">none</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                </setting>
+                <setting id="gemini_context_source_2" label="31078" help="32733" type="string">
+                    <level>0</level>
+                    <default>internal_wl</default>
+                    <constraints>
+                        <options>
+                            <option label="31072">internal_history</option>
+                            <option label="31073">internal_wl</option>
+                            <option label="31074">trakt_watchlist</option>
+                            <option label="31075">trakt_favorites</option>
+                            <option label="32730">trakt_watched</option>
+                            <option label="32731">trakt_in_progress</option>
+                            <option label="32732">trakt_ratings</option>
+                            <option label="31076">tmdb_watchlist</option>
+                            <option label="31077">none</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                </setting>
+                <setting id="ai_custom_instructions" label="31095" help="31096" type="string">
+                    <level>0</level>
+                    <default>Chovej se jako Butcher z The Boys. Buď hrubý, rýpavý, kritický, sarkastický a vtipný. Vulgarity jsou nutností. Upřednostňuj vyšší hodnocení a Český dabing. Při doporučování kombinuj ověřené tituly s méně známými kvalitními objevy, střídej období a tvůrce. Neopakuj dodanou historii doporučení. Důvod konkrétně navazuj na vkus; délku řídí nastavení AI. Dostupnost dabingu nebo streamu netvrď bez ověření.</default>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="ai_reason_words" label="32650" help="32651" type="integer">
+                    <level>0</level>
+                    <default>24</default>
+                    <constraints>
+                        <minimum>10</minimum>
+                        <maximum>80</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="gemini_temperature" label="31068" help="31069" type="integer">
+                    <level>0</level>
+                    <default>7</default>
+                    <constraints>
+                        <minimum>0</minimum>
+                        <maximum>10</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="gemini_limit" label="31044" help="31045" type="string">
+                    <level>0</level>
+                    <default>10</default>
+                    <constraints>
+                        <options>
+                            <option label="31046">5</option>
+                            <option label="31047">10</option>
+                            <option label="31048">15</option>
+                            <option label="31049">20</option>
+                            <option label="32020">25</option>
+                            <option label="32021">30</option>
+                            <option label="32022">35</option>
+                            <option label="32023">40</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                </setting>
+            </group>
+        </category>
+
+        <!--  WATCH IT!  -->
+
+        <category id="category_7" label="30504">
+            <group id="1"/>
+            <group id="2" label="30505">
+                <setting id="watch_movies_skip_watched" label="30453" help="30463" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="watch_movies_seed_limit" label="30451" help="30461" type="string">
+                    <level>0</level>
+                    <default>5</default>
+                    <constraints>
+                        <options>
+                            <option label="30006">1</option>
+                            <option label="30007">2</option>
+                            <option label="30008">3</option>
+                            <option label="30009">4</option>
+                            <option label="30010">5</option>
+                            <option label="30011">6</option>
+                            <option label="30012">7</option>
+                            <option label="30013">8</option>
+                            <option label="30014">9</option>
+                            <option label="30015">10</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                </setting>
+                <setting id="watch_movies_max_recommendations" label="30452" help="30462" type="string">
+                    <level>0</level>
+                    <default>30</default>
+                    <constraints>
+                        <options>
+                            <option label="30006">5</option>
+                            <option label="30007">10</option>
+                            <option label="30008">20</option>
+                            <option label="30009">30</option>
+                            <option label="30010">40</option>
+                            <option label="30011">50</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                </setting>
+            </group>
+            <group id="3" label="30506">
+                <setting id="watch_series_skip_watched" label="30457" help="30467" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="watch_series_seed_limit" label="30455" help="30465" type="string">
+                    <level>0</level>
+                    <default>5</default>
+                    <constraints>
+                        <options>
+                            <option label="30006">1</option>
+                            <option label="30007">2</option>
+                            <option label="30008">3</option>
+                            <option label="30009">4</option>
+                            <option label="30010">5</option>
+                            <option label="30011">6</option>
+                            <option label="30012">7</option>
+                            <option label="30013">8</option>
+                            <option label="30014">9</option>
+                            <option label="30015">10</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                </setting>
+                <setting id="watch_series_max_recommendations" label="30456" help="30466" type="string">
+                    <level>0</level>
+                    <default>30</default>
+                    <constraints>
+                        <options>
+                            <option label="30006">5</option>
+                            <option label="30007">10</option>
+                            <option label="30008">20</option>
+                            <option label="30009">30</option>
+                            <option label="30010">40</option>
+                            <option label="30011">50</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                </setting>
+            </group>
+            <group id="4" label="30533">
+                <setting id="random_enabled" label="30515" help="30524" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="random_exclude_seen" label="30520" help="30529" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="random_seed_type" label="30516" help="30525" type="string">
+                    <level>0</level>
+                    <default>mixed</default>
+                    <constraints>
+                        <options>
+                            <option label="MIXED">mixed</option>
+                            <option label="FILMY">movie</option>
+                            <option label="SERIÁLY">tv</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                </setting>
+                <setting id="random_trending_window" label="30517" help="30526" type="string">
+                    <level>0</level>
+                    <default>week</default>
+                    <constraints>
+                        <options>
+                            <option label="DEN">day</option>
+                            <option label="TÝDEN">week</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                </setting>
+                <setting id="random_max_attempts" label="30518" help="30527" type="integer">
+                    <level>0</level>
+                    <default>3</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>10</maximum>
+                    </constraints>
+                    <control type="edit" format="integer"/>
+                </setting>
+                <setting id="random_trending_pages" label="30519" help="30528" type="integer">
+                    <level>0</level>
+                    <default>5</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>20</maximum>
+                    </constraints>
+                    <control type="edit" format="integer"/>
+                </setting>
+                <setting id="random_require_dabing" label="30522" help="30531" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="random_require_quality" label="30523" help="30532" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="random_source_strategy" label="30521" help="30530" type="string">
+                    <level>0</level>
+                    <default>first</default>
+                    <constraints>
+                        <options>
+                            <option label="PRVNÍ DOSTUPNÝ">first</option>
+                            <option label="NÁHODNĚ">random</option>
+                            <option label="KVALITA">quality</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                </setting>
+            </group>
+            <group id="5" label="32510">
+                <setting id="tmdb_find_similar_limit" label="31010" help="31011" type="integer">
+                    <level>0</level>
+                    <default>20</default>
+                    <constraints>
+                        <options>
+                            <option label="31012">5</option>
+                            <option label="31013">10</option>
+                            <option label="31014">15</option>
+                            <option label="31015">20</option>
+                            <option label="31016">30</option>
+                            <option label="31017">50</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                </setting>
+                <setting id="tmdb_similar_min_rating" label="31020" help="31021" type="string">
+                    <level>0</level>
+                    <default>6.0</default>
+                    <constraints>
+                        <options>
+                            <option label="31022">0.0</option>
+                            <option label="31023">5.0</option>
+                            <option label="31024">6.0</option>
+                            <option label="31025">7.0</option>
+                            <option label="31026">8.0</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                </setting>
+                <setting id="tmdb_similar_source" label="31030" help="31031" type="integer">
+                    <level>0</level>
+                    <default>1</default>
+                    <constraints>
+                        <options>
+                            <option label="31032">0</option>
+                            <option label="31033">1</option>
+                            <option label="31034">2</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                </setting>
+            </group>
+        </category>
+
+        <!--  SYSTÉMOVÉ  -->
+
+        <category id="category_8" label="30157">
+            <group id="1"/>
+            <group id="2" label="30158">
+                <setting id="enable_most_watched_cache" label="30167" help="30369" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="tmdb_language" label="30159" help="30367" type="string">
+                    <level>0</level>
+                    <default>cs_CZ</default>
+                    <constraints>
+                        <options>
+                            <option label="30160">auto</option>
+                            <option label="30161">cs_CZ</option>
+                            <option label="30162">en_GB</option>
+                            <option label="30163">en_US</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                </setting>
+                <setting id="trakt_language" label="30164" help="30368" type="string">
+                    <level>0</level>
+                    <default>cs</default>
+                    <constraints>
+                        <options>
+                            <option label="30165">cs</option>
+                            <option label="30166">en</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                </setting>
+                <setting id="episode_notify_interval" label="30168" help="30370" type="integer">
+                    <level>0</level>
+                    <default>24</default>
+                    <control type="edit" format="integer"/>
+                </setting>
+                <setting id="episode_air_time" label="30169" help="30371" type="string">
+                    <level>0</level>
+                    <default>7</default>
+                    <constraints>
+                        <options>
+                            <option label="30006">1</option>
+                            <option label="30007">2</option>
+                            <option label="30008">3</option>
+                            <option label="30009">4</option>
+                            <option label="30010">5</option>
+                            <option label="30011">6</option>
+                            <option label="30012">7</option>
+                            <option label="30170">14</option>
+                            <option label="30095">30</option>
+                            <option label="30171">60</option>
+                            <option label="30172">90</option>
+                            <option label="30173">120</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                </setting>
+            </group>
+            <group id="3" label="30174">
+                <setting id="disable_notify_ok" label="30176" help="30373" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="disable_notify_info" label="30177" help="30374" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="disable_notify_error" label="30178" help="30375" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="disable_notify_acc" label="30179" help="30376" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="notify_premium_expiry" label="30692" help="30693" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="disable_episode_notify" label="30182" help="30379" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+            </group>
+            <group id="4" label="30184">
+                <setting id="filter_display_title_tmdb" label="30185" help="30381" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="filter_display_title_search" label="30186" help="30382" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="filter_display_title_watch" label="30187" help="30383" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="filter_display_title_library" label="30188" help="30384" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="filter_display_title_manager" label="30189" help="30385" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="filter_display_title_history" label="30190" help="30386" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="filter_actor_tv_shows" label="30191" help="30387" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="filter_tmdb_language" label="30192" help="30388" type="string">
+                    <level>0</level>
+                    <default>SOFT</default>
+                    <constraints>
+                        <options>
+                            <option label="30193">OFF</option>
+                            <option label="30194">SOFT</option>
+                            <option label="30195">HARD</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                </setting>
+                <setting id="startup_install_tmdb_players" label="32800" help="32801" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="startup_install_tmdb_cz" label="32802" help="32803" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="startup_install_af3_cz" label="32804" help="32805" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="startup_install_shortcut" label="32806" help="32807" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="enable_auto_repair" label="31060" help="31061" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="metrics_enabled" label="30950" help="30951" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="logging_level" label="30196" help="30389" type="integer">
+                    <level>0</level>
+                    <default>1</default>
+                    <constraints>
+                        <minimum>0</minimum>
+                        <maximum>4</maximum>
+                        <options>
+                            <option label="30510">0</option>
+                            <option label="30511">1</option>
+                            <option label="30512">2</option>
+                            <option label="30513">3</option>
+                            <option label="30514">4</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="integer"/>
+                </setting>
+                <setting id="security_bypass" label="30197" help="30390" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="security_bypass">hidden</condition>
+                        </dependency>
+                    </dependencies>
+                    <control type="toggle"/>
+                </setting>
+            </group>
+        </category>
+
+        <!--  SOUBORY  -->
+
+        <category id="category_9" label="30198">
+            <group id="1"/>
+            <group id="2" label="30502">
+                <setting id="FAKE-FILES" label="30199" help="30391" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="cache_ttl_userdata" label="30200" help="30392" type="integer">
+                    <level>0</level>
+                    <default>365</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>365</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="edit" format="integer"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-FILES">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="cache_ttl_csfd" label="30201" help="30393" type="integer">
+                    <level>0</level>
+                    <default>24</default>
+                    <control type="edit" format="integer"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-FILES">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="cache_ttl_tmdb" label="30202" help="30394" type="integer">
+                    <level>0</level>
+                    <default>24</default>
+                    <control type="edit" format="integer"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-FILES">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="cache_ttl_trakt" label="30203" help="30395" type="integer">
+                    <level>0</level>
+                    <default>24</default>
+                    <control type="edit" format="integer"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-FILES">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="cache_ttl_watch" label="30204" help="30396" type="integer">
+                    <level>0</level>
+                    <default>1</default>
+                    <control type="edit" format="integer"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-FILES">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="cache_ram_ttl" label="30205" help="30397" type="integer">
+                    <level>0</level>
+                    <default>1</default>
+                    <control type="edit" format="integer"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-FILES">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="cache_ram_size" label="30206" help="30398" type="string">
+                    <level>0</level>
+                    <default>2000</default>
+                    <constraints>
+                        <options>
+                            <option label="30075">500</option>
+                            <option label="30207">750</option>
+                            <option label="30076">1000</option>
+                            <option label="30208">1500</option>
+                            <option label="30209">2000</option>
+                            <option label="30210">3000</option>
+                            <option label="30211">4000</option>
+                            <option label="30077">5000</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-FILES">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+            </group>
+            <group id="3" label="30212">
+                <setting id="download" label="30213" help="30399" type="path">
+                    <level>0</level>
+                    <default>special://userdata/DATA--PLAY/DOWNLOAD</default>
+                    <control type="button" format="path"/>
+                </setting>
+                <setting id="library_path" label="30214" help="30215" type="path">
+                    <level>0</level>
+                    <default>special://userdata/DATA--PLAY/LIBRARY</default>
+                    <control type="button" format="path"/>
+                </setting>
+                <setting id="history_dir" label="30216" help="30400" type="path">
+                    <level>0</level>
+                    <default>special://userdata/DATA--PLAY/HISTORY</default>
+                    <control type="button" format="path"/>
+                </setting>
+            </group>
+        </category>
+
+        <!--  DATABÁZE  -->
+
+        <category id="category_10" label="30217">
+            <group id="1"/>
+            <group id="2" label="30218">
+                <setting id="db_type" label="30503" help="30220" type="string">
+                    <level>0</level>
+                    <default>SQLite</default>
+                    <constraints>
+                        <options>
+                            <option label="30221">SQLite</option>
+                            <option label="30222">MySQL (MariaDB)</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                </setting>
+                <setting id="cache_data_path" label="30223" help="30401" type="path">
+                    <level>0</level>
+                    <default>special://userdata/DATA--PLAY/CACHE-DATA/</default>
+                    <control type="button" format="path"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="db_type">SQLite</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="db_host" label="30225" help="30402" type="string">
+                    <level>0</level>
+                    <default>127.0.0.1</default>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="db_type">MySQL (MariaDB)</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="db_port" label="30226" help="30403" type="integer">
+                    <level>0</level>
+                    <default>3306</default>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="integer"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="db_type">MySQL (MariaDB)</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="db_name" label="30227" help="30404" type="string">
+                    <level>0</level>
+                    <default>XBMC--PLAY.ER</default>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="db_type">MySQL (MariaDB)</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="db_user" label="30228" help="30405" type="string">
+                    <level>0</level>
+                    <default>root</default>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="db_type">MySQL (MariaDB)</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="db_pass" label="30229" help="30406" type="string">
+                    <level>0</level>
+                    <default>PLAYER123!</default>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string" hidden="true"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="db_type">MySQL (MariaDB)</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="db_timeout" label="30230" help="30407" type="integer">
+                    <level>0</level>
+                    <default>10</default>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="integer"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="db_type">MySQL (MariaDB)</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="db_pool_size" label="30231" help="30408" type="integer">
+                    <level>0</level>
+                    <default>10</default>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="integer"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="db_type">MySQL (MariaDB)</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+            </group>
+        </category>
+
+        <!--  PROVIDERS  -->
+
+        <category id="category_11" label="30232">
+            <group id="1"/>
+            <group id="2" label="30233">
+                <setting id="FAKE-PROVIDER" label="30234" help="30409" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="enable_multi_provider" label="30235" help="30410" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-PROVIDER">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="multi_provider_sort" label="30236" help="30411" type="string">
+                    <level>0</level>
+                    <default>PREHRAJ.TO</default>
+                    <constraints>
+                        <options>
+                            <option label="30237">PREHRAJ.TO</option>
+                            <option label="30238">WEBSHARE.CZ</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-PROVIDER">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="active_provider" label="30239" help="30412" type="string">
+                    <level>0</level>
+                    <default>PREHRAJ.TO</default>
+                    <constraints>
+                        <options>
+                            <option label="30237">PREHRAJ.TO</option>
+                            <option label="30238">WEBSHARE.CZ</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-PROVIDER">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="FAKE-PREHRAJTO" label="30240" help="30413" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="enable_auto_register" label="32507" help="32508" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-PREHRAJTO">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="email" label="30241" help="30414" type="string">
+                    <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-PREHRAJTO">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="password" label="30242" help="30415" type="string">
+                    <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-PREHRAJTO">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="prehrajto_token_ttl" label="32620" help="32621" type="integer">
+                    <level>0</level>
+                    <default>50</default>
+                    <constraints>
+                        <minimum>5</minimum>
+                        <maximum>180</maximum>
+                        <step>5</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-PREHRAJTO">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="FAKE-WEBSHARE" label="30243" help="30416" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="webshare_username" label="30244" help="30417" type="string">
+                    <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-WEBSHARE">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="webshare_password" label="30245" help="30418" type="string">
+                    <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-WEBSHARE">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="webshare_token" label="30246" help="30419" type="string">
+                    <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-WEBSHARE">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="FAKE-TRAKT-ACCOUNT" label="32808" help="32809" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="trakt_login" label="32513" help="32514" type="action">
+                    <level>0</level>
+                    <data>RunPlugin(plugin://plugin.video.play_er/?action=trakt_authenticate)</data>
+                    <control type="button" format="action">
+                        <close>true</close>
+                    </control>
+                </setting>
+                <setting id="trakt_client_id" label="30249" help="30422" type="string">
+                    <level>0</level>
+                    <default></default>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-TRAKT-ACCOUNT">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="trakt_client_secret" label="30250" help="30423" type="string">
+                    <level>0</level>
+                    <default></default>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-TRAKT-ACCOUNT">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="trakt_access_token" label="30251" help="30424" type="string">
+                    <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-TRAKT-ACCOUNT">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="trakt_refresh_token" label="30252" help="30425" type="string">
+                    <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-TRAKT-ACCOUNT">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="FAKE-TMDB" label="30247" help="" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="tmdb_login" label="32645" help="32646" type="action">
+                    <level>0</level>
+                    <data>RunPlugin(plugin://plugin.video.play_er/?action=tmdb_login)</data>
+                    <control type="button" format="action">
+                        <close>true</close>
+                    </control>
+                </setting>
+                <setting id="api_key" label="30248" help="30421" type="string">
+                    <level>0</level>
+                    <default>f090bb54758cabf231fb605d3e3e0468</default>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-TMDB">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="FAKE-STREMIO" label="32512" help="" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="stremio_manifest_url" label="30918" help="30919" type="string">
+                    <level>0</level>
+                    <default>https://katalog.streamstr.stream/Gz4GYByFcWO9i78c2lvERJEG20p9ocG_p2pDdoiIs7ZYCA_wbmvBoN4ZisnUYenyHy_VMv-PnaaZr3vYtOoaCTaWozuwipcKVpAq6jZHCoGvM7va4delAg6iUc-UW-jGFtqkwXgr-KCIH9_hJj9Iqxghc4fSYUwt8LwPnVWKY4KAARBpV9b9wCqB3U612KKI7IYF7QIp1NMa-3N3aRtWj-EoyZAiTYbcrx0pzjqyo5VSVDziI1udv-PaIQc_RYs2HXqHnFugYur64AUAF5AAqmkXiASSY8SE6STScuaamXzic6sAISpOXLhOJCVrtrnJKz61rF6PEMgSi8Pa0GCw_R6GbjSy8rMunZaCvr1azXRIaJ80MxmfS3s_Wx25KP4EHwdC0CBBgw0ORChOV8tG_dbX3cB75W9-B2BbsGbF1GbQc6UVzgzmpw3ILLXwkjulKUTNx2zD50kF0cKWy5ExFXJnfWid-dWkkf4ECMxkrg6Nz-h-hPXI-zivy44O1UuEFdbXLnbh9SFrqtWA6alW49VP/manifest.json</default>
+                    <constraints>
+                        <allowempty>false</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-STREMIO">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+            </group>
+        </category>
+
+        <!--  INTEGRACE  -->
+
+        <category id="category_12" label="30253">
+            <group id="1"/>
+            <group id="2" label="30254">
+                <setting id="FAKE-TELEGRAM" label="30255" help="30426" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="enable_telegram_notifications" label="30256" help="30257" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-TELEGRAM">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="telegram_chat_id" label="30258" help="30427" type="string">
+                    <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-TELEGRAM">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="telegram_bot_token" label="30259" help="30428" type="string">
+                    <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-TELEGRAM">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+            </group>
+            <group id="3" label="30260">
+                <setting id="FAKE-TELEGRAM-BACKUP" label="30261" help="30429" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="backup_path_1" label="30262" help="30430" type="path">
+                    <level>0</level>
+                    <default>special://userdata/addon_data/plugin.video.play_er</default>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="button" format="path"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-TELEGRAM-BACKUP">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="backup_path_2" label="30263" help="30431" type="path">
+                    <level>0</level>
+                    <default>special://home/addons/plugin.video.play_er</default>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="button" format="path"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-TELEGRAM-BACKUP">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="backup_path_3" label="30264" help="30432" type="path">
+                    <level>0</level>
+                    <default></default>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="button" format="path"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-TELEGRAM-BACKUP">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="backup_path_4" label="30265" help="30433" type="path">
+                    <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="button" format="path"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-TELEGRAM-BACKUP">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="backup_path_5" label="30266" help="30434" type="path">
+                    <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="button" format="path"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-TELEGRAM-BACKUP">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="backup_file_1" label="32750" help="32751" type="path">
+                    <level>0</level>
+                    <default>special://userdata/addon_data/plugin.video.themoviedb.helper/settings.xml</default>
+                    <constraints>
+                        <writable>false</writable>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="button" format="file"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-TELEGRAM-BACKUP">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="backup_file_2" label="32752" help="32753" type="path">
+                    <level>0</level>
+                    <default></default>
+                    <constraints>
+                        <writable>false</writable>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="button" format="file"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-TELEGRAM-BACKUP">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="backup_file_3" label="32754" help="32755" type="path">
+                    <level>0</level>
+                    <default></default>
+                    <constraints>
+                        <writable>false</writable>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="button" format="file"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-TELEGRAM-BACKUP">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="backup_file_4" label="32756" help="32757" type="path">
+                    <level>0</level>
+                    <default></default>
+                    <constraints>
+                        <writable>false</writable>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="button" format="file"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-TELEGRAM-BACKUP">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="backup_file_5" label="32758" help="32759" type="path">
+                    <level>0</level>
+                    <default></default>
+                    <constraints>
+                        <writable>false</writable>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="button" format="file"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-TELEGRAM-BACKUP">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+            </group>
+            <group id="4" label="30900">
+                <setting id="enable_community_sharing" label="30850" help="30851" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="telegram_master_device" label="30936" help="30937" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="enable_community_sharing">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="community_notify_sound" label="30862" help="30863" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="enable_community_sharing">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="community_history_size" label="30860" help="30861" type="string">
+                    <level>0</level>
+                    <default>200</default>
+                    <constraints>
+                        <options>
+                            <option label="30066">50</option>
+                            <option label="30067">100</option>
+                            <option label="30069">200</option>
+                            <option label="30075">500</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="enable_community_sharing">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="community_poll_interval" label="30960" help="30961" type="string">
+                    <level>0</level>
+                    <default>60</default>
+                    <constraints>
+                        <options>
+                            <option label="30962">5</option>
+                            <option label="30963">10</option>
+                            <option label="30964">15</option>
+                            <option label="30965">30</option>
+                            <option label="30966">60</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="enable_community_sharing">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="community_api_key" label="30934" help="30935" type="string">
+                    <level>0</level>
+                    <default>plugin.video.player</default>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="enable_community_sharing">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="community_api_url" label="30932" help="30933" type="string">
+                    <level>0</level>
+                    <default>https://xbmc.south-fork.uk/SERVER/addon-sharing.php</default>
+                    <constraints>
+                        <allowempty>false</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="enable_community_sharing">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+            </group>
+        </category>
+
+        <!--  MENU CUSTOMIZATION  -->
+
+        <category id="category_13" label="30701">
+            <group id="1"/>
+            <group id="2" label="30732">
+                <setting id="menu_order_list_random_keyword_submenu" label="30733" type="integer">
+                    <level>0</level>
+                    <default>1</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_listing_search" label="30734" type="integer">
+                    <level>0</level>
+                    <default>2</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_search_gemini" label="31052" type="integer">
+                    <level>0</level>
+                    <default>3</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_ai_recommend_for_me" label="31055" type="integer">
+                    <level>0</level>
+                    <default>4</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_ai_daily_mix" label="31087" type="integer">
+                    <level>0</level>
+                    <default>5</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_ai_mood_matcher" label="31088" type="integer">
+                    <level>0</level>
+                    <default>6</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_playback_history" label="30735" type="integer">
+                    <level>0</level>
+                    <default>7</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_list_recommendations_from_history" label="30737" type="integer">
+                    <level>0</level>
+                    <default>8</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_list_recommendations_from_history_series" label="30738" type="integer">
+                    <level>0</level>
+                    <default>8</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_list_watch_later" label="30758" type="integer">
+                    <level>0</level>
+                    <default>9</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_list_recommendations_from_watch_later" label="30739" type="integer">
+                    <level>0</level>
+                    <default>10</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_list_recommendations_from_watch_later_series" label="30740" type="integer">
+                    <level>0</level>
+                    <default>11</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_random_trigger_main" label="30741" type="integer">
+                    <level>0</level>
+                    <default>12</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_sharing_history" label="30938" type="integer">
+                    <level>0</level>
+                    <default>13</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_list_new_episodes_content" label="30757" type="integer">
+                    <level>0</level>
+                    <default>14</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_continue_trigger_main" label="30742" type="integer">
+                    <level>0</level>
+                    <default>15</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_listing_movie_category" label="30743" type="integer">
+                    <level>0</level>
+                    <default>16</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_listing_serie_category" label="30744" type="integer">
+                    <level>0</level>
+                    <default>17</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_stremio_dabing_menu" label="30924" type="integer">
+                    <level>0</level>
+                    <default>18</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_stremio_charts_menu" label="30925" type="integer">
+                    <level>0</level>
+                    <default>19</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_stremio_csfd_menu" label="30947" type="integer">
+                    <level>0</level>
+                    <default>20</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_stremio_imdb_menu" label="30952" type="integer">
+                    <level>0</level>
+                    <default>21</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_stremio_studios_menu" label="30926" type="integer">
+                    <level>0</level>
+                    <default>22</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_stremio_vod_menu" label="30927" type="integer">
+                    <level>0</level>
+                    <default>23</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_stremio_search_menu" label="30945" type="integer">
+                    <level>0</level>
+                    <default>24</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_bonus_menu" label="30746" type="integer">
+                    <level>0</level>
+                    <default>25</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_tmdb_menu" label="30745" type="integer">
+                    <level>0</level>
+                    <default>26</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_csfd_menu" label="30747" type="integer">
+                    <level>0</level>
+                    <default>27</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_csfd_menu_lists" label="30748" type="integer">
+                    <level>0</level>
+                    <default>28</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_trakt_menu" label="30749" type="integer">
+                    <level>0</level>
+                    <default>29</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_most_watched" label="30750" type="integer">
+                    <level>0</level>
+                    <default>30</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_prehrajto_history" label="30751" type="integer">
+                    <level>0</level>
+                    <default>31</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_series_menu" label="30752" type="integer">
+                    <level>0</level>
+                    <default>32</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_shell_launcher_menu" label="30753" type="integer">
+                    <level>0</level>
+                    <default>33</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_diagnose_speed" label="30754" type="integer">
+                    <level>0</level>
+                    <default>34</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_select_provider" label="30755" type="integer">
+                    <level>0</level>
+                    <default>35</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_register_play_mail" label="30756" type="integer">
+                    <level>0</level>
+                    <default>36</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+                <setting id="menu_order_open_library" label="30736" type="integer">
+                    <level>0</level>
+                    <default>37</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>40</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="spinner" format="integer"/>
+                </setting>
+            </group>
+
+            <!--  MAIN MENU  |  ITEM NAME  -->
+
+            <group id="3" label="30702">
+                <setting id="menu_label_list_random_keyword_submenu" label="30731" type="string">
+                    <level>0</level>
+                    <default>[COLOR orange][  FINDTAG  ] [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_listing_search" label="30705" type="string">
+                    <level>0</level>
+                    <default>[COLOR orange][  HLEDÁNÍ  ] [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_search_gemini" label="31050" type="string">
+                    <level>0</level>
+                    <default>[COLOR orchid][  AI-SCRIPT  ] [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_ai_recommend_for_me" label="31053" type="string">
+                    <level>0</level>
+                    <default>[COLOR orchid][  AI-WHISP  ] [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_ai_daily_mix" label="31090" type="string">
+                    <level>0</level>
+                    <default>[COLOR orchid][  AI-TODAY  ] [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_ai_mood_matcher" label="31091" type="string">
+                    <level>0</level>
+                    <default>[COLOR orchid][  AI-MOOD  ] [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_playback_history" label="30706" type="string">
+                    <level>0</level>
+                    <default>[COLOR orange]► PLAY-BACK [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_list_recommendations_from_history" label="30708" type="string">
+                    <level>0</level>
+                    <default>[COLOR orange]► PLAY-MOVIE [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_list_recommendations_from_history_series" label="30709" type="string">
+                    <level>0</level>
+                    <default>[COLOR orange]► PLAY-SHOW [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_list_watch_later" label="30730" type="string">
+                    <level>0</level>
+                    <default>[COLOR orange]► WATCH-LATER [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_list_recommendations_from_watch_later" label="30710" type="string">
+                    <level>0</level>
+                    <default>[COLOR orange]► WATCH-MOVIE [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_list_recommendations_from_watch_later_series" label="30711" type="string">
+                    <level>0</level>
+                    <default>[COLOR orange]► WATCH-SHOW [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_random_trigger_main" label="30712" type="string">
+                    <level>0</level>
+                    <default>[COLOR orange]► RANDOMIZE [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_sharing_history" label="30939" type="string">
+                    <level>0</level>
+                    <default>[COLOR orange]► BROADCAST [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_list_new_episodes_content" label="30729" type="string">
+                    <level>0</level>
+                    <default>[COLOR orange]► WATCHING :: {count} [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_continue_trigger_main" label="30713" type="string">
+                    <level>0</level>
+                    <default>[COLOR orange]► CONTINUE ! [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_listing_movie_category" label="30714" type="string">
+                    <level>0</level>
+                    <default>[COLOR orange]► TMDB-FILMY [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_listing_serie_category" label="30715" type="string">
+                    <level>0</level>
+                    <default>[COLOR orange]► TMDB-SERIÁLY [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_stremio_dabing_menu" label="30928" type="string">
+                    <level>0</level>
+                    <default>[COLOR orange]► STREMIO DABING [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_stremio_charts_menu" label="30929" type="string">
+                    <level>0</level>
+                    <default>[COLOR orange]► STREMIO ŽEBŘÍČKY [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_stremio_csfd_menu" label="30948" type="string">
+                    <level>0</level>
+                    <default>[COLOR orange]► STREMIO ČSFD [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_stremio_imdb_menu" label="30953" type="string">
+                    <level>0</level>
+                    <default>[COLOR orange]► STREMIO IMDB [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_stremio_studios_menu" label="30930" type="string">
+                    <level>0</level>
+                    <default>[COLOR orange]► STREMIO STUDIA [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_stremio_vod_menu" label="30931" type="string">
+                    <level>0</level>
+                    <default>[COLOR orange]► STREMIO SLUŽBY [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_stremio_search_menu" label="30946" type="string">
+                    <level>0</level>
+                    <default>[COLOR orange]► STREMIO HLEDÁNÍ [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_bonus_menu" label="30717" type="string">
+                    <level>0</level>
+                    <default>[COLOR orange]► TMDB XTRA [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_tmdb_menu" label="30716" type="string">
+                    <level>0</level>
+                    <default>[COLOR orange]► TMDB USER [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_csfd_menu" label="30718" type="string">
+                    <level>0</level>
+                    <default>[COLOR orange]► ČSFD TOPS [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_csfd_menu_lists" label="30719" type="string">
+                    <level>0</level>
+                    <default>[COLOR orange]► ČSFD LISTS [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_trakt_menu" label="30720" type="string">
+                    <level>0</level>
+                    <default>[COLOR orange]► TRAKT.TV [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_most_watched" label="30721" type="string">
+                    <level>0</level>
+                    <default>[COLOR orange]► SLEDOVANÉ [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_prehrajto_history" label="30722" type="string">
+                    <level>0</level>
+                    <default>[COLOR orange]► HISTORIE [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_series_menu" label="30723" type="string">
+                    <level>0</level>
+                    <default>[COLOR orange]► MANAGER [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_shell_launcher_menu" label="30724" type="string">
+                    <level>0</level>
+                    <default>[COLOR orange]► LAUNCHER [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_diagnose_speed" label="30725" type="string">
+                    <level>0</level>
+                    <default>[COLOR orange]► SPEEDTEST [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_select_provider" label="30726" type="string">
+                    <level>0</level>
+                    <default>[COLOR orange]► PROVIDERS [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_register_play_mail" label="30727" type="string">
+                    <level>0</level>
+                    <default>[COLOR orange]► REGISTRACE [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_open_library" label="30707" type="string">
+                    <level>0</level>
+                    <default>[COLOR orange]► KNIHOVNA [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="menu_label_open_settings" label="30728" type="string">
+                    <level>0</level>
+                    <default>[COLOR limegreen][ NASTAVENÍ ] [/COLOR]</default>
+                    <control type="edit" format="string"/>
+                </setting>
+            </group>
+
+            <!--  MAIN MENU  |  ITEM HIDE  -->
+
+            <group id="4" label="30759">
+                <setting id="menu_hide_list_random_keyword_submenu" label="30776" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_listing_search" label="30777" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_search_gemini" label="31051" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_ai_recommend_for_me" label="31054" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_ai_daily_mix" label="31093" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_ai_mood_matcher" label="31094" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_list_recommendations_from_history" label="30770" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_list_recommendations_from_history_series" label="30771" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_list_watch_later" label="30774" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_list_recommendations_from_watch_later" label="30772" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_list_recommendations_from_watch_later_series" label="30773" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_list_new_episodes_content" label="30785" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_random_trigger_main" label="30775" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_continue_trigger_main" label="30784" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_listing_movie_category" label="30778" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_listing_serie_category" label="30779" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_stremio_dabing_menu" label="30920" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_stremio_charts_menu" label="30921" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_stremio_csfd_menu" label="30949" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_stremio_imdb_menu" label="30954" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_stremio_studios_menu" label="30922" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_stremio_vod_menu" label="30923" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_stremio_search_menu" label="30944" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_bonus_menu" label="30781" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_tmdb_menu" label="30780" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_csfd_menu" label="30782" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_csfd_menu_lists" label="30783" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_trakt_menu" label="30766" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_most_watched" label="30760" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_prehrajto_history" label="30761" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_series_menu" label="30765" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_shell_launcher_menu" label="30767" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_diagnose_speed" label="30763" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_select_provider" label="30764" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_register_play_mail" label="30769" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_open_library" label="30768" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_hide_open_settings" label="30762" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+            </group>
+        </category>
+
+        <!--  TMDB-HELP  -->
+
+        <category id="category_15" label="32630">
+            <group id="1"/>
+            <group id="2" label="32630">
+                <setting id="tmdbhelper_setup_configuration" label="32669" help="32670" type="action">
+                    <level>0</level>
+                    <data>RunPlugin(plugin://plugin.video.play_er/?action=tmdbhelper_setup&amp;task=configure)</data>
+                    <control type="button" format="action"><close>true</close></control>
+                </setting>
+                <setting id="tmdbhelper_setup_library" label="32631" help="32641" type="action">
+                    <level>0</level>
+                    <data>RunPlugin(plugin://plugin.video.play_er/?action=tmdbhelper_setup&amp;task=database)</data>
+                    <control type="button" format="action"><close>true</close></control>
+                </setting>
+                <setting id="tmdbhelper_setup_search" label="32632" help="32642" type="action">
+                    <level>0</level>
+                    <data>RunPlugin(plugin://plugin.video.play_er/?action=tmdbhelper_setup&amp;task=search)</data>
+                    <control type="button" format="action"><close>true</close></control>
+                </setting>
+                <setting id="tmdbhelper_setup_api_keys" label="32633" help="32643" type="action">
+                    <level>0</level>
+                    <data>RunPlugin(plugin://plugin.video.play_er/?action=tmdbhelper_setup&amp;task=api_keys)</data>
+                    <control type="button" format="action"><close>true</close></control>
+                </setting>
+                <setting id="tmdbhelper_setup_players" label="32634" help="32644" type="action">
+                    <level>0</level>
+                    <data>RunPlugin(plugin://plugin.video.play_er/?action=tmdbhelper_setup&amp;task=players)</data>
+                    <control type="button" format="action"><close>true</close></control>
+                </setting>
+                <setting id="tmdbh_modal_wait_enable" label="32661" help="32662" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="tmdbh_modal_wait_timeout" label="32663" help="32664" type="integer">
+                    <level>0</level>
+                    <default>5</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <step>1</step>
+                        <maximum>15</maximum>
+                    </constraints>
+                    <control type="slider" format="integer"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="tmdbh_modal_wait_enable">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="tmdbh_modal_wait_interval" label="32665" help="32666" type="integer">
+                    <level>0</level>
+                    <default>50</default>
+                    <constraints>
+                        <minimum>25</minimum>
+                        <step>25</step>
+                        <maximum>500</maximum>
+                    </constraints>
+                    <control type="slider" format="integer"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="tmdbh_modal_wait_enable">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="tmdbh_modal_wait_fallback_open" label="32667" help="32668" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="tmdbh_modal_wait_enable">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+            </group>
+        </category>
+
+        <!--  VIEW MODE  -->
+
+        <category id="category_14" label="30267">
+            <group id="1"/>
+            <group id="2" label="30268">
+                <setting id="FAKE-TITLE" label="30269" help="30435" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="view_mode_main_menu" label="30270" help="30271" type="string">
+                    <level>0</level>
+                    <default>Široký seznam</default>
+                    <constraints>
+                        <options>
+                            <option label="30272">Seznam</option>
+                            <option label="30273">Plakát</option>
+                            <option label="30274">Shift</option>
+                            <option label="30275">InfoWall</option>
+                            <option label="30276">Široký seznam</option>
+                            <option label="30277">Dlaždice</option>
+                            <option label="30278">Banner</option>
+                            <option label="30279">Fanart</option>
+                            <option label="30280">Velký banner</option>
+                            <option label="30281">Nízký seznam</option>
+                            <option label="30282">Galerie</option>
+                            <option label="30283">Informační seznam plakátů</option>
+                            <option label="30284">Štítky</option>
+                            <option label="30285">Podnabídka</option>
+                            <option label="30286">Zeď s informacemi o médiích</option>
+                            <option label="30287">Základní informace o médiích</option>
+                            <option label="30288">Seznam skladeb s informacemi</option>
+                            <option label="30289">Seznam informací o médiích</option>
+                            <option label="30290">Velký čtvercový řádek</option>
+                            <option label="30291">Vesla čtvercová zeď</option>
+                            <option label="30292">Velká zeď na šířku</option>
+                            <option label="30293">Zeď plakátů</option>
+                            <option label="30294">Velký seznam plakátů</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-TITLE">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="view_mode_search" label="30295" help="30436" type="string">
+                    <level>0</level>
+                    <default>Plakát</default>
+                    <constraints>
+                        <options>
+                            <option label="30272">Seznam</option>
+                            <option label="30273">Plakát</option>
+                            <option label="30274">Shift</option>
+                            <option label="30275">InfoWall</option>
+                            <option label="30276">Široký seznam</option>
+                            <option label="30277">Dlaždice</option>
+                            <option label="30278">Banner</option>
+                            <option label="30279">Fanart</option>
+                            <option label="30280">Velký banner</option>
+                            <option label="30281">Nízký seznam</option>
+                            <option label="30282">Galerie</option>
+                            <option label="30283">Informační seznam plakátů</option>
+                            <option label="30284">Štítky</option>
+                            <option label="30285">Podnabídka</option>
+                            <option label="30286">Zeď s informacemi o médiích</option>
+                            <option label="30287">Základní informace o médiích</option>
+                            <option label="30288">Seznam skladeb s informacemi</option>
+                            <option label="30289">Seznam informací o médiích</option>
+                            <option label="30290">Velký čtvercový řádek</option>
+                            <option label="30291">Vesla čtvercová zeď</option>
+                            <option label="30292">Velká zeď na šířku</option>
+                            <option label="30293">Zeď plakátů</option>
+                            <option label="30294">Velký seznam plakátů</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-TITLE">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="view_mode_search_history" label="30296" help="30437" type="string">
+                    <level>0</level>
+                    <default>Široký seznam</default>
+                    <constraints>
+                        <options>
+                            <option label="30272">Seznam</option>
+                            <option label="30273">Plakát</option>
+                            <option label="30274">Shift</option>
+                            <option label="30275">InfoWall</option>
+                            <option label="30276">Široký seznam</option>
+                            <option label="30277">Dlaždice</option>
+                            <option label="30278">Banner</option>
+                            <option label="30279">Fanart</option>
+                            <option label="30280">Velký banner</option>
+                            <option label="30281">Nízký seznam</option>
+                            <option label="30282">Galerie</option>
+                            <option label="30283">Informační seznam plakátů</option>
+                            <option label="30284">Štítky</option>
+                            <option label="30285">Podnabídka</option>
+                            <option label="30286">Zeď s informacemi o médiích</option>
+                            <option label="30287">Základní informace o médiích</option>
+                            <option label="30288">Seznam skladeb s informacemi</option>
+                            <option label="30289">Seznam informací o médiích</option>
+                            <option label="30290">Velký čtvercový řádek</option>
+                            <option label="30291">Vesla čtvercová zeď</option>
+                            <option label="30292">Velká zeď na šířku</option>
+                            <option label="30293">Zeď plakátů</option>
+                            <option label="30294">Velký seznam plakátů</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-TITLE">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="view_mode_playback_history" label="30297" help="30438" type="string">
+                    <level>0</level>
+                    <default>Široký seznam</default>
+                    <constraints>
+                        <options>
+                            <option label="30272">Seznam</option>
+                            <option label="30273">Plakát</option>
+                            <option label="30274">Shift</option>
+                            <option label="30275">InfoWall</option>
+                            <option label="30276">Široký seznam</option>
+                            <option label="30277">Dlaždice</option>
+                            <option label="30278">Banner</option>
+                            <option label="30279">Fanart</option>
+                            <option label="30280">Velký banner</option>
+                            <option label="30281">Nízký seznam</option>
+                            <option label="30282">Galerie</option>
+                            <option label="30283">Informační seznam plakátů</option>
+                            <option label="30284">Štítky</option>
+                            <option label="30285">Podnabídka</option>
+                            <option label="30286">Zeď s informacemi o médiích</option>
+                            <option label="30287">Základní informace o médiích</option>
+                            <option label="30288">Seznam skladeb s informacemi</option>
+                            <option label="30289">Seznam informací o médiích</option>
+                            <option label="30290">Velký čtvercový řádek</option>
+                            <option label="30291">Vesla čtvercová zeď</option>
+                            <option label="30292">Velká zeď na šířku</option>
+                            <option label="30293">Zeď plakátů</option>
+                            <option label="30294">Velký seznam plakátů</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-TITLE">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="view_mode_most_watched" label="30298" help="30439" type="string">
+                    <level>0</level>
+                    <default>Široký seznam</default>
+                    <constraints>
+                        <options>
+                            <option label="30272">Seznam</option>
+                            <option label="30273">Plakát</option>
+                            <option label="30274">Shift</option>
+                            <option label="30275">InfoWall</option>
+                            <option label="30276">Široký seznam</option>
+                            <option label="30277">Dlaždice</option>
+                            <option label="30278">Banner</option>
+                            <option label="30279">Fanart</option>
+                            <option label="30280">Velký banner</option>
+                            <option label="30281">Nízký seznam</option>
+                            <option label="30282">Galerie</option>
+                            <option label="30283">Informační seznam plakátů</option>
+                            <option label="30284">Štítky</option>
+                            <option label="30285">Podnabídka</option>
+                            <option label="30286">Zeď s informacemi o médiích</option>
+                            <option label="30287">Základní informace o médiích</option>
+                            <option label="30288">Seznam skladeb s informacemi</option>
+                            <option label="30289">Seznam informací o médiích</option>
+                            <option label="30290">Velký čtvercový řádek</option>
+                            <option label="30291">Vesla čtvercová zeď</option>
+                            <option label="30292">Velká zeď na šířku</option>
+                            <option label="30293">Zeď plakátů</option>
+                            <option label="30294">Velký seznam plakátů</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-TITLE">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="view_mode_csfd_tips" label="30299" help="30440" type="string">
+                    <level>0</level>
+                    <default>Široký seznam</default>
+                    <constraints>
+                        <options>
+                            <option label="30272">Seznam</option>
+                            <option label="30273">Plakát</option>
+                            <option label="30274">Shift</option>
+                            <option label="30275">InfoWall</option>
+                            <option label="30276">Široký seznam</option>
+                            <option label="30277">Dlaždice</option>
+                            <option label="30278">Banner</option>
+                            <option label="30279">Fanart</option>
+                            <option label="30280">Velký banner</option>
+                            <option label="30281">Nízký seznam</option>
+                            <option label="30282">Galerie</option>
+                            <option label="30283">Informační seznam plakátů</option>
+                            <option label="30284">Štítky</option>
+                            <option label="30285">Podnabídka</option>
+                            <option label="30286">Zeď s informacemi o médiích</option>
+                            <option label="30287">Základní informace o médiích</option>
+                            <option label="30288">Seznam skladeb s informacemi</option>
+                            <option label="30289">Seznam informací o médiích</option>
+                            <option label="30290">Velký čtvercový řádek</option>
+                            <option label="30291">Vesla čtvercová zeď</option>
+                            <option label="30292">Velká zeď na šířku</option>
+                            <option label="30293">Zeď plakátů</option>
+                            <option label="30294">Velký seznam plakátů</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-TITLE">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="FAKE-MOVIE" label="30300" help="30441" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="view_mode_movies" label="30301" help="30442" type="string">
+                    <level>0</level>
+                    <default>Široký seznam</default>
+                    <constraints>
+                        <options>
+                            <option label="30272">Seznam</option>
+                            <option label="30273">Plakát</option>
+                            <option label="30274">Shift</option>
+                            <option label="30275">InfoWall</option>
+                            <option label="30276">Široký seznam</option>
+                            <option label="30277">Dlaždice</option>
+                            <option label="30278">Banner</option>
+                            <option label="30279">Fanart</option>
+                            <option label="30280">Velký banner</option>
+                            <option label="30281">Nízký seznam</option>
+                            <option label="30282">Galerie</option>
+                            <option label="30283">Informační seznam plakátů</option>
+                            <option label="30284">Štítky</option>
+                            <option label="30285">Podnabídka</option>
+                            <option label="30286">Zeď s informacemi o médiích</option>
+                            <option label="30287">Základní informace o médiích</option>
+                            <option label="30288">Seznam skladeb s informacemi</option>
+                            <option label="30289">Seznam informací o médiích</option>
+                            <option label="30290">Velký čtvercový řádek</option>
+                            <option label="30291">Vesla čtvercová zeď</option>
+                            <option label="30292">Velká zeď na šířku</option>
+                            <option label="30293">Zeď plakátů</option>
+                            <option label="30294">Velký seznam plakátů</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-MOVIE">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="view_mode_movies_submenu" label="30302" help="30443" type="string">
+                    <level>0</level>
+                    <default>Široký seznam</default>
+                    <constraints>
+                        <options>
+                            <option label="30272">Seznam</option>
+                            <option label="30273">Plakát</option>
+                            <option label="30274">Shift</option>
+                            <option label="30275">InfoWall</option>
+                            <option label="30276">Široký seznam</option>
+                            <option label="30277">Dlaždice</option>
+                            <option label="30278">Banner</option>
+                            <option label="30279">Fanart</option>
+                            <option label="30280">Velký banner</option>
+                            <option label="30281">Nízký seznam</option>
+                            <option label="30282">Galerie</option>
+                            <option label="30283">Informační seznam plakátů</option>
+                            <option label="30284">Štítky</option>
+                            <option label="30285">Podnabídka</option>
+                            <option label="30286">Zeď s informacemi o médiích</option>
+                            <option label="30287">Základní informace o médiích</option>
+                            <option label="30288">Seznam skladeb s informacemi</option>
+                            <option label="30289">Seznam informací o médiích</option>
+                            <option label="30290">Velký čtvercový řádek</option>
+                            <option label="30291">Vesla čtvercová zeď</option>
+                            <option label="30292">Velká zeď na šířku</option>
+                            <option label="30293">Zeď plakátů</option>
+                            <option label="30294">Velký seznam plakátů</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-MOVIE">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="FAKE-SERIES" label="30303" help="30444" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="view_mode_tvshows" label="30304" help="30445" type="string">
+                    <level>0</level>
+                    <default>Široký seznam</default>
+                    <constraints>
+                        <options>
+                            <option label="30272">Seznam</option>
+                            <option label="30273">Plakát</option>
+                            <option label="30274">Shift</option>
+                            <option label="30275">InfoWall</option>
+                            <option label="30276">Široký seznam</option>
+                            <option label="30277">Dlaždice</option>
+                            <option label="30278">Banner</option>
+                            <option label="30279">Fanart</option>
+                            <option label="30280">Velký banner</option>
+                            <option label="30281">Nízký seznam</option>
+                            <option label="30282">Galerie</option>
+                            <option label="30283">Informační seznam plakátů</option>
+                            <option label="30284">Štítky</option>
+                            <option label="30285">Podnabídka</option>
+                            <option label="30286">Zeď s informacemi o médiích</option>
+                            <option label="30287">Základní informace o médiích</option>
+                            <option label="30288">Seznam skladeb s informacemi</option>
+                            <option label="30289">Seznam informací o médiích</option>
+                            <option label="30290">Velký čtvercový řádek</option>
+                            <option label="30291">Vesla čtvercová zeď</option>
+                            <option label="30292">Velká zeď na šířku</option>
+                            <option label="30293">Zeď plakátů</option>
+                            <option label="30294">Velký seznam plakátů</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-SERIES">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="view_mode_tvshows_submenu" label="30305" help="30446" type="string">
+                    <level>0</level>
+                    <default>Široký seznam</default>
+                    <constraints>
+                        <options>
+                            <option label="30272">Seznam</option>
+                            <option label="30273">Plakát</option>
+                            <option label="30274">Shift</option>
+                            <option label="30275">InfoWall</option>
+                            <option label="30276">Široký seznam</option>
+                            <option label="30277">Dlaždice</option>
+                            <option label="30278">Banner</option>
+                            <option label="30279">Fanart</option>
+                            <option label="30280">Velký banner</option>
+                            <option label="30281">Nízký seznam</option>
+                            <option label="30282">Galerie</option>
+                            <option label="30283">Informační seznam plakátů</option>
+                            <option label="30284">Štítky</option>
+                            <option label="30285">Podnabídka</option>
+                            <option label="30286">Zeď s informacemi o médiích</option>
+                            <option label="30287">Základní informace o médiích</option>
+                            <option label="30288">Seznam skladeb s informacemi</option>
+                            <option label="30289">Seznam informací o médiích</option>
+                            <option label="30290">Velký čtvercový řádek</option>
+                            <option label="30291">Vesla čtvercová zeď</option>
+                            <option label="30292">Velká zeď na šířku</option>
+                            <option label="30293">Zeď plakátů</option>
+                            <option label="30294">Velký seznam plakátů</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-SERIES">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="view_mode_seasons" label="30306" help="30447" type="string">
+                    <level>0</level>
+                    <default>Široký seznam</default>
+                    <constraints>
+                        <options>
+                            <option label="30272">Seznam</option>
+                            <option label="30273">Plakát</option>
+                            <option label="30274">Shift</option>
+                            <option label="30275">InfoWall</option>
+                            <option label="30276">Široký seznam</option>
+                            <option label="30277">Dlaždice</option>
+                            <option label="30278">Banner</option>
+                            <option label="30279">Fanart</option>
+                            <option label="30280">Velký banner</option>
+                            <option label="30281">Nízký seznam</option>
+                            <option label="30282">Galerie</option>
+                            <option label="30283">Informační seznam plakátů</option>
+                            <option label="30284">Štítky</option>
+                            <option label="30285">Podnabídka</option>
+                            <option label="30286">Zeď s informacemi o médiích</option>
+                            <option label="30287">Základní informace o médiích</option>
+                            <option label="30288">Seznam skladeb s informacemi</option>
+                            <option label="30289">Seznam informací o médiích</option>
+                            <option label="30290">Velký čtvercový řádek</option>
+                            <option label="30291">Vesla čtvercová zeď</option>
+                            <option label="30292">Velká zeď na šířku</option>
+                            <option label="30293">Zeď plakátů</option>
+                            <option label="30294">Velký seznam plakátů</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-SERIES">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="view_mode_episodes" label="30307" help="30448" type="string">
+                    <level>0</level>
+                    <default>Široký seznam</default>
+                    <constraints>
+                        <options>
+                            <option label="30272">Seznam</option>
+                            <option label="30273">Plakát</option>
+                            <option label="30274">Shift</option>
+                            <option label="30275">InfoWall</option>
+                            <option label="30276">Široký seznam</option>
+                            <option label="30277">Dlaždice</option>
+                            <option label="30278">Banner</option>
+                            <option label="30279">Fanart</option>
+                            <option label="30280">Velký banner</option>
+                            <option label="30281">Nízký seznam</option>
+                            <option label="30282">Galerie</option>
+                            <option label="30283">Informační seznam plakátů</option>
+                            <option label="30284">Štítky</option>
+                            <option label="30285">Podnabídka</option>
+                            <option label="30286">Zeď s informacemi o médiích</option>
+                            <option label="30287">Základní informace o médiích</option>
+                            <option label="30288">Seznam skladeb s informacemi</option>
+                            <option label="30289">Seznam informací o médiích</option>
+                            <option label="30290">Velký čtvercový řádek</option>
+                            <option label="30291">Vesla čtvercová zeď</option>
+                            <option label="30292">Velká zeď na šířku</option>
+                            <option label="30293">Zeď plakátů</option>
+                            <option label="30294">Velký seznam plakátů</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                    <dependencies>
+                        <dependency type="visible">
+                            <condition operator="is" setting="FAKE-SERIES">true</condition>
+                        </dependency>
+                    </dependencies>
+                </setting>
+            </group>
+        </category>
+    </section>
+</settings>

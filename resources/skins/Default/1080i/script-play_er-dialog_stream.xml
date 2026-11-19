@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<window>
+    <animation effect="fade" start="0" end="100" time="200">WindowOpen</animation>
+    <animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
+
+    <controls>
+        <control type="group">
+            <centerleft>50%</centerleft>
+            <centertop>50%</centertop>
+            <width>1400</width>
+            <height>800</height>
+
+            <!-- =========================================================================
+            PODKRES OKNA (OBDÉLNÍKOVÉ POZADÍ) - Obdélníkové pozadí (white.webp) podle přání
+            ========================================================================== -->
+
+            <control type="image">
+                <!-- Fade only the panel background; keep content fully opaque. -->
+                <animation effect="fade" start="70" end="70" condition="true">Conditional</animation>
+                <left>0</left>
+                <top>0</top>
+                <width>1400</width>
+                <height>800</height>
+                <texture fallback="common/white.webp">common/white.webp</texture>
+                <colordiffuse>$INFO[Window.Property(play_er.Background)]</colordiffuse>
+            </control>
+
+            <control type="label">
+                <left>30</left>
+                <top>20</top>
+                <width>1340</width>
+                <height>40</height>
+                <font>font_head_bold</font>
+                <textcolor>FFFF9900</textcolor>
+                <align>center</align>
+                <label>[B] ○   STREAM DASHBOARD  ::  PLAYBACK CONTROL   ○ [/B]</label>
+            </control>
+
+            <control type="image">
+                <left>30</left>
+                <top>70</top>
+                <width>1340</width>
+                <height>2</height>
+                <texture>common/white.webp</texture>
+                <colordiffuse>33FFFFFF</colordiffuse>
+            </control>
+
+            <!-- ================= LEVÝ PANEL ================= -->
+
+            <control type="label">
+                <left>50</left>
+                <top>90</top>
+                <width>600</width>
+                <height>30</height>
+                <font>font_main_bold</font>
+                <textcolor>$INFO[Window.Property(play_er.Muted)]</textcolor>
+                <label> [    KVALITA STREAMU  /  SKIP CREDITS    ]</label>
+            </control>
+
+            <control type="list" id="1000">
+                <left>50</left>
+                <top>140</top>
+                <width>600</width>
+                <height>180</height>
+                <onup>4103</onup>
+                <ondown>4004</ondown>
+                <onright>3001</onright>
+                <pagecontrol>60</pagecontrol>
+                <scrolltime>200</scrolltime>
+
+                <itemlayout height="60" width="600">
+                    <control type="image">
+                        <left>0</left>
+                        <top>0</top>
+                        <width>100%</width>
+                        <height>50</height>
+                        <texture border="20" fallback="common/white.webp">common/selectbox_thin.webp</texture>
+                        <colordiffuse>26FFFFFF</colordiffuse>
+                    </control>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>560</width>
+                        <height>50</height>
+                        <font>font13</font>
+                        <textcolor>$INFO[Window.Property(play_er.Muted)]</textcolor>
+                        <label>$INFO[ListItem.Label]</label>
+                        <aligny>center</aligny>
+                    </control>
+                </itemlayout>
+
+                <focusedlayout height="60" width="600">
+                    <control type="image">
+                        <left>0</left>
+                        <top>0</top>
+                        <width>100%</width>
+                        <height>50</height>
+                        <texture border="20" fallback="common/white.webp">common/selectbox_thin.webp</texture>
+                        <colordiffuse>FFFF9900</colordiffuse>
+                    </control>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>560</width>
+                        <height>50</height>
+                        <font>font13</font>
+                        <textcolor>$INFO[Window.Property(play_er.Text)]</textcolor>
+                        <label>$INFO[ListItem.Label]</label>
+                        <aligny>center</aligny>
+                        <animation effect="zoom" start="100" end="103" center="auto" time="150">Focus</animation>
+                    </control>
+                </focusedlayout>
+            </control>
+
+            <control type="scrollbar" id="60">
+                <!-- FIX PRE-EMPTIVE AND FILTERS: explicit focus return and visible scrollbar -->
+                <onleft>1000</onleft><onright>1000</onright>
+                <onup>1000</onup><ondown>1000</ondown>
+                <texturesliderbackground colordiffuse="33FFFFFF">common/white.webp</texturesliderbackground>
+                <texturesliderbar colordiffuse="FF999999">common/scrollv.webp</texturesliderbar>
+                <texturesliderbarfocus colordiffuse="FFFF9900">common/scrollv.webp</texturesliderbarfocus>
+                <left>660</left>
+                <top>140</top>
+                <width>8</width>
+                <height>180</height>
+                <showonepage>false</showonepage>
+                <orientation>vertical</orientation>
+            </control>
+
+            <control type="image">
+                <left>50</left>
+                <top>330</top>
+                <width>600</width>
+                <height>2</height>
+                <texture>common/white.webp</texture>
+                <colordiffuse>33FFFFFF</colordiffuse>
+            </control>
+
+            <control type="label" id="4003">
+                <left>50</left>
+                <top>350</top>
+                <width>600</width>
+                <height>30</height>
+                <font>font12</font>
+                <textcolor>FFFF9900</textcolor>
+                <align>center</align>
+                <label>PŘESKOČIT TITULKY : 120 PŘED KONCEM</label>
+            </control>
+
+            <control type="slider" id="4004">
+                <orientation>horizontal</orientation>
+                <!-- 600x40 track with transparent padding: thin rail, full mouse target.
+                     Matching 40px texture heights keep Kodi's nib scale at 1:1. -->
+                <texturesliderbar colordiffuse="66FFFFFF">play_er/stream-slider-track.png</texturesliderbar>
+                <textureslidernib colordiffuse="$INFO[Window.Property(play_er.Muted)]">play_er/stream-slider-thumb.png</textureslidernib>
+                <textureslidernibfocus colordiffuse="FFFF9900">play_er/stream-slider-thumb-focus.png</textureslidernibfocus>
+                <left>50</left>
+                <top>380</top>
+                <width>600</width>
+                <height>40</height>
+                <onleft>3008</onleft><onright>3008</onright><ondown>4005</ondown><onup>1000</onup>
+            </control>
+
+            <control type="button" id="4005">
+                <left>50</left><top>440</top>
+                <width>600</width><height>50</height>
+                <font>font12</font><textcolor>$INFO[Window.Property(play_er.Text)]</textcolor>
+                <focusedcolor>$INFO[Window.Property(play_er.Text)]</focusedcolor>
+                <texturefocus border="20" colordiffuse="FFFF9900">common/selectbox_thin.webp</texturefocus>
+                <texturenofocus border="20" colordiffuse="26FFFFFF">common/selectbox_thin.webp</texturenofocus>
+                <align>center</align><aligny>center</aligny>
+                <label>AUTOMATICKÉ ZAVŘENÍ OKNA : -</label>
+                <onleft>3008</onleft><onright>3008</onright><ondown>4001</ondown><onup>4004</onup>
+            </control>
+
+            <control type="button" id="4001">
+                <left>50</left><top>510</top>
+                <width>280</width><height>50</height>
+                <font>font12</font><textcolor>$INFO[Window.Property(play_er.Text)]</textcolor>
+                <focusedcolor>$INFO[Window.Property(play_er.Text)]</focusedcolor>
+                <texturefocus border="20" colordiffuse="FFFF9900">common/selectbox_thin.webp</texturefocus>
+                <texturenofocus border="20" colordiffuse="26FFFFFF">common/selectbox_thin.webp</texturenofocus>
+                <align>center</align><aligny>center</aligny>
+                <label>SKIP CREDITS : -</label>
+                <onleft>5002</onleft><onright>4002</onright><ondown>4101</ondown><onup>4005</onup>
+            </control>
+
+            <control type="button" id="4002">
+                <left>370</left><top>510</top>
+                <width>280</width><height>50</height>
+                <font>font12</font><textcolor>$INFO[Window.Property(play_er.Text)]</textcolor>
+                <focusedcolor>$INFO[Window.Property(play_er.Text)]</focusedcolor>
+                <texturefocus border="20" colordiffuse="FFFF9900">common/selectbox_thin.webp</texturefocus>
+                <texturenofocus border="20" colordiffuse="26FFFFFF">common/selectbox_thin.webp</texturenofocus>
+                <align>center</align><aligny>center</aligny>
+                <label>LIST SKIP : -</label>
+                <onleft>4001</onleft><onright>5001</onright><ondown>4101</ondown><onup>4005</onup>
+            </control>
+
+            <control type="button" id="4101">
+                <left>50</left><top>580</top>
+                <width>600</width><height>50</height>
+                <font>font12</font><textcolor>$INFO[Window.Property(play_er.Text)]</textcolor>
+                <focusedcolor>$INFO[Window.Property(play_er.Text)]</focusedcolor>
+                <texturefocus border="20" colordiffuse="FFFF9900">common/selectbox_thin.webp</texturefocus>
+                <texturenofocus border="20" colordiffuse="26FFFFFF">common/selectbox_thin.webp</texturenofocus>
+                <align>center</align><aligny>center</aligny>
+                <label>PREDIKCE HLEDANÉHO VÝRAZU : -</label>
+                <onleft>5001</onleft><onright>5001</onright><onup>4001</onup><ondown>4102</ondown>
+            </control>
+
+            <control type="button" id="4102">
+                <left>50</left><top>635</top>
+                <width>600</width><height>50</height>
+                <font>font12</font><textcolor>$INFO[Window.Property(play_er.Text)]</textcolor>
+                <focusedcolor>$INFO[Window.Property(play_er.Text)]</focusedcolor>
+                <texturefocus border="20" colordiffuse="FFFF9900">common/selectbox_thin.webp</texturefocus>
+                <texturenofocus border="20" colordiffuse="26FFFFFF">common/selectbox_thin.webp</texturenofocus>
+                <align>center</align><aligny>center</aligny>
+                <label>NESHODA UKONČÍ PLAYLIST : -</label>
+                <onleft>5001</onleft><onright>5001</onright><onup>4101</onup><ondown>4103</ondown>
+            </control>
+
+            <control type="button" id="4103">
+                <left>50</left><top>690</top>
+                <width>600</width><height>50</height>
+                <font>font12</font><textcolor>$INFO[Window.Property(play_er.Text)]</textcolor>
+                <focusedcolor>$INFO[Window.Property(play_er.Text)]</focusedcolor>
+                <texturefocus border="20" colordiffuse="FFFF9900">common/selectbox_thin.webp</texturefocus>
+                <texturenofocus border="20" colordiffuse="26FFFFFF">common/selectbox_thin.webp</texturenofocus>
+                <align>center</align><aligny>center</aligny>
+                <label>RUČNÍ VÝBĚR PO UKONČENÍ : -</label>
+                <onleft>5001</onleft><onright>5001</onright><onup>4102</onup><ondown>1000</ondown>
+            </control>
+
+            <!-- SVISLÝ ODDĚLOVAČ -->
+
+            <control type="image">
+                <left>699</left>
+                <top>90</top>
+                <width>2</width>
+                <height>600</height>
+                <texture>common/white.webp</texture>
+                <colordiffuse>33FFFFFF</colordiffuse>
+            </control>
+
+            <!-- ================= PRAVÝ PANEL ================= -->
+
+            <control type="label">
+                <left>750</left>
+                <top>90</top>
+                <width>600</width>
+                <height>30</height>
+                <font>font_main_bold</font>
+                <textcolor>$INFO[Window.Property(play_er.Muted)]</textcolor>
+                <label> [   NASTAVENÍ ZDROJE  /  OMEZENÍ SÍTĚ   ]</label>
+            </control>
+
+            <control type="button" id="3001">
+                <left>750</left><top>140</top>
+                <width>600</width><height>50</height>
+                <font>font12</font><textcolor>$INFO[Window.Property(play_er.Text)]</textcolor>
+                <focusedcolor>$INFO[Window.Property(play_er.Text)]</focusedcolor>
+                <texturefocus border="20" colordiffuse="FFFF9900">common/selectbox_thin.webp</texturefocus>
+                <texturenofocus border="20" colordiffuse="26FFFFFF">common/selectbox_thin.webp</texturenofocus>
+                <align>center</align><aligny>center</aligny>
+                <label>REŽIM VÝBĚRU ZDROJE : -</label>
+                <onleft>1000</onleft><onright>1000</onright><ondown>3002</ondown><onup>5001</onup>
+            </control>
+
+            <control type="button" id="3002">
+                <left>750</left><top>215</top>
+                <width>600</width><height>50</height>
+                <font>font12</font><textcolor>$INFO[Window.Property(play_er.Text)]</textcolor>
+                <focusedcolor>$INFO[Window.Property(play_er.Text)]</focusedcolor>
+                <texturefocus border="20" colordiffuse="FFFF9900">common/selectbox_thin.webp</texturefocus>
+                <texturenofocus border="20" colordiffuse="26FFFFFF">common/selectbox_thin.webp</texturenofocus>
+                <align>center</align><aligny>center</aligny>
+                <label>PREFEROVANÁ KVALITA : -</label>
+                <onleft>1000</onleft><onright>1000</onright><ondown>3003</ondown><onup>3001</onup>
+            </control>
+
+            <control type="button" id="3003">
+                <left>750</left><top>290</top>
+                <width>600</width><height>50</height>
+                <font>font12</font><textcolor>$INFO[Window.Property(play_er.Text)]</textcolor>
+                <focusedcolor>$INFO[Window.Property(play_er.Text)]</focusedcolor>
+                <texturefocus border="20" colordiffuse="FFFF9900">common/selectbox_thin.webp</texturefocus>
+                <texturenofocus border="20" colordiffuse="26FFFFFF">common/selectbox_thin.webp</texturenofocus>
+                <align>center</align><aligny>center</aligny>
+                <label>ŘADIT DLE POČTU LIKE : -</label>
+                <onleft>1000</onleft><onright>1000</onright><ondown>3006</ondown><onup>3002</onup>
+            </control>
+
+            <!-- POZADÍ PRO AUTO DOWNGRADE -->
+
+            <control type="button" id="3006">
+                <left>750</left><top>365</top>
+                <width>600</width><height>50</height>
+                <font>font12</font><textcolor>$INFO[Window.Property(play_er.Text)]</textcolor>
+                <focusedcolor>$INFO[Window.Property(play_er.Text)]</focusedcolor>
+                <texturefocus border="20" colordiffuse="FFFF9900">common/selectbox_thin.webp</texturefocus>
+                <texturenofocus border="20" colordiffuse="26FFFFFF">common/selectbox_thin.webp</texturenofocus>
+                <align>center</align><aligny>center</aligny>
+                <label>AUTO DOWN-STREAM : -</label>
+                <onleft>1000</onleft><onright>1000</onright><ondown>3005</ondown><onup>3003</onup>
+            </control>
+
+            <control type="label" id="3004">
+                <left>750</left>
+                <top>435</top>
+                <width>600</width>
+                <height>30</height>
+                <font>font12</font>
+                <textcolor>FFFF9900</textcolor>
+                <align>center</align>
+                <label>MAX BANDWIDTH : -</label>
+            </control>
+
+            <control type="slider" id="3005">
+                <orientation>horizontal</orientation>
+                <!-- 600x40 track with transparent padding: thin rail, full mouse target.
+                     Matching 40px texture heights keep Kodi's nib scale at 1:1. -->
+                <texturesliderbar colordiffuse="66FFFFFF">play_er/stream-slider-track.png</texturesliderbar>
+                <textureslidernib colordiffuse="$INFO[Window.Property(play_er.Muted)]">play_er/stream-slider-thumb.png</textureslidernib>
+                <textureslidernibfocus colordiffuse="FFFF9900">play_er/stream-slider-thumb-focus.png</textureslidernibfocus>
+                <left>750</left>
+                <top>465</top>
+                <width>600</width>
+                <height>40</height>
+                <onleft>1000</onleft><onright>1000</onright><ondown>3008</ondown><onup>3006</onup>
+            </control>
+
+            <control type="label" id="3007">
+                <left>750</left>
+                <top>515</top>
+                <width>600</width>
+                <height>30</height>
+                <font>font12</font>
+                <textcolor>FFFF9900</textcolor>
+                <align>center</align>
+                <label>TOLERANCE ZASEKÁVÁNÍ : -</label>
+            </control>
+
+            <control type="slider" id="3008">
+                <orientation>horizontal</orientation>
+                <!-- 600x40 track with transparent padding: thin rail, full mouse target.
+                     Matching 40px texture heights keep Kodi's nib scale at 1:1. -->
+                <texturesliderbar colordiffuse="66FFFFFF">play_er/stream-slider-track.png</texturesliderbar>
+                <textureslidernib colordiffuse="$INFO[Window.Property(play_er.Muted)]">play_er/stream-slider-thumb.png</textureslidernib>
+                <textureslidernibfocus colordiffuse="FFFF9900">play_er/stream-slider-thumb-focus.png</textureslidernibfocus>
+                <left>750</left>
+                <top>545</top>
+                <width>600</width>
+                <height>40</height>
+                <onleft>4004</onleft><onright>4004</onright><ondown>3010</ondown><onup>3005</onup>
+            </control>
+
+            <control type="label" id="3009">
+                <left>750</left>
+                <top>595</top>
+                <width>600</width>
+                <height>30</height>
+                <font>font12</font>
+                <textcolor>FFFF9900</textcolor>
+                <align>center</align>
+                <label>POČET NÁSLEDUJÍCÍCH EPIZOD : -</label>
+            </control>
+
+            <control type="slider" id="3010">
+                <orientation>horizontal</orientation>
+                <!-- 600x40 track with transparent padding: thin rail, full mouse target.
+                     Matching 40px texture heights keep Kodi's nib scale at 1:1. -->
+                <texturesliderbar colordiffuse="66FFFFFF">play_er/stream-slider-track.png</texturesliderbar>
+                <textureslidernib colordiffuse="$INFO[Window.Property(play_er.Muted)]">play_er/stream-slider-thumb.png</textureslidernib>
+                <textureslidernibfocus colordiffuse="FFFF9900">play_er/stream-slider-thumb-focus.png</textureslidernibfocus>
+                <left>750</left>
+                <top>625</top>
+                <width>600</width>
+                <height>40</height>
+                <onleft>4004</onleft><onright>4004</onright><ondown>5001</ondown><onup>3008</onup>
+            </control>
+
+            <!-- AKCE TLAČÍTKA DOLE VPRAVO -->
+
+            <control type="button" id="5001">
+                <left>750</left><top>700</top>
+                <width>280</width><height>50</height>
+                <font>font12</font><textcolor>$INFO[Window.Property(play_er.Text)]</textcolor>
+                <focusedcolor>$INFO[Window.Property(play_er.Text)]</focusedcolor>
+                <texturefocus border="20" colordiffuse="FFFF9900">common/selectbox_thin.webp</texturefocus>
+                <texturenofocus border="20" colordiffuse="26FFFFFF">common/selectbox_thin.webp</texturenofocus>
+                <align>center</align><aligny>center</aligny>
+                <label>[ NASTAVENÍ ]</label>
+                <onleft>4002</onleft><onright>5002</onright><ondown>3001</ondown><onup>3010</onup>
+            </control>
+
+            <control type="button" id="5002">
+                <left>1070</left><top>700</top>
+                <width>280</width><height>50</height>
+                <font>font12</font><textcolor>$INFO[Window.Property(play_er.Text)]</textcolor>
+                <focusedcolor>$INFO[Window.Property(play_er.Text)]</focusedcolor>
+                <texturefocus border="20" colordiffuse="FFFF9900">common/selectbox_thin.webp</texturefocus>
+                <texturenofocus border="20" colordiffuse="26FFFFFF">common/selectbox_thin.webp</texturenofocus>
+                <align>center</align><aligny>center</aligny>
+                <label>[ DIALOG MENU ]</label>
+                <onleft>5001</onleft><onright>4001</onright><ondown>3001</ondown><onup>3010</onup>
+            </control>
+
+        </control>
+    </controls>
+</window>

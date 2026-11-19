@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<keymap>
+  <global>
+    <keyboard>
+
+      <key id="61623">RunScript(special://home/addons/plugin.video.play_er/resources/scripts/FULLSCREEN---MUTE.py)</key>
+
+      <!-- <key id="61623" mod="longpress">RunPlugin(plugin://plugin.video.tube_er/?action=play_playlist)</key> -->
+      <!-- <key id="61656" mod="longpress">RunPlugin(plugin://plugin.video.play_er/?action=show_stream_menu)</key> -->
+      <!-- <key id="61623" mod="longpress">RunScript(context.universal.remotes)</key> -->
+
+      </keyboard>
+  </global>
+</keymap>
