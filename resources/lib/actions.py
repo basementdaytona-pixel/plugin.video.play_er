@@ -197,7 +197,7 @@ def _get_context_menu(menu_type, **kwargs):
     ctx =[]
     props = kwargs.get('props', {})
     title = kwargs.get('title') or props.get('title', '')
-    tmdb_id = kwargs.get('tmdb_id') or props.get('tmdb_id', '')
+    tmdb_id = kwargs.get('tmdb_id') or props.get('tmdb_id') or ''
     media_type = kwargs.get('media_type') or props.get('media_type', 'movie')
     year = kwargs.get('year') or props.get('year', '')
     poster = kwargs.get('poster') or props.get('poster', '')
@@ -290,9 +290,9 @@ def _get_context_menu(menu_type, **kwargs):
         'open_seasons': (f"[COLOR {Colors.ORANGE}]► OTEVŘÍT SEZÓNY[/COLOR]", f"RunPlugin({get_url(action='search_tmdb_from_history', show_title=title, tmdb_id=tmdb_id)})"),
         'next_episodes': (f"[COLOR {Colors.ORANGE}]► DALŠÍ EPIZODY[/COLOR]", f"RunPlugin({get_url(action='continue_watching_main', meta=json.dumps(props))})"),
 
-        'remove_playback_item_show': (f"[COLOR {Colors.ORANGE}]► [/COLOR][COLOR {Colors.RED}]ODEBRAT POLOŽKU[/COLOR][COLOR {Colors.ORANGE}][/COLOR]", f"RunPlugin({get_url(action='remove_playback_item', type='show', show_title=kwargs.get('history_title', title))})"),
-        'remove_playback_item_movie': (f"[COLOR {Colors.ORANGE}]► [/COLOR][COLOR {Colors.RED}]ODEBRAT POLOŽKU[/COLOR][COLOR {Colors.ORANGE}][/COLOR]", f"RunPlugin({get_url(action='remove_playback_item', type='movie', movie_title=kwargs.get('history_title', title))})"),
-        'remove_playback_item_episode': (f"[COLOR {Colors.ORANGE}]► [/COLOR][COLOR {Colors.RED}]ODEBRAT POLOŽKU[/COLOR][COLOR {Colors.ORANGE}][/COLOR]", f"RunPlugin({get_url(action='remove_playback_item', type='episode', show_title=show_title, season=str(season), episode=str(episode))})"),
+        'remove_playback_item_show': (f"[COLOR {Colors.ORANGE}]► [/COLOR][COLOR {Colors.RED}]ODEBRAT POLOŽKU[/COLOR][COLOR {Colors.ORANGE}][/COLOR]", f"RunPlugin({get_url(action='remove_playback_item', type='show', tmdb_id=tmdb_id, history_no_id='' if tmdb_id else '1', show_title=kwargs.get('history_title', title))})"),
+        'remove_playback_item_movie': (f"[COLOR {Colors.ORANGE}]► [/COLOR][COLOR {Colors.RED}]ODEBRAT POLOŽKU[/COLOR][COLOR {Colors.ORANGE}][/COLOR]", f"RunPlugin({get_url(action='remove_playback_item', type='movie', tmdb_id=tmdb_id, history_no_id='' if tmdb_id else '1', movie_title=kwargs.get('history_title', title))})"),
+        'remove_playback_item_episode': (f"[COLOR {Colors.ORANGE}]► [/COLOR][COLOR {Colors.RED}]ODEBRAT POLOŽKU[/COLOR][COLOR {Colors.ORANGE}][/COLOR]", f"RunPlugin({get_url(action='remove_playback_item', type='episode', tmdb_id=tmdb_id, history_no_id='' if tmdb_id else '1', show_title=show_title, season=str(season), episode=str(episode))})"),
         'remove_playback_item_share': (f"[COLOR {Colors.ORANGE}]► [/COLOR][COLOR {Colors.RED}]ODEBRAT POLOŽKU[/COLOR][COLOR {Colors.ORANGE}][/COLOR]", f"RunPlugin({get_url(action='remove_community_share', share_key=kwargs.get('share_key', ''))})"),
 
         'settings': (f"[COLOR {Colors.LIMEGREEN}][ MENU NASTAVENÍ ][/COLOR]", "Addon.OpenSettings(plugin.video.play_er)")
@@ -1775,6 +1775,16 @@ def prehrajto_history(plugin_instance, is_widget=False):
 
 
 
+def _history_tmdb_id(meta):
+    value = meta.get("tmdb_id")
+    return str(value) if value else ""
+
+
+def _history_show_key(meta):
+    tmdb_id = _history_tmdb_id(meta)
+    return ("id", tmdb_id) if tmdb_id else ("title", meta.get("tv_show_title", "Neznámý seriál"))
+
+
 def playback_history(plugin_instance, is_widget=False):
 
     """
@@ -1795,29 +1805,21 @@ def playback_history(plugin_instance, is_widget=False):
 
     from collections import defaultdict
     shows_dict = defaultdict(list)
-    shows_order = []
-    seen_shows = set()
     movies = []
 
     for item in history:
         meta = item.get("meta", {})
         media_type = meta.get("media_type", "movie")
         if media_type == "episode":
-            show_title = meta.get("tv_show_title", "Neznámý seriál")
-            shows_dict[show_title].append(item)
-            if show_title not in seen_shows:
-                shows_order.append(show_title)
-                seen_shows.add(show_title)
+            shows_dict[_history_show_key(meta)].append(item)
         else:
             movies.append(item)
 
     items_to_fetch = []
 
-    for show_title in shows_order:
-        if shows_dict[show_title]:
-            first_meta = shows_dict[show_title][0].get("meta", {})
-            tmdb_id = first_meta.get("tmdb_id")
-            if tmdb_id: items_to_fetch.append(('tv', tmdb_id))
+    for entries in shows_dict.values():
+        tmdb_id = entries[0].get("meta", {}).get("tmdb_id")
+        if tmdb_id: items_to_fetch.append(('tv', tmdb_id))
 
     for item in movies:
         meta = item.get("meta", {})
@@ -1842,8 +1844,9 @@ def playback_history(plugin_instance, is_widget=False):
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
             executor.map(_fetch_meta_worker, items_to_fetch)
 
-    for show_title in shows_order:
-        first_meta = shows_dict[show_title][0].get("meta", {})
+    for entries in shows_dict.values():
+        first_meta = entries[0].get("meta", {})
+        show_title = first_meta.get("tv_show_title", "Neznámý seriál")
         tmdb_id = first_meta.get("tmdb_id")
 
         show_data_raw = {}
@@ -1885,7 +1888,8 @@ def playback_history(plugin_instance, is_widget=False):
         )
         list_item.addContextMenuItems(_sf_cm_items(context_menu), replaceItems=False)
 
-        url = get_url(action="playback_show_history", show_title=show_title)
+        url = get_url(action="playback_show_history", show_title=show_title,
+                      tmdb_id=tmdb_id or '', history_no_id='' if tmdb_id else '1')
         xbmcplugin.addDirectoryItem(plugin_instance.handle, url, list_item, isFolder=True)
 
     for item in movies:
@@ -1950,11 +1954,15 @@ def playback_show_history(params, plugin_instance):
     except Exception:
         history = []
 
-    episodes =[
+    tmdb_id = params.get("tmdb_id") or ""
+    no_id_only = params.get("history_no_id") == "1"
+    episodes = [
         item
         for item in history
         if item["meta"].get("media_type") == "episode"
-        and item["meta"].get("tv_show_title") == show_title
+        and (_history_tmdb_id(item["meta"]) == str(tmdb_id) if tmdb_id else
+             item["meta"].get("tv_show_title", "Neznámý seriál") == show_title
+             and (not no_id_only or not _history_tmdb_id(item["meta"])))
     ]
 
     def _fetch_ep_worker(item):
@@ -2093,24 +2101,52 @@ def remove_playback_item(params, plugin_instance):
     episode_season = params.get("season")
     episode_episode = params.get("episode")
     movie_title = params.get("movie_title")
+    tmdb_id = str(params.get("tmdb_id") or "")
+    no_id_only = params.get("history_no_id") == "1"
+    title = movie_title if item_type == "movie" else show_title_param
+    if item_type not in ("movie", "show", "episode") or (not tmdb_id and not title):
+        return
+    if item_type == "episode" and (episode_season in (None, "") or episode_episode in (None, "")):
+        return
+
+    ambiguous = [False]
 
     def update(history):
-        new_history = []
+        matches = []
         for item in history or []:
             meta = item.get("meta", {})
-            remove = False
-            if item_type == "movie" and meta.get("title") == movie_title: remove = True
-            elif item_type == "show" and meta.get("tv_show_title") == show_title_param and meta.get("media_type") == "episode": remove = True
-            elif item_type == "episode" and meta.get("tv_show_title") == show_title_param and str(meta.get("season")) == episode_season and str(meta.get("episode")) == episode_episode: remove = True
-            if not remove:
-                new_history.append(item)
-        return new_history
+            media_type = meta.get("media_type", "movie")
+            if media_type != ("movie" if item_type == "movie" else "episode"):
+                continue
+            item_id = _history_tmdb_id(meta)
+            item_title = meta.get("title") if item_type == "movie" else meta.get("tv_show_title", "Neznámý seriál")
+            if tmdb_id:
+                if item_id != tmdb_id:
+                    continue
+            elif item_title != title or (no_id_only and item_id):
+                continue
+            if item_type == "episode" and (str(meta.get("season")) != str(episode_season) or
+                                            str(meta.get("episode")) != str(episode_episode)):
+                continue
+            matches.append(item)
+        if not matches:
+            return cache_manager.NO_USER_DATA_CHANGE
+        if not tmdb_id and not no_id_only:
+            identities = {_history_tmdb_id(item.get("meta", {})) for item in matches}
+            if len(identities) > 1:
+                ambiguous[0] = True
+                return cache_manager.NO_USER_DATA_CHANGE
+        matched_ids = {id(item) for item in matches}
+        return [item for item in history if id(item) not in matched_ids]
 
     try:
-        cache_manager.user_data_update("playback_history", update)
+        changed = cache_manager.user_data_update("playback_history", update)
     except cache_manager.CacheStorageError:
         return
-    cache_manager.safe_refresh()
+    if ambiguous[0]:
+        notify_error("Nelze jednoznačně určit položku k odebrání", category="PLAYBACK")
+    if changed:
+        cache_manager.safe_refresh()
 
 
 def select_episode_stream(params, plugin_instance):

@@ -226,3 +226,98 @@ class ConsumerBehaviorTests(unittest.TestCase):
                                            {'meta': third, 'link': ''}])
         self.assertEqual([item['meta'] for item in cache.user_data_get('playback_history')],
                          [third, second, first])
+
+    def test_removal_uses_id_and_media_type_even_with_matching_names(self):
+        show = {'tmdb_id': 42, 'media_type': 'episode', 'tv_show_title': 'Same', 'season': 1, 'episode': 1, 'title': 'Same'}
+        renamed = dict(show, tv_show_title='Renamed', episode=2)
+        other_show = dict(show, tmdb_id=43)
+        movie = {'tmdb_id': 42, 'media_type': 'movie', 'title': 'Same'}
+        other_movie = dict(movie, tmdb_id=44)
+        cache.user_data_set('playback_history', [{'meta': m, 'link': ''} for m in (show, renamed, other_show, movie, other_movie)])
+        actions.remove_playback_item({'type': 'episode', 'tmdb_id': '42', 'show_title': 'Same', 'season': '1', 'episode': '1'}, None)
+        actions.remove_playback_item({'type': 'movie', 'tmdb_id': '42', 'movie_title': 'Same'}, None)
+        self.assertEqual([x['meta'] for x in cache.user_data_get('playback_history')], [renamed, other_show, other_movie])
+        actions.remove_playback_item({'type': 'show', 'tmdb_id': '42', 'show_title': 'Same'}, None)
+        self.assertEqual([x['meta'] for x in cache.user_data_get('playback_history')], [other_show, other_movie])
+
+    def test_legacy_removal_is_safe_for_ambiguous_and_idless_items(self):
+        first = {'tmdb_id': 1, 'media_type': 'movie', 'title': 'Same'}
+        second = dict(first, tmdb_id=2)
+        idless = {'media_type': 'movie', 'title': 'Same'}
+        cache.user_data_set('playback_history', [{'meta': m, 'link': ''} for m in (first, second, idless)])
+        actions.remove_playback_item({'type': 'movie', 'movie_title': 'Same'}, None)
+        self.assertEqual([x['meta'] for x in cache.user_data_get('playback_history')], [first, second, idless])
+        actions.remove_playback_item({'type': 'movie', 'movie_title': 'Same', 'history_no_id': '1'}, None)
+        self.assertEqual([x['meta'] for x in cache.user_data_get('playback_history')], [first, second])
+        actions.remove_playback_item({'type': 'movie', 'tmdb_id': '2', 'movie_title': 'Same'}, None)
+        actions.remove_playback_item({'type': 'movie', 'movie_title': 'Same'}, None)
+        self.assertEqual(cache.user_data_get('playback_history'), [])
+
+    def test_legacy_episode_and_show_removal_do_not_guess_between_series(self):
+        first = {'tmdb_id': 1, 'media_type': 'episode', 'tv_show_title': 'Same', 'season': 0, 'episode': 1}
+        second = dict(first, tmdb_id=2)
+        idless = dict(first, tmdb_id=None)
+        cache.user_data_set('playback_history', [{'meta': m, 'link': ''} for m in (first, second, idless)])
+        params = {'type': 'episode', 'show_title': 'Same', 'season': '0', 'episode': '1'}
+        actions.remove_playback_item(params, None)
+        actions.remove_playback_item({'type': 'show', 'show_title': 'Same'}, None)
+        actions.remove_playback_item({'type': 'episode', 'tmdb_id': '1', 'season': '0'}, None)
+        self.assertEqual([x['meta'] for x in cache.user_data_get('playback_history')], [first, second, idless])
+        actions.remove_playback_item(dict(params, history_no_id='1'), None)
+        actions.remove_playback_item(dict(params, tmdb_id='1'), None)
+        actions.remove_playback_item({'type': 'show', 'show_title': 'Same'}, None)
+        self.assertEqual(cache.user_data_get('playback_history'), [])
+
+    def test_history_show_links_and_context_use_stable_identity(self):
+        from urllib.parse import parse_qs, urlencode, urlsplit
+
+        first = {'tmdb_id': 42, 'media_type': 'episode', 'tv_show_title': 'Same', 'season': 1, 'episode': 1, 'title': 'Episode'}
+        renamed = dict(first, tv_show_title='Renamed', episode=2)
+        second = dict(first, tmdb_id=43)
+        idless = dict(first, tmdb_id=None)
+        movie = {'tmdb_id': 42, 'media_type': 'movie', 'title': 'Same'}
+        movie_idless = {'media_type': 'movie', 'title': 'Same'}
+        cache.user_data_set('playback_history', [{'meta': m, 'link': ''} for m in (first, renamed, second, idless, movie, movie_idless)])
+        instance = MagicMock()
+        instance.handle = 1
+        list_items = []
+
+        def make_item(*args, **kwargs):
+            item = MagicMock()
+            list_items.append(item)
+            return item
+
+        def make_url(**kwargs):
+            return 'plugin://plugin.video.play_er/?' + urlencode(kwargs)
+
+        with patch.object(actions, 'get_url', side_effect=make_url), \
+                patch.object(actions, 'get_threadpool', return_value=1), \
+                patch.object(actions, '_get_community_share_context', return_value=None), \
+                patch.object(actions, '_sf_cm_items', side_effect=lambda items: items), \
+                patch.object(actions.xbmcgui, 'ListItem', side_effect=make_item), \
+                patch.object(actions.xbmcplugin, 'addDirectoryItem') as add:
+            actions.playback_history(instance)
+            self.assertEqual(add.call_count, 5)
+            urls = [call.args[1] for call in add.call_args_list[:3]]
+            params = [{key: values[0] for key, values in parse_qs(urlsplit(url).query).items()} for url in urls]
+            self.assertEqual([p.get('tmdb_id') for p in params], ['42', '43', None])
+            self.assertEqual(params[2].get('history_no_id'), '1')
+            menus = [item.addContextMenuItems.call_args.args[0] for item in list_items]
+            remove = [next(command for _, command in menu if 'action=remove_playback_item&' in command) for menu in menus]
+            self.assertIn('tmdb_id=42', remove[0])
+            self.assertIn('history_no_id=1', remove[2])
+            self.assertIn('tmdb_id=42', remove[3])
+            self.assertIn('history_no_id=1', remove[4])
+
+            for url_params, expected_count in zip(params, (2, 1, 1)):
+                add.reset_mock()
+                list_items.clear()
+                actions.playback_show_history(url_params, instance)
+                self.assertEqual(add.call_count, expected_count)
+                episode_menu = list_items[0].addContextMenuItems.call_args.args[0]
+                remove_episode = next(command for _, command in episode_menu if 'action=remove_playback_item&' in command)
+                self.assertIn('tmdb_id=' + url_params['tmdb_id'] if url_params.get('tmdb_id') else 'history_no_id=1', remove_episode)
+
+            add.reset_mock()
+            actions.playback_show_history({'show_title': 'Same'}, instance)
+            self.assertEqual(add.call_count, 3)
