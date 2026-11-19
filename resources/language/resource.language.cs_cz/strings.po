@@ -3512,8 +3512,8 @@ msgid "[B][COLOR orange]    ►  [/COLOR][/B]  AF3  :  USE SKIN VIEWS"
 msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  AF3  :  SPRÁVA POHLEDŮ SKINEM"
 
 msgctxt "#32904"
-msgid "Uses views configured in AF3 instead of forcing the addon view choices below. Disable to use PLAY.ER view settings with ENABLE : VIEW MODE FUNCTIONS. Other skins are unaffected."
-msgstr "Použije pohledy nastavené v AF3 místo vynucování níže vybraných pohledů addonu. Po vypnutí použije volby PLAY.ER při zapnuté funkci POVOLIT : FUNKCE ZMĚNY VZHLEDU. Ostatní skiny nejsou ovlivněny."
+msgid "Uses views configured in AF3 instead of forcing the addon view choices below. If disabled, PLAY.ER choices require ENABLE : VIEW MODE FUNCTIONS and work only when AF3 allows the selected view for that content type. Use AF3 : CONFIGURE VIEWS to change the allowed view. Other skins are unaffected."
+msgstr "Použije pohledy nastavené v AF3 místo vynucování níže vybraných pohledů addonu. Po vypnutí vyžadují volby PLAY.ER zapnutou funkci POVOLIT : FUNKCE ZMĚNY VZHLEDU a fungují pouze tehdy, když AF3 povoluje daný pohled pro příslušný typ obsahu. Povolený pohled změníte v AF3 : NASTAVIT POHLEDY. Ostatní skiny nejsou ovlivněny."
 
 msgctxt "#32905"
 msgid "[B][COLOR orange]    ►  [/COLOR][/B]  AF3  :  CATALOGUE MENUS"
