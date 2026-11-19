@@ -59,6 +59,9 @@ from resources.lib.utils_settings import (
 
 CACHE_LOCK = threading.Lock()
 DB_LOCK = threading.Lock()
+# Serialize operations on the same key without holding a global lock over I/O.
+_KEY_LOCKS = tuple(threading.RLock() for _ in range(256))
+_ram_generation = 0
 
 
 
@@ -670,10 +673,16 @@ def get_all_from_section(section):
 
 
 def cache_get(folder, key, max_age=None):
-    global IN_MEMORY_CACHE_STATS
     key_hash = _hash_key((folder, key))
+    with _KEY_LOCKS[int(key_hash[:8], 16) % len(_KEY_LOCKS)]:
+        return _cache_get_locked(folder, key, key_hash, max_age)
+
+
+def _cache_get_locked(folder, key, key_hash, max_age):
+    global IN_MEMORY_CACHE_STATS
     ram_key = f"{folder}:{key_hash}"
     with CACHE_LOCK:
+        generation = _ram_generation
         if ram_key in CACHE_RAM:
             value, cached_at, created_at, expires_at = CACHE_RAM[ram_key]
             now = time.time()
@@ -719,7 +728,8 @@ def cache_get(folder, key, max_age=None):
                 try:
                     data = json.loads(data_json)
                     with CACHE_LOCK:
-                        _store_in_ram(ram_key, data, created_at, expires_at)
+                        if generation == _ram_generation:
+                            _store_in_ram(ram_key, data, created_at, expires_at)
                     # _store_in_ram keeps its own copy, so this freshly decoded
                     # value can be returned without a second deep copy.
                     return data
@@ -788,9 +798,16 @@ def _prune_expired_personal_cache(cursor, conn, is_mysql):
 
 
 def cache_set(folder, key, data):
-    global IN_MEMORY_CACHE_STATS
     key_hash = _hash_key((folder, key))
+    with _KEY_LOCKS[int(key_hash[:8], 16) % len(_KEY_LOCKS)]:
+        return _cache_set_locked(folder, key, key_hash, data)
+
+
+def _cache_set_locked(folder, key, key_hash, data):
+    global IN_MEMORY_CACHE_STATS
     ram_key = f"{folder}:{key_hash}"
+    with CACHE_LOCK:
+        generation = _ram_generation
     now = time.time()
     ttl = _folder_ttl(folder)
     expires_at = now + ttl
@@ -831,7 +848,8 @@ def cache_set(folder, key, data):
             if folder in PERSONAL_CACHE_SECTIONS:
                 _prune_expired_personal_cache(cursor, conn, is_mysql)
             with CACHE_LOCK:
-                _store_in_ram(ram_key, data, now, expires_at)
+                if generation == _ram_generation:
+                    _store_in_ram(ram_key, data, now, expires_at)
                 IN_MEMORY_CACHE_STATS["sets"] += 1
             return True
     except Exception as e:
@@ -851,32 +869,34 @@ def cache_set(folder, key, data):
             pass
 
 
-# FIX PRE-EMPTIVE AND FILTERS [RAM MENU ACTION MUST NOT CLEAR DATABASE]
-def clear_ram_cache():
-    global IN_MEMORY_CACHE_STATS
+def _invalidate_ram(folders=()):
+    """Drop selected RAM rows and invalidate in-flight SQL snapshots."""
+    global IN_MEMORY_CACHE_STATS, _ram_generation
     with CACHE_LOCK:
-        CACHE_RAM.clear()
-        IN_MEMORY_CACHE_STATS = {'hits': 0, 'misses': 0, 'sets': 0}
-    _invalidate_window_cache()
-
-
-def cache_clear(folder=None, notify_success=True):
-    global CACHE_RAM, IN_MEMORY_CACHE_STATS
-    groups = {"TRAKT": ("TRAKT",) + TRAKT_PERSONAL_SECTIONS,
-              "TMDB": ("TMDB",) + TMDB_PERSONAL_SECTIONS}
-    folders = groups.get(folder, (folder,)) if folder else ()
-    with CACHE_LOCK:
-        if folder:
+        _ram_generation += 1
+        if folders:
             prefixes = tuple(f"{section}:" for section in folders)
-            keys_to_del = [k for k in CACHE_RAM if k.startswith(prefixes)]
-            for k in keys_to_del:
-                del CACHE_RAM[k]
+            for key in [key for key in CACHE_RAM if key.startswith(prefixes)]:
+                del CACHE_RAM[key]
         else:
             CACHE_RAM.clear()
             IN_MEMORY_CACHE_STATS = {"hits": 0, "misses": 0, "sets": 0}
 
+
+def clear_ram_cache():
+    _invalidate_ram()
+    _invalidate_window_cache()
+
+
+def cache_clear(folder=None, notify_success=True):
+    groups = {"TRAKT": ("TRAKT",) + TRAKT_PERSONAL_SECTIONS,
+              "TMDB": ("TMDB",) + TMDB_PERSONAL_SECTIONS}
+    folders = groups.get(folder, (folder,)) if folder else ()
+    _invalidate_ram(folders)
+
     conn, is_mysql = _get_db_connection()
     if not conn:
+        _invalidate_ram(folders)
         notify_error("Nelze se připojit k nastavené databázi", "CACHE")
         return False
     lock_context = DB_LOCK if not is_mysql else threading.RLock()
@@ -896,6 +916,7 @@ def cache_clear(folder=None, notify_success=True):
                     conn.commit()
                     cursor.execute("VACUUM")
 
+        _invalidate_ram(folders)
         _invalidate_personal_epochs(PERSONAL_CACHE_SECTIONS if not folder else
                                     tuple(section for section in folders if section in PERSONAL_CACHE_SECTIONS))
         _invalidate_window_cache()
@@ -905,6 +926,7 @@ def cache_clear(folder=None, notify_success=True):
         log(f"CACHE - CLEAR ERROR: {e}", xbmc.LOGERROR)
         notify_error("Chyba při mazání cache", "CACHE")
     finally:
+        _invalidate_ram(folders)
         try:
             cursor.close()
         except Exception:
@@ -929,13 +951,11 @@ def reset_database():
     ):
         return
 
-    global CACHE_RAM, IN_MEMORY_CACHE_STATS
-    with CACHE_LOCK:
-        CACHE_RAM.clear()
-        IN_MEMORY_CACHE_STATS = {"hits": 0, "misses": 0, "sets": 0}
+    _invalidate_ram()
 
     conn, is_mysql = _get_db_connection()
     if not conn:
+        _invalidate_ram()
         notify_error("ERROR : NELZE SE PŘIPOJIT K DATABÁZI", "RESET-DB")
         return
 
@@ -949,6 +969,7 @@ def reset_database():
             if not is_mysql:
                 conn.commit()
                 cursor.execute("VACUUM")
+        _invalidate_ram()
         _invalidate_personal_epochs(PERSONAL_CACHE_SECTIONS)
         _invalidate_window_cache()
         log(f"CACHE - RESET DATABASE COMPLETE ({DB_TYPE})", xbmc.LOGINFO)
@@ -958,6 +979,7 @@ def reset_database():
         log(f"CACHE - RESET FAILED : {e}", xbmc.LOGERROR)
         notify_error(f"ERROR Chyba resetování databáze: {e}", category="SYSTEM")
     finally:
+        _invalidate_ram()
         try:
             cursor.close()
         except Exception:
