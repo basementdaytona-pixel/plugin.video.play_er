@@ -497,7 +497,10 @@ def create_movie_playlist(start_meta, addon, active_provider, tmdb_client, handl
                 if handle and handle > 0:
                     xbmcplugin.setResolvedUrl(handle, True, li)
                 else:
-                    xbmc.Player().play(playable_url, listitem=li)
+                    playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+                    playlist.clear()
+                    playlist.add(playable_url, li)
+                    xbmc.Player().play(playlist)
 
                 try:
                     plugin_module.save_playback_history(start_meta, selected_source.get('link'), skip_refresh=True)

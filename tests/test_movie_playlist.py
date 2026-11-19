@@ -100,9 +100,9 @@ class MoviePlaylistTests(unittest.TestCase):
             patcher.start()
             self.addCleanup(patcher.stop)
 
-    def run_playlist(self):
+    def run_playlist(self, handle=7, source_list=None):
         meta = {'tmdb_id': 1, 'media_type': 'movie', 'title': 'Start', 'year': '2020', 'cast_full': ['A']}
-        generator.create_movie_playlist(meta, self.addon, None, self.tmdb, 7, self.instance)
+        generator.create_movie_playlist(meta, self.addon, None, self.tmdb, handle, self.instance, source_list=source_list)
 
     def test_existing_lock_is_not_released_by_a_second_invocation(self):
         self.window.setProperty('player.movie_playlist_active', 'true')
@@ -123,6 +123,25 @@ class MoviePlaylistTests(unittest.TestCase):
             self.run_playlist()
         self.progress.close.assert_called_once()
         self.assertEqual(self.window.getProperty('player.movie_playlist_active'), '')
+
+    def test_direct_start_replaces_old_queue_with_selected_movie(self):
+        self.settings['movie_autoplay_erems'] = '1'
+        self.player.play = MagicMock()
+        self.run_playlist(handle=0, source_list='watch_later')
+        self.playlist.clear.assert_called_once()
+        self.playlist.add.assert_called_once()
+        url, item = self.playlist.add.call_args.args
+        self.assertEqual(url, 'https://example.invalid/start|Header=value')
+        item.setProperty.assert_any_call('play_er.source_list', 'watch_later')
+        item.setProperty.assert_any_call('play_er.media_type', 'movie')
+        self.player.play.assert_called_once_with(self.playlist)
+        generator.xbmcplugin.setResolvedUrl.assert_not_called()
+
+    def test_failed_direct_start_does_not_clear_existing_queue(self):
+        self.actions.resolve_video.side_effect = lambda *a, **kw: None
+        self.run_playlist(handle=0)
+        self.playlist.clear.assert_not_called()
+        self.playlist.add.assert_not_called()
 
     def test_history_duplicates_and_missing_sources_do_not_block_later_recommendations(self):
         self.cache.user_data_get.return_value = [{'meta': {'media_type': 'movie', 'tmdb_id': 2}}]
