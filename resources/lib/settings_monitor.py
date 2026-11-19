@@ -22,4 +22,6 @@ class SettingsMonitor(xbmc.Monitor):
 
         reinitialize_clients()
         if not xbmc.Player().isPlaying():
+            # Recreate connections after database credentials or pool settings change.
+            cache_manager.close_mysql_pool()
             cache_manager.safe_refresh()

@@ -169,6 +169,16 @@ class SQLiteTests(unittest.TestCase):
         self.assertEqual(cache.cache_get('USER_DATA', 'legacy'), {'value': 2})
 
 
+class RefreshTests(unittest.TestCase):
+    def test_refresh_retains_pool_and_invokes_container_refresh(self):
+        with patch.object(cache, 'DB_POOL', MagicMock()) as pool, \
+                patch.object(cache, 'close_mysql_pool') as close:
+            cache.safe_refresh()
+        close.assert_not_called()
+        pool.close_all.assert_not_called()
+        cache.xbmc.executebuiltin.assert_called_with('Container.Refresh()')
+
+
 class FakeWindow:
     def __init__(self):
         self.properties = {}

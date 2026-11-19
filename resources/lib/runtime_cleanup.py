@@ -40,6 +40,12 @@ def release_interpreter_objects():
     plugin.shutdown_runtime(), which main.py calls after each route. Do not call
     this function there: a subsequent invocation may reuse the same modules.
     """
+    cache_manager = sys.modules.get("resources.lib.cache_manager")
+    if cache_manager is not None:
+        try:
+            cache_manager.close_mysql_pool()
+        except Exception:
+            pass
     for name, roots in _MODULE_ROOTS.items():
         module = sys.modules.get("resources.lib." + name)
         if module is None:

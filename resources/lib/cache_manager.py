@@ -964,10 +964,7 @@ def close_mysql_pool():
 
 
 def safe_refresh():
-    try:
-        close_mysql_pool()
-    except Exception:
-        pass
+    """Refresh the current container without discarding reusable connections."""
     try:
         xbmc.executebuiltin("Container.Refresh()")
     except Exception:

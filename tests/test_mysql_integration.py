@@ -101,6 +101,24 @@ class MySQLIntegrationTests(unittest.TestCase):
             self.assertIsNone(self.cache.cache_get('CSFD', 'daily_tips'))
             self.assertEqual(self.cache.user_data_get('history'), [1])
 
+    def test_container_refresh_reuses_database_connection(self):
+        with patch.object(self.cache, 'DB_POOL', self.pool), \
+                patch.object(self.cache, 'MYSQL_AVAILABLE', True), \
+                patch.object(self.cache, 'DB_TYPE', 'MySQL (MariaDB)'):
+            def connection_id():
+                connection, _ = self.cache._get_db_connection()
+                try:
+                    cursor = connection.cursor()
+                    cursor.execute('SELECT CONNECTION_ID()')
+                    value = cursor.fetchone()[0]
+                    cursor.close()
+                    return value
+                finally:
+                    connection.close()
+            first = connection_id()
+            self.cache.safe_refresh()
+            self.assertEqual(connection_id(), first)
+
     def test_reconnect_killed_idle_connection_restores_autocommit(self):
         conn = self.pool.get_connection()
         cursor = conn.cursor()
