@@ -3492,3 +3492,37 @@ msgstr "VYBRAT ZDROJ Z KNIHOVNY"
 msgctxt "#32811"
 msgid "PREHRAJ.TO premium expires in {days} days."
 msgstr "PREHRAJ.TO premium končí za {days} dnů."
+
+# --- ARCTIC FUSE 3 :: VIEWTYPES ---
+
+msgctxt "#32900"
+msgid "[COLOR limegreen][    ARCTIC FUSE 3  -  VIEWTYPES    ][/COLOR]"
+msgstr "[COLOR limegreen][    ARCTIC FUSE 3  -  TYPY POHLEDŮ    ][/COLOR]"
+
+msgctxt "#32901"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  AF3  :  CONFIGURE VIEWS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  AF3  :  NASTAVIT POHLEDY"
+
+msgctxt "#32902"
+msgid "Opens the native Arctic Fuse 3 view manager for PLAY.ER. Requires the active AF3 skin and script.skinvariables. Automatically enables skin-managed views; the skin may reload after saving. Choose a view for each content type."
+msgstr "Otevře nativního správce pohledů Arctic Fuse 3 pro PLAY.ER. Vyžaduje aktivní AF3 a script.skinvariables. Automaticky zapne správu pohledů skinem; po uložení se může skin znovu načíst. Vyberte pohled pro každý typ obsahu."
+
+msgctxt "#32903"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  AF3  :  USE SKIN VIEWS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  AF3  :  SPRÁVA POHLEDŮ SKINEM"
+
+msgctxt "#32904"
+msgid "Uses views configured in AF3 instead of forcing the addon view choices below. Disable to use PLAY.ER view settings with ENABLE : VIEW MODE FUNCTIONS. Other skins are unaffected."
+msgstr "Použije pohledy nastavené v AF3 místo vynucování níže vybraných pohledů addonu. Po vypnutí použije volby PLAY.ER při zapnuté funkci POVOLIT : FUNKCE ZMĚNY VZHLEDU. Ostatní skiny nejsou ovlivněny."
+
+msgctxt "#32905"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  AF3  :  CATALOGUE MENUS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  AF3  :  KATALOGOVÝ VZHLED NABÍDEK"
+
+msgctxt "#32906"
+msgid "Displays navigation menus as movie catalogues in AF3, making poster rows, walls and media lists available. Menus share the movie view assignment; folder actions are preserved. Refresh the directory after changing. Widgets and multisearch retain their content type."
+msgstr "Zobrazí navigační nabídky v AF3 jako filmové katalogy a zpřístupní řádky plakátů, zdi a seznamy médií. Nabídky sdílejí nastavení pohledu s filmy; akce složek zůstanou zachovány. Po změně obnovte adresář. Widgety a multisearch si ponechají typ obsahu."
+
+msgctxt "#32907"
+msgid "Activate Arctic Fuse 3 and install script.skinvariables to configure views."
+msgstr "Pro nastavení pohledů aktivujte Arctic Fuse 3 a nainstalujte script.skinvariables."

@@ -3336,7 +3336,23 @@
         <!--  VIEW MODE  -->
 
         <category id="category_14" label="30267">
-            <group id="1"/>
+            <group id="1" label="32900">
+                <setting id="af3_configure_views" label="32901" help="32902" type="action">
+                    <level>0</level>
+                    <data>RunPlugin(plugin://plugin.video.play_er/?action=configure_af3_views)</data>
+                    <control type="button" format="action"/>
+                </setting>
+                <setting id="af3_native_views" label="32903" help="32904" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="af3_catalogue_menus" label="32905" help="32906" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+            </group>
             <group id="2" label="30268">
                 <setting id="FAKE-TITLE" label="30269" help="30435" type="boolean">
                     <level>0</level>

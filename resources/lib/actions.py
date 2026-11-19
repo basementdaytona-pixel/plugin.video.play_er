@@ -1165,11 +1165,6 @@ def search(name, plugin_instance, return_results=False, resolve_first=False):
     except Exception:
         pass
 
-    # --- FALLBACK NA 507, pokud máš UI Builder vypnutý
-
-    if "arctic.fuse" in xbmc.getSkinDir() and not xbmc.getCondVisibility("Window.IsVisible(home)"):
-        if not plugin_instance.addon.getSettingBool("enable_view_modes"):
-            xbmc.executebuiltin("Container.SetViewMode(507)")
 
     log("SEARCH - Končím (listing výsledků).", xbmc.LOGDEBUG)
     xbmcplugin.endOfDirectory(plugin_instance.handle, succeeded=True)
@@ -1427,11 +1422,6 @@ def find_and_list_sources_multi(params, plugin_instance, tmdbh_search=False):
     except Exception:
         pass
 
-    # 4. FALLBACK: VYNUCENÍ ZOBRAZENÍ 507
-
-    if "arctic.fuse" in xbmc.getSkinDir() and not xbmc.getCondVisibility("Window.IsVisible(home)"):
-        if not plugin_instance.addon.getSettingBool("enable_view_modes"):
-            xbmc.executebuiltin("Container.SetViewMode(507)")
 
     # 5. Závěr sestavení adresáře (TADY JE OPRAVA PRO AF3)
 
@@ -3415,9 +3405,6 @@ def tmdbh_bridge(params, plugin_instance):
             except Exception:
                 pass
 
-            if "arctic.fuse" in xbmc.getSkinDir() and not xbmc.getCondVisibility("Window.IsVisible(home)"):
-                if not plugin_instance.addon.getSettingBool("enable_view_modes"):
-                    xbmc.executebuiltin("Container.SetViewMode(507)")
 
             log("TMDBH BRIDGE - DIRECT TEXT SEARCH | Dokončeno zobrazení výsledků.", xbmc.LOGINFO)
             xbmcplugin.endOfDirectory(plugin_instance.handle, succeeded=True, cacheToDisc=False)

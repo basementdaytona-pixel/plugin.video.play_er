@@ -3608,3 +3608,37 @@ msgstr "SELECT LIBRARY SOURCE"
 msgctxt "#32811"
 msgid "PREHRAJ.TO premium expires in {days} days."
 msgstr "PREHRAJ.TO premium expires in {days} days."
+
+# --- ARCTIC FUSE 3 :: VIEWTYPES ---
+
+msgctxt "#32900"
+msgid "[COLOR limegreen][    ARCTIC FUSE 3  -  VIEWTYPES    ][/COLOR]"
+msgstr "[COLOR limegreen][    ARCTIC FUSE 3  -  VIEWTYPES    ][/COLOR]"
+
+msgctxt "#32901"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  AF3  :  CONFIGURE VIEWS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  AF3  :  CONFIGURE VIEWS"
+
+msgctxt "#32902"
+msgid "Opens the native Arctic Fuse 3 view manager for PLAY.ER. Requires the active AF3 skin and script.skinvariables. Automatically enables skin-managed views; the skin may reload after saving. Choose a view for each content type."
+msgstr "Opens the native Arctic Fuse 3 view manager for PLAY.ER. Requires the active AF3 skin and script.skinvariables. Automatically enables skin-managed views; the skin may reload after saving. Choose a view for each content type."
+
+msgctxt "#32903"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  AF3  :  USE SKIN VIEWS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  AF3  :  USE SKIN VIEWS"
+
+msgctxt "#32904"
+msgid "Uses views configured in AF3 instead of forcing the addon view choices below. Disable to use PLAY.ER view settings with ENABLE : VIEW MODE FUNCTIONS. Other skins are unaffected."
+msgstr "Uses views configured in AF3 instead of forcing the addon view choices below. Disable to use PLAY.ER view settings with ENABLE : VIEW MODE FUNCTIONS. Other skins are unaffected."
+
+msgctxt "#32905"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  AF3  :  CATALOGUE MENUS"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  AF3  :  CATALOGUE MENUS"
+
+msgctxt "#32906"
+msgid "Displays navigation menus as movie catalogues in AF3, making poster rows, walls and media lists available. Menus share the movie view assignment; folder actions are preserved. Refresh the directory after changing. Widgets and multisearch retain their content type."
+msgstr "Displays navigation menus as movie catalogues in AF3, making poster rows, walls and media lists available. Menus share the movie view assignment; folder actions are preserved. Refresh the directory after changing. Widgets and multisearch retain their content type."
+
+msgctxt "#32907"
+msgid "Activate Arctic Fuse 3 and install script.skinvariables to configure views."
+msgstr "Activate Arctic Fuse 3 and install script.skinvariables to configure views."

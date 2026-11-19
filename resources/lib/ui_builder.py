@@ -20,6 +20,7 @@ import xbmcgui
 import xbmcplugin
 
 from resources.lib import cache_manager
+from resources.lib.view_modes import af3_view_ids, menu_content, queue_view_mode
 from resources.lib.utils_logging import log
 from resources.lib.utils_theme import Colors, Icons
 from resources.lib.utils import convert_size_to_bytes, get_url
@@ -392,10 +393,13 @@ def set_view_mode(handle, addon, content_type, view_type_key):
     # 1. content_type nastavujeme VŽDY, aby Kodi správně formátovalo metadata pro skiny a widgety
 
     try:
-        xbmcplugin.setContent(handle, content_type)
+        xbmcplugin.setContent(handle, menu_content(addon, content_type, view_type_key))
     except Exception:
         pass
 
+    if (xbmc.getSkinDir() == "skin.arctic.fuse.3"
+            and addon.getSettingBool("af3_native_views")):
+        return
     if not addon.getSettingBool("enable_view_modes"):
         return
 
@@ -431,6 +435,8 @@ def set_view_mode(handle, addon, content_type, view_type_key):
 
     if "arctic.horizon.2" in current_skin:
         view_modes = ah2_ids
+    elif current_skin == "skin.arctic.fuse.3":
+        view_modes = af3_view_ids()
     elif "arctic.fuse" in current_skin:
         view_modes = fuse_ids
     elif "estuary.mod" in current_skin:
@@ -484,4 +490,4 @@ def set_view_mode(handle, addon, content_type, view_type_key):
 
     if view_mode_key in view_modes:
         target_id = view_modes[view_mode_key]
-        xbmc.executebuiltin(f"Container.SetViewMode({target_id})")
+        queue_view_mode(target_id)

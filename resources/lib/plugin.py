@@ -2300,6 +2300,7 @@ def show_similar_results(params, plugin_instance):
 
 def _create_actions_map():
     return {
+        "configure_af3_views": lambda p: __import__('resources.lib.view_modes', fromlist=['configure_af3_views']).configure_af3_views(addon),
         "show_metrics": lambda p: __import__('resources.lib.dialog_metrics', fromlist=['']).show_system_metrics(),
         "show_addon_log": lambda p: __import__('resources.lib.dialog_log', fromlist=['']).show_addon_log(),
         "show_similar_results": lambda p: show_similar_results(p, plugin_instance),
@@ -2600,6 +2601,9 @@ def router(paramstring):
     # Previously every menu/search/refill invocation registered another Player.
     # GLOBAL_TRAKT_MONITOR = trakt.get_player_monitor(...)
     params = dict(parse_qsl(paramstring))
+    from resources.lib.view_modes import begin_directory, finish_directory
+    directory_url = sys.argv[0].split('?', 1)[0] + ('?' + paramstring if paramstring else '')
+    begin_directory(directory_url, params)
     playback_action = _is_playback_action(params)
     if playback_action:
         GLOBAL_TRAKT_MONITOR = trakt.get_player_monitor(
@@ -2644,6 +2648,9 @@ def router(paramstring):
         menu()
     else:
         log(f"ROUTER ERROR - UNKNOWN ACTION : {action}", xbmc.LOGWARNING)
+
+    # Directory handlers have completed endOfDirectory before requesting a view.
+    finish_directory()
 
     # FIX PRE-EMPTIVE AND FILTERS [KEEP CONTINUE CALLBACKS ALIVE]
     # Original loop omitted continue_watching_main and exited at the first gap:
