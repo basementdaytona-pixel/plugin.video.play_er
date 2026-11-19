@@ -101,6 +101,43 @@ class MySQLIntegrationTests(unittest.TestCase):
             self.assertEqual(len(self.pool._available), 3)
             self.assertEqual(self.pool._in_use, set())
 
+    def test_resolver_fallback_key_reads_new_episode_from_mariadb(self):
+        import resources.lib
+        actions = load_module('resources.lib.actions', (
+            'resources.lib.sf_context_style', 'resources.lib.utils_files', 'resources.lib.trakt',
+            'resources.lib.stream_state', 'resources.lib.ui_builder', 'resources.lib.utils_filter',
+            'resources.lib.utils_theme', 'resources.lib.utils',
+        ))
+        utils = load_module('resources.lib.utils', ('resources.lib.utils_files', 'resources.lib.utils_theme'))
+        fake_filter = MagicMock()
+        fake_filter.clean_display_title.return_value = ('Episode', False, [], None)
+        instance = MagicMock()
+        instance.addon.getSetting.return_value = 'false'
+        instance.addon.getSettingBool.return_value = False
+        instance.provider_manager.get_provider.return_value.get_video_link.return_value = ('https://example.invalid/video', None)
+        props = {'play_er.current_meta_uuid': 'old-movie-key', 'play_er.current_media_type': 'movie'}
+        window = MagicMock()
+        window.setProperty.side_effect = lambda key, value: props.__setitem__(key, value)
+        episode = {'tmdb_id': 42, 'media_type': 'episode', 'season': 1, 'episode': 2,
+                   'title': 'Nová epizoda', 'cast_full': ['Actor'], 'poster': 'P', 'plot': 'Plot'}
+        with patch.object(self.cache, '_get_mysql_pool', return_value=self.pool), \
+                patch.object(self.cache, 'DB_TYPE', 'MySQL (MariaDB)'), \
+                patch.object(actions, 'cache_manager', self.cache), \
+                patch.object(utils, 'cache_manager', self.cache), \
+                patch.object(actions.xbmcgui, 'Window', return_value=window), \
+                patch.dict(sys.modules, {'resources.lib.utils_filter': fake_filter,
+                                         'resources.lib.utils': utils,
+                                         'resources.lib.cache_manager': self.cache}), \
+                patch.object(resources.lib, 'cache_manager', self.cache, create=True):
+            actions.resolve_video('source-id', 'prehraj.to', dict(episode), plugin_instance=instance)
+            self.assertEqual(props['play_er.current_media_type'], 'episode')
+            self.assertNotEqual(props['play_er.current_meta_uuid'], 'old-movie-key')
+            self.cache.clear_ram_cache()
+            stored = utils.get_meta_from_cache(props['play_er.current_meta_uuid'])
+        self.assertEqual(stored['tmdb_id'], 42)
+        self.assertEqual(stored['episode'], 2)
+        self.assertEqual(stored['title'], 'Nová epizoda')
+
     def test_resolver_history_limit_and_idless_source_removal(self):
         import resources.lib
         actions = load_module('resources.lib.actions', (

@@ -153,12 +153,12 @@ class ConsumerBehaviorTests(unittest.TestCase):
             patcher.start()
             self.addCleanup(patcher.stop)
 
-    def _resolve_history(self, instance, source, provider, meta, **kwargs):
+    def _resolve_history(self, instance, source, provider, meta, cache_key='meta-key', **kwargs):
         import resources.lib
         fake_filter = MagicMock()
         fake_filter.clean_display_title.return_value = ('Film', False, [], None)
         fake_utils = MagicMock()
-        fake_utils.store_meta_in_cache.return_value = 'meta-key'
+        fake_utils.store_meta_in_cache.return_value = cache_key
         with patch.dict(sys.modules, {'resources.lib.utils_filter': fake_filter,
                                       'resources.lib.utils': fake_utils,
                                       'resources.lib.cache_manager': cache}), \
@@ -184,6 +184,70 @@ class ConsumerBehaviorTests(unittest.TestCase):
         self.assertEqual(cache.user_data_get('watch_later'), [two, one])
         actions.remove_from_watch_later(dict(one), None)
         self.assertEqual(cache.user_data_get('watch_later'), [two])
+
+    def test_resolver_publishes_all_fallback_fields_for_resolved_item(self):
+        props = {'play_er.current_meta_uuid': 'old-movie-key',
+                 'play_er.current_media_type': 'movie',
+                 'play_er.current_meta': json.dumps({'tmdb_id': 1, 'media_type': 'movie'}),
+                 'play_er.current_trakt_id': 'old-trakt'}
+        window = MagicMock()
+        window.getProperty.side_effect = lambda key: props.get(key, '')
+        window.setProperty.side_effect = lambda key, value: props.__setitem__(key, value)
+        episode = {'tmdb_id': 42, 'media_type': 'episode', 'season': 1, 'episode': 2,
+                   'title': 'Episode', 'cast_full': ['Actor'], 'poster': 'poster', 'plot': 'Plot'}
+        instance = self._resolver_instance(500)
+        with patch.object(actions.xbmcgui, 'Window', return_value=window):
+            self._resolve_history(instance, 'source-id', 'prehraj.to', episode)
+        self.assertEqual(props['play_er.current_meta_uuid'], 'meta-key')
+        self.assertEqual(props['play_er.current_media_type'], 'episode')
+        self.assertEqual(json.loads(props['play_er.current_meta']), episode)
+        self.assertEqual(props['play_er.current_trakt_id'], '')
+
+    def test_resolver_clears_old_key_when_metadata_cache_is_unavailable(self):
+        props = {'play_er.current_meta_uuid': 'old-key', 'play_er.current_media_type': 'movie'}
+        window = MagicMock()
+        window.setProperty.side_effect = lambda key, value: props.__setitem__(key, value)
+        episode = {'tmdb_id': 42, 'media_type': 'episode', 'season': 1, 'episode': 2,
+                   'title': 'Episode', 'cast_full': ['Actor'], 'poster': 'poster', 'plot': 'Plot'}
+        with patch.object(actions.xbmcgui, 'Window', return_value=window):
+            self._resolve_history(self._resolver_instance(500), 'source-id', 'prehraj.to', episode, cache_key='')
+        self.assertEqual(props['play_er.current_meta_uuid'], '')
+        self.assertEqual(props['play_er.current_media_type'], 'episode')
+        self.assertEqual(json.loads(props['play_er.current_meta']), episode)
+
+    def test_direct_tmdbhelper_episode_publishes_its_fallback_identity(self):
+        props = {'play_er.current_meta_uuid': 'old-key', 'play_er.current_media_type': 'movie'}
+        window = MagicMock()
+        window.setProperty.side_effect = lambda key, value: props.__setitem__(key, value)
+        episode = {'tmdb_id': 42, 'media_type': 'episode', 'season': 1, 'episode': 2,
+                   'title': 'Episode', 'cast_full': ['Actor'], 'poster': 'poster', 'plot': 'Plot',
+                   '_play_er_tmdbh_source_search': True}
+        generator = MagicMock()
+        playlist = MagicMock()
+        player = MagicMock()
+        with patch.object(actions.xbmcgui, 'Window', return_value=window), \
+                patch.object(actions.xbmc, 'PlayList', return_value=playlist), \
+                patch.object(actions.xbmc, 'Player', return_value=player), \
+                patch.object(actions.xbmcplugin, 'setResolvedUrl') as resolved, \
+                patch.dict(sys.modules, {'resources.lib.generator': generator}):
+            self._resolve_history(self._resolver_instance(500), 'source-id', 'prehraj.to', episode, direct_play=True)
+        self.assertEqual(props['play_er.current_meta_uuid'], 'meta-key')
+        self.assertEqual(props['play_er.current_media_type'], 'episode')
+        self.assertEqual(json.loads(props['play_er.current_meta'])['episode'], 2)
+        playlist.clear.assert_called_once()
+        player.play.assert_called_once_with(playlist)
+        resolved.assert_not_called()
+        generator.queue_following_episodes_from_tmdbh.assert_called_once()
+
+    def test_url_only_resolve_does_not_replace_active_window_fallback(self):
+        window = MagicMock()
+        episode = {'tmdb_id': 42, 'media_type': 'episode', 'season': 1, 'episode': 2,
+                   'title': 'Episode', 'cast_full': ['Actor'], 'poster': 'poster', 'plot': 'Plot'}
+        instance = self._resolver_instance(500)
+        with patch.object(actions.xbmcgui, 'Window', return_value=window):
+            result = self._resolve_history(instance, 'source-id', 'prehraj.to', episode, return_url_only=True)
+        self.assertTrue(result.startswith('https://example.invalid/video|'))
+        window.setProperty.assert_not_called()
 
     def test_resolver_keeps_existing_history_format_and_kodi_resolution(self):
         import resources.lib

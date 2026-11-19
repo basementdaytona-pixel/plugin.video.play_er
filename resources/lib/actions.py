@@ -786,10 +786,13 @@ def resolve_video(link, provider_name, meta_json, source_list=None, return_url_o
     from resources.lib.utils import store_meta_in_cache
     meta_uuid = store_meta_in_cache(meta)
 
-    # --- ULOŽENÍ METADAT PRO SEAMLESS SWITCH OSD
-
-    xbmcgui.Window(10000).setProperty("play_er.current_meta", json.dumps(meta))
-    xbmcgui.Window(10000).setProperty("play_er.current_trakt_id", str(trakt_id))
+    # Keep the monitor's fallback identity aligned with the resolved item.
+    # Kodi can omit the ListItem properties when reporting the active stream.
+    win = xbmcgui.Window(10000)
+    win.setProperty("play_er.current_meta", json.dumps(meta))
+    win.setProperty("play_er.current_meta_uuid", str(meta_uuid or ""))
+    win.setProperty("play_er.current_media_type", str(media_type or ""))
+    win.setProperty("play_er.current_trakt_id", str(trakt_id or ""))
 
     li.setProperty('play_er.link', str(link))
     li.setProperty('play_er.meta_id', str(meta_uuid))
