@@ -640,8 +640,13 @@ def create_series_playlist(
     use_resolve: bool = True,
     max_items: int = None,
     episodes_count: int = None,
-    source_list: str = None
+    source_list: str = None,
+    start_guard=None,
+    prepare_start=None,
+    on_started=None
 ) -> None:
+    if start_guard is not None and not start_guard():
+        return
     # FIX PRE-EMPTIVE AND FILTERS [CONTINUE CANNOT RESET AN EXHAUSTED LIMIT]
     remaining = get_episode_queue_remaining(start_meta) if start_from_next else None
     if remaining == 0:
@@ -770,6 +775,8 @@ def create_series_playlist(
             return actions._search_providers_parallel(query, providers, apply_filters=True, sort_priority=sort_priority)
 
         sources = _get_filtered_sources(search_query, season_num, episode_num)
+        if start_guard is not None and not start_guard():
+            return
         if not sources:
             if use_resolve and handle and handle > 0:
                 xbmcplugin.setResolvedUrl(handle, False, xbmcgui.ListItem())
@@ -857,6 +864,8 @@ def create_series_playlist(
             plugin_instance=plugin_instance,
         )
 
+        if start_guard is not None and not start_guard():
+            return
         if not final_url:
             if use_resolve and handle and handle > 0:
                 xbmcplugin.setResolvedUrl(handle, False, xbmcgui.ListItem())
@@ -891,9 +900,19 @@ def create_series_playlist(
             xbmcplugin.setResolvedUrl(handle, True, li)
         else:
             pl = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+            if start_guard is not None and not start_guard():
+                return
+            if prepare_start is not None and not prepare_start():
+                return
+            if start_guard is not None and not start_guard():
+                return
             pl.clear()
             pl.add(final_url, li)
+            if start_guard is not None and not start_guard():
+                return
             xbmc.Player().play(pl)
+            if on_started is not None:
+                on_started()
             try:
                 from resources.lib import plugin as plugin_module
                 plugin_module.save_playback_history(current_episode_meta_dict, selected.get('link'), skip_refresh=True)

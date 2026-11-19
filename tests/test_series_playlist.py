@@ -86,14 +86,16 @@ class SeriesPlaylistTests(unittest.TestCase):
             patcher.start()
             self.addCleanup(patcher.stop)
 
-    def run_playlist(self, start_from_next=False, use_resolve=True, remaining=None, source_list=None):
+    def run_playlist(self, start_from_next=False, use_resolve=True, remaining=None, source_list=None,
+                     start_guard=None, prepare_start=None, on_started=None):
         meta = {'tmdb_id': 42, 'media_type': 'episode', 'tv_show_title': 'Show',
                 'season': 1, 'episode': 1, 'title': 'Episode 1'}
         if remaining is not None:
             meta['_play_er_queue_remaining'] = remaining
         generator.create_series_playlist(meta, self.addon, None, self.tmdb, 7, self.instance,
                                          start_from_next=start_from_next, use_resolve=use_resolve, max_items=3,
-                                         source_list=source_list)
+                                         source_list=source_list, start_guard=start_guard,
+                                         prepare_start=prepare_start, on_started=on_started)
 
     def test_sequential_rollover_and_metadata_budget(self):
         self.run_playlist()
@@ -115,6 +117,86 @@ class SeriesPlaylistTests(unittest.TestCase):
                          [(1, 2, 1), (2, 1, 0)])
         generator.xbmcplugin.setResolvedUrl.assert_not_called()
         self.player.play.assert_called_once()
+
+    def test_guarded_continue_starts_when_player_stays_idle(self):
+        self.player.playing = False
+        self.run_playlist(start_from_next=True, use_resolve=False, remaining=1,
+                          start_guard=lambda: not self.player.isPlaying())
+        self.playlist.clear.assert_called_once()
+        self.player.play.assert_called_once_with(self.playlist)
+        self.assertEqual([(m['season'], m['episode']) for m in self.saved_meta], [(1, 2)])
+
+    def test_guarded_continue_claims_only_after_resolution_and_reports_start(self):
+        self.player.playing = False
+        events = []
+        original = self.actions.resolve_video.side_effect
+        def resolve(*args, **kwargs):
+            events.append('resolve')
+            return original(*args, **kwargs)
+        self.actions.resolve_video.side_effect = resolve
+        self.player.play.side_effect = lambda playlist: events.append('play')
+        def prepare():
+            events.append('claim')
+            return True
+        self.run_playlist(start_from_next=True, use_resolve=False, remaining=1,
+                          start_guard=lambda: not self.player.isPlaying(), prepare_start=prepare,
+                          on_started=lambda: events.append('started'))
+        self.assertEqual(events, ['resolve', 'claim', 'play', 'started'])
+
+    def test_guarded_continue_does_not_clear_playlist_when_claim_fails(self):
+        self.player.playing = False
+        started = MagicMock()
+        self.run_playlist(start_from_next=True, use_resolve=False, start_guard=lambda: True,
+                          prepare_start=lambda: False, on_started=started)
+        self.playlist.clear.assert_not_called()
+        self.player.play.assert_not_called()
+        started.assert_not_called()
+
+    def test_guarded_continue_stops_if_another_item_starts_during_search(self):
+        self.player.playing = False
+        original = self.actions._search_providers_parallel.side_effect
+        def search(query, *args, **kwargs):
+            self.player.playing = True
+            return original(query, *args, **kwargs)
+        self.actions._search_providers_parallel.side_effect = search
+        self.run_playlist(start_from_next=True, use_resolve=False,
+                          start_guard=lambda: not self.player.isPlaying())
+        self.actions.resolve_video.assert_not_called()
+        self.playlist.clear.assert_not_called()
+        self.player.play.assert_not_called()
+        self.assertEqual(self.window.getProperty('player.series_playlist_active'), '')
+
+    def test_guarded_continue_does_not_replace_playback_after_resolution(self):
+        self.player.playing = False
+        original = self.actions.resolve_video.side_effect
+        def resolve(*args, **kwargs):
+            self.player.playing = True
+            return original(*args, **kwargs)
+        self.actions.resolve_video.side_effect = resolve
+        self.run_playlist(start_from_next=True, use_resolve=False,
+                          start_guard=lambda: not self.player.isPlaying())
+        self.playlist.clear.assert_not_called()
+        self.player.play.assert_not_called()
+
+    def test_guarded_continue_checks_again_immediately_before_playlist_clear(self):
+        self.player.playing = False
+        original = self.utils.store_meta_in_cache.side_effect
+        def store(meta):
+            result = original(meta)
+            self.player.playing = True
+            return result
+        self.utils.store_meta_in_cache.side_effect = store
+        self.run_playlist(start_from_next=True, use_resolve=False,
+                          start_guard=lambda: not self.player.isPlaying())
+        self.playlist.clear.assert_not_called()
+        self.player.play.assert_not_called()
+
+    def test_guarded_continue_does_not_start_if_playback_changes_during_queue_update(self):
+        self.player.playing = False
+        self.playlist.add.side_effect = lambda url, item: setattr(self.player, 'playing', True)
+        self.run_playlist(start_from_next=True, use_resolve=False,
+                          start_guard=lambda: not self.player.isPlaying())
+        self.player.play.assert_not_called()
 
     def test_initial_episode_keeps_watch_later_context(self):
         self.run_playlist(source_list='watch_later')

@@ -491,25 +491,56 @@ class MonitorOrchestrator:
                     if (str(addon.getSetting('auto_prediction_enable')).lower() == 'true'
                             and str(addon.getSetting('auto_prediction_stop_on_no_match')).lower() == 'true'):
                         return "none", "prediction_end"
+                    # Observe playback throughout the handoff, including the
+                    # gap before the new plugin invocation attaches its guard.
+                    from resources.lib.continue_handoff import ContinueHandoffGuard, TOKEN, ACK
+                    if not self.win or not is_current():
+                        return "none", "playback_changed"
+                    token = uuid.uuid4().hex
+                    self.win.setProperty(TOKEN, token)
+                    guard = None
+                    handed_off = False
                     try:
-                        if not is_current():
+                        guard = ContinueHandoffGuard(token)
+                        owner = self.win.getProperty('play_er.monitor_owner')
+                        guard.bind_owner(owner)
+                        if not is_current() or guard.interrupted.is_set():
                             return "none", "playback_changed"
                         xbmc.executebuiltin("PlayerControl(Stop)")
                         xbmc.sleep(500)
-                    except Exception:
-                        pass
-                    try:
-                        # FIX PRE-EMPTIVE AND FILTERS [PRESERVE LIMIT ON AUTOMATIC CONTINUE]
-                        # url = get_url(action="continue_watching_main", meta=json.dumps(meta))
-                        url = get_url(action="continue_watching_main", meta=json.dumps(meta), automatic="true")
-                        token = f"play_er_continue_token:{xbmc.getInfoLabel('System.Time').replace(':','')}{int(time.time())}"
-                        if self.win:
-                            self.win.setProperty("plugin.video.play_er.continue_token", token)
+                        # A slow stop may still be finishing. Wait briefly only
+                        # while it is the same item; never stop a replacement.
+                        for _ in range(25):
+                            if guard.valid():
+                                break
+                            if guard.interrupted.is_set() or not is_current():
+                                return "none", "playback_changed"
+                            xbmc.sleep(100)
+                        else:
+                            return "none", "stop_timeout"
+                        url = get_url(action="continue_watching_main", meta=json.dumps(meta),
+                                      automatic="true", handoff_token=token, handoff_owner=owner)
+                        if not guard.valid():
+                            return "none", "playback_changed"
                         xbmc.executebuiltin(f"RunPlugin({url})")
+                        monitor = xbmc.Monitor()
+                        for _ in range(300):
+                            if self.win.getProperty(ACK) == token:
+                                self.win.clearProperty(ACK)
+                                handed_off = True
+                                return "runplugin", "skip_action"
+                            if not guard.valid() or monitor.waitForAbort(0.1):
+                                return "none", "playback_changed"
+                        return "none", "handoff_timeout"
                     except Exception as e:
-                        log(f"ORCHESTRATOR - SKIP CREDITS RUN PLUGIN ERROR : {e}", xbmc.LOGWARNING)
-
-                    return "runplugin", "skip_action"
+                        log(f"ORCHESTRATOR - SKIP CREDITS HANDOFF ERROR : {type(e).__name__}", xbmc.LOGWARNING)
+                        return "error", "handoff_failed"
+                    finally:
+                        if not handed_off:
+                            if guard:
+                                guard.clear()
+                            elif self.win.getProperty(TOKEN) == token:
+                                self.win.clearProperty(TOKEN)
                 else:
                     log("SKIP CREDITS - AKCE : POKRAČOVAT", xbmc.LOGINFO)
                     return "none", "user_continued"

@@ -1644,6 +1644,15 @@ def _handle_series_playlist(params, start_from_next=False, max_items=None):
     use_resolve = params.get('action') not in [
         'continue_trigger_main', 'continue_watching_main', 'continue_quick_play_action'
     ]
+    guard = params.get('_continue_guard')
+
+    def prepare_automatic_start():
+        if not guard.valid():
+            return False
+        GLOBAL_TRAKT_MONITOR.claim_playback()
+        guard.bind_owner(GLOBAL_TRAKT_MONITOR._playback_owner)
+        return guard.valid()
+
     generator.create_series_playlist(
         start_meta=meta,
         addon=addon,
@@ -1655,7 +1664,10 @@ def _handle_series_playlist(params, start_from_next=False, max_items=None):
         use_resolve=use_resolve,
         max_items=max_items,
         episodes_count=max_items,
-        source_list=params.get('source_list')
+        source_list=params.get('source_list'),
+        start_guard=guard.valid if guard else None,
+        prepare_start=prepare_automatic_start if guard else None,
+        on_started=guard.mark_started if guard else None
     )
 
 
@@ -2612,50 +2624,76 @@ def router(paramstring):
     from resources.lib.view_modes import begin_directory, finish_directory
     directory_url = sys.argv[0].split('?', 1)[0] + ('?' + paramstring if paramstring else '')
     begin_directory(directory_url, params)
-    playback_action = _is_playback_action(params)
-    if playback_action:
-        GLOBAL_TRAKT_MONITOR = trakt.get_player_monitor(
-            session=session,
-            addon=addon,
-            tmdb_client=plugin_instance.tmdb_client,
-            save_playback_history_func=save_playback_history,
-            remove_from_watch_later_func=_monitor_remove_watch_later,
-            mark_watched_func=mark_watched_callback
-        )
-        GLOBAL_TRAKT_MONITOR.claim_playback()
-
-    if "settings_monitor" not in globals() or globals()["settings_monitor"] is None:
-        settings_monitor = SettingsMonitor()
-
-    if not paramstring and not _notification_check_done:
-        def _run_background_notifications():
-            if not addon.getSettingBool("disable_episode_notify"):
-                try:
-                    check_new_episodes_notifications()
-                except Exception as e:
-                    log(f"BACKGROUND TASK [TMDB NOTIFY] : {e}", xbmc.LOGWARNING)
-
-            if not addon.getSettingBool("disable_notify_info"):
-                try:
-                    check_new_episodes()
-                except Exception as e:
-                    log(f"BACKGROUND TASK [TRAKT NOTIFY] : {e}", xbmc.LOGWARNING)
-
-        threading.Thread(target=_run_background_notifications, daemon=True).start()
-        _notification_check_done = True
-
-    action = params.get("action")
-
-    if action in actions_map:
+    # A guarded automatic handoff must attach before claiming playback. Manual
+    # Continue and existing external calls without a token keep their behavior.
+    guard = None
+    if (params.get('action') == 'continue_watching_main'
+            and params.get('automatic') == 'true' and params.get('handoff_token')):
+        from resources.lib.continue_handoff import ContinueHandoffGuard
+        guard = ContinueHandoffGuard(params['handoff_token'])
+        guard.bind_owner(params.get('handoff_owner'))
         try:
-            actions_map[action](params)
-        except Exception as e:
-            log(f"ROUTER ERROR - ACTION '{action}' FAILED : {e}", xbmc.LOGERROR)
-            traceback.print_exc()
-    elif not action or action == "None":
-        menu()
-    else:
-        log(f"ROUTER ERROR - UNKNOWN ACTION : {action}", xbmc.LOGWARNING)
+            acknowledged = guard.acknowledge()
+        except Exception:
+            guard.clear()
+            raise
+        if not acknowledged:
+            guard.clear()
+            return
+        params['_continue_guard'] = guard
+    try:
+        playback_action = _is_playback_action(params)
+        if playback_action:
+            GLOBAL_TRAKT_MONITOR = trakt.get_player_monitor(
+                session=session,
+                addon=addon,
+                tmdb_client=plugin_instance.tmdb_client,
+                save_playback_history_func=save_playback_history,
+                remove_from_watch_later_func=_monitor_remove_watch_later,
+                mark_watched_func=mark_watched_callback
+            )
+            if guard and not guard.valid():
+                return
+            if not guard:
+                GLOBAL_TRAKT_MONITOR.claim_playback()
+
+        if "settings_monitor" not in globals() or globals()["settings_monitor"] is None:
+            settings_monitor = SettingsMonitor()
+
+        if not paramstring and not _notification_check_done:
+            def _run_background_notifications():
+                if not addon.getSettingBool("disable_episode_notify"):
+                    try:
+                        check_new_episodes_notifications()
+                    except Exception as e:
+                        log(f"BACKGROUND TASK [TMDB NOTIFY] : {e}", xbmc.LOGWARNING)
+
+                if not addon.getSettingBool("disable_notify_info"):
+                    try:
+                        check_new_episodes()
+                    except Exception as e:
+                        log(f"BACKGROUND TASK [TRAKT NOTIFY] : {e}", xbmc.LOGWARNING)
+
+            threading.Thread(target=_run_background_notifications, daemon=True).start()
+            _notification_check_done = True
+
+        action = params.get("action")
+
+        if action in actions_map:
+            try:
+                actions_map[action](params)
+            except Exception as e:
+                log(f"ROUTER ERROR - ACTION '{action}' FAILED : {e}", xbmc.LOGERROR)
+                traceback.print_exc()
+        elif not action or action == "None":
+            menu()
+        else:
+            log(f"ROUTER ERROR - UNKNOWN ACTION : {action}", xbmc.LOGWARNING)
+
+    finally:
+        if guard:
+            # The sender removes the acknowledgement after observing it.
+            guard.clear_token()
 
     # Directory handlers have completed endOfDirectory before requesting a view.
     finish_directory()
@@ -2674,7 +2712,10 @@ def router(paramstring):
     #     while player.isPlayingVideo() and not monitor.abortRequested():
     #         if monitor.waitForAbort(1): break
     if playback_action:
-        _wait_for_playback_monitor(GLOBAL_TRAKT_MONITOR)
+        if guard and not guard.started:
+            GLOBAL_TRAKT_MONITOR.release_playback()
+        else:
+            _wait_for_playback_monitor(GLOBAL_TRAKT_MONITOR)
 
 
 if __name__ == '__main__':
