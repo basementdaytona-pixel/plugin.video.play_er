@@ -28,6 +28,7 @@ PLAYER_FILES = (
     "[TMDBH]--SOURCES-TMDB.json",
     "[TMDBH]--SEARCH-TEXT.json",
     "[TMDBH]--AUTO-PLAY.json",
+    "[TMDBH]--AUTO-NEXT.json",
 )
 
 

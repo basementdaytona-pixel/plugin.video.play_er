@@ -3120,23 +3120,24 @@ def remove_community_share(params, plugin_instance):
 
 
 
-def _tmdbh_next_episode(show_details, history, tmdb_id):
-    """Continue the most recent valid episode through the known season list."""
+def _tmdbh_next_episode(show_details, history, tmdb_id, tmdb_client):
+    """Use the same verified sequence for TMDBHelper, Continue and credits."""
     from resources.lib.utils_tmdbhelper import normalise_episode_numbers
+    from resources.lib.generator import _next_episode_coordinates
+
     seasons = {}
     for row in show_details.get("seasons", []) or []:
         try:
-            season, count = normalise_episode_numbers(
-                row.get("season_number"), row.get("episode_count"))
-            if int(season) > 0:
-                seasons[int(season)] = int(count)
+            season, count = normalise_episode_numbers(row.get("season_number"), row.get("episode_count"))
+            seasons[int(season)] = int(count)
         except (AttributeError, ValueError):
             continue
+
     for item in history:
         meta = item.get("meta", {}) if isinstance(item, dict) else {}
         if not isinstance(meta, dict):
             continue
-        if str(meta.get("tmdb_id")) != tmdb_id or meta.get("media_type") != "episode":
+        if str(meta.get("tmdb_id")) != str(tmdb_id) or meta.get("media_type") != "episode":
             continue
         try:
             season, episode = map(int, normalise_episode_numbers(
@@ -3145,12 +3146,12 @@ def _tmdbh_next_episode(show_details, history, tmdb_id):
             continue
         if season not in seasons:
             continue
-        if episode < seasons[season]:
-            return season, episode + 1
-        following = [number for number in seasons if number > season]
-        return (min(following), 1) if following else None
-    regular = [number for number in seasons if number > 0]
-    return (min(regular), 1) if regular else None
+        return _next_episode_coordinates(tmdb_id, season, episode, tmdb_client)
+
+    regular = [season for season in seasons if season > 0]
+    if not regular:
+        return None
+    return _next_episode_coordinates(tmdb_id, min(regular), 0, tmdb_client)
 
 
 def _select_library_source(sources, addon):
@@ -3455,7 +3456,7 @@ def tmdbh_bridge(params, plugin_instance):
             show_details = client.get_full_details("tv", tmdb_id)
             if not show_details:
                 raise ValueError(f"Nelze načíst detaily seriálu: {tmdb_id}")
-            coordinates = _tmdbh_next_episode(show_details, history, tmdb_id)
+            coordinates = _tmdbh_next_episode(show_details, history, tmdb_id, client)
             if coordinates is None:
                 notify_info("INFO Není dostupná následující epizoda.", category="TMDB-HELP")
                 xbmcplugin.setResolvedUrl(plugin_instance.handle, False, xbmcgui.ListItem())
@@ -3486,7 +3487,7 @@ def tmdbh_bridge(params, plugin_instance):
                 raise ValueError(f"Nelze načíst detaily seriálu: {tmdb_id}")
             ep_details = client._fetch(f"tv/{tmdb_id}/season/{season}/episode/{episode}", params={"append_to_response": "credits"})
 
-            if not ep_details:
+            if not ep_details or "status_code" in ep_details or ep_details.get("success") is False:
                 raise ValueError(f"Nelze načíst detaily epizody: S{int(season):02d}E{int(episode):02d}")
             show_props = client._build_metadata_props(show_details, 'tv')
             ep_props = client._build_metadata_props(ep_details, 'episode') if ep_details else {}

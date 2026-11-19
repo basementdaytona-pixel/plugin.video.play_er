@@ -183,103 +183,98 @@ class LazyMySQLPool:
             with self._condition:
                 if self._closed:
                     raise MySQLPoolClosedError("MySQL pool is closed")
-
-                while self._available:
+                if self._available:
                     conn = self._available.pop()
-                    try:
-                        if conn.is_connected():
-                            try:
-                                conn.ping(reconnect=True, attempts=1, delay=0)
-                            except Exception:
-                                pass
-                            self._in_use.add(id(conn))
-                            return conn
-                    except Exception:
-                        pass
+                    self._in_use.add(id(conn))
+                    is_new = False
+                elif len(self._in_use) + self._connecting < self.pool_size:
+                    conn = None
+                    self._connecting += 1
+                    is_new = True
+                else:
+                    remaining = deadline - time.monotonic()
+                    if remaining <= 0:
+                        raise MySQLPoolTimeoutError(
+                            f"Timed out waiting for a MySQL connection from {self.pool_name}"
+                        )
+                    self._condition.wait(remaining)
+                    continue
+
+            # Connector health checks perform network I/O. Reserve capacity
+            # under the condition, then validate without blocking other workers.
+            try:
+                if conn is None:
+                    conn = self._connect()
+                    conn.autocommit = True
+                else:
+                    conn.ping(reconnect=True, attempts=1, delay=0)
+                    # Reconnection can restore the connector's default session.
+                    conn.autocommit = True
+            except Exception:
+                with self._condition:
+                    if conn is not None:
+                        self._in_use.discard(id(conn))
+                    # Only new connection attempts consume _connecting.
+                    # Existing connections were already counted in _in_use.
+                    if is_new:
+                        self._connecting -= 1
+                    self._condition.notify_all()
+                if conn is not None:
                     try:
                         conn.close()
                     except Exception:
                         pass
+                raise
 
-                if len(self._in_use) + self._connecting < self.pool_size:
-                    self._connecting += 1
-                    break
-
-                remaining = deadline - time.monotonic()
-                if remaining <= 0:
-                    raise MySQLPoolTimeoutError(
-                        f"Timed out waiting for a MySQL connection from {self.pool_name}"
-                    )
-                self._condition.wait(remaining)
-
-        try:
-            conn = self._connect()
-            try:
-                conn.autocommit = True
-            except Exception:
-                pass
-        except Exception:
             with self._condition:
-                self._connecting -= 1
+                if is_new:
+                    self._connecting -= 1
+                if self._closed:
+                    should_close = True
+                    self._in_use.discard(id(conn))
+                else:
+                    self._in_use.add(id(conn))
+                    should_close = False
                 self._condition.notify_all()
-            raise
-
-        with self._condition:
-            self._connecting -= 1
-            if self._closed:
-                should_close = True
-            else:
-                self._in_use.add(id(conn))
-                should_close = False
-            self._condition.notify_all()
-
-        if should_close:
-            try:
+            if should_close:
                 conn.close()
-            except Exception:
-                pass
-            raise MySQLPoolClosedError("MySQL pool was closed while opening a connection")
-        return conn
+                raise MySQLPoolClosedError("MySQL pool was closed while opening a connection")
+            return conn
 
     def _connect(self):
         return mysql.connector.connect(**self.dbconfig)
 
     def put_connection(self, conn):
-        if not conn:
+        if conn is None:
             return
         with self._condition:
+            # Duplicate or foreign returns must never make a connection
+            # available to two workers at the same time.
+            if id(conn) not in self._in_use:
+                return
+            self._in_use.remove(id(conn))
+            if not self._closed:
+                self._available.append(conn)
+                should_close = False
+            else:
+                should_close = True
+            self._condition.notify_all()
+        if should_close:
             try:
-                self._in_use.discard(id(conn))
-                if not self._closed and conn.is_connected():
-                    try:
-                        conn.ping(reconnect=True, attempts=1, delay=0)
-                    except Exception:
-                        pass
-                    if len(self._available) < self.pool_size:
-                        self._available.append(conn)
-                        return
-                try:
-                    conn.close()
-                except Exception:
-                    pass
+                conn.close()
             except Exception:
-                try:
-                    conn.close()
-                except Exception:
-                    pass
-            finally:
-                self._condition.notify_all()
+                pass
 
     def close_all(self):
         with self._condition:
             self._closed = True
-            while self._available:
-                try:
-                    conn = self._available.pop()
-                    conn.close()
-                except Exception:
-                    pass
+            available, self._available = self._available, []
             self._condition.notify_all()
+        for conn in available:
+            try:
+                conn.close()
+            except Exception:
+                pass
 
 
 def _ensure_mysql_database(host, port, user, password, db_name):
@@ -389,10 +384,6 @@ def _get_db_connection():
                     conn = None
                     try:
                         conn = pool.get_connection()
-                        try:
-                            conn.ping(reconnect=True, attempts=1, delay=0)
-                        except Exception:
-                            pass
                         with DB_LOCK:
                             MYSQL_CHECKOUT_COUNT += 1
 
