@@ -19,6 +19,19 @@ class MonitorLifetimeTests(unittest.TestCase):
         stop.waitForAbort.assert_not_called()
         player.release_playback.assert_called_once()
 
+    def test_refill_route_passes_future_verification_flag(self):
+        metadata = {'tmdb_id': 42, 'media_type': 'episode', 'season': 1, 'episode': 2}
+        instance = MagicMock()
+        with patch.object(plugin, 'get_meta_from_cache', return_value=metadata), \
+             patch.object(plugin, 'plugin_instance', instance, create=True), \
+             patch.object(plugin.generator, 'queue_following_episodes_from_tmdbh') as refill:
+            action = plugin._create_actions_map()['refill_episode_queue']
+            action({'meta': 'key', 'verify_future': 'true'})
+            refill.assert_called_once_with(metadata, plugin.addon, instance, seed_only=False, verify_future=True)
+            refill.reset_mock()
+            action({'meta': 'key'})
+            refill.assert_called_once_with(metadata, plugin.addon, instance, seed_only=False, verify_future=False)
+
     def test_confirmed_video_keeps_monitor_until_abort(self):
         player = MagicMock()
         player.owns_playback.return_value = True

@@ -2736,11 +2736,14 @@ class KodiPlayerMonitor(xbmc.Player):
                 except cache_manager.CacheStorageError as e:
                     log(f"PLAYBACK - History not saved: {e}", xbmc.LOGWARNING)
 
-            # FIX PRE-EMPTIVE AND FILTERS [REFILL QUEUE WHEN A PREPARED EPISODE STARTS]
+            # The verified queue record also identifies a managed episode when
+            # Kodi omits the current ListItem's custom properties.
+            queue_managed = playing_item.getProperty("play_er.queue_managed")
+            propertyless_queue_item = not queue_managed and bool(queue_record)
             if (
                 self.current_meta
                 and self.current_meta.get("media_type") == "episode"
-                and playing_item.getProperty("play_er.queue_managed") == "true"
+                and (queue_managed == "true" or propertyless_queue_item)
                 and self.current_meta.get('_play_er_queue_remaining') != 0
             ):
                 queue_refill_key = (
@@ -2750,10 +2753,10 @@ class KodiPlayerMonitor(xbmc.Player):
                 )
                 if win.getProperty("play_er.queue_refill_requested") != queue_refill_key:
                     win.setProperty("play_er.queue_refill_requested", queue_refill_key)
-                    refill_url = get_url(
-                        action="refill_episode_queue",
-                        meta=json.dumps(self.current_meta)
-                    )
+                    refill_params = {"action": "refill_episode_queue", "meta": json.dumps(self.current_meta)}
+                    if propertyless_queue_item:
+                        refill_params["verify_future"] = "true"
+                    refill_url = get_url(**refill_params)
                     xbmc.executebuiltin(f"RunPlugin({refill_url})")
 
             if scrobbling_enabled and (new_trakt_id or tmdb_id):

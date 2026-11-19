@@ -2516,7 +2516,8 @@ def _create_actions_map():
         "play_context_item": lambda p: actions.play_context_item(p, plugin_instance),
         "pre_emptive_search": lambda p: actions.pre_emptive_search(p, plugin_instance),
         "refill_episode_queue": lambda p: generator.queue_following_episodes_from_tmdbh(
-            get_meta_from_cache(p.get("meta", "")), addon, plugin_instance, seed_only=False
+            get_meta_from_cache(p.get("meta", "")), addon, plugin_instance, seed_only=False,
+            verify_future=p.get("verify_future") == "true"
         ),
         "play_random": _handle_play_random,
         "random_trigger_main": random_trigger_main,

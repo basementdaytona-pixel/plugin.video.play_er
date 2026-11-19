@@ -108,6 +108,37 @@ class SeriesPlaylistTests(unittest.TestCase):
         self.assertEqual(len(records), 2)
         self.assertEqual(self.window.getProperty('play_er.bg_series_playlist_building'), '')
 
+    def test_verified_refill_rejects_unidentified_future_items(self):
+        meta = {'tmdb_id': 42, 'media_type': 'episode', 'season': 1, 'episode': 1,
+                '_play_er_queue_remaining': 2}
+        self.playlist.size.return_value = 2
+        self.playlist.getposition.return_value = 0
+        with patch.object(generator, '_active_episode_matches', return_value=True), \
+             patch.object(generator, '_get_video_playlist_snapshot', return_value=(self.playlist, 0, [{}, {}])), \
+             patch.object(generator, 'get_setting_int_with_bounds', return_value=3), \
+             patch.object(generator, '_build_managed_episode_item') as build:
+            generator.queue_following_episodes_from_tmdbh(meta, self.addon, self.instance,
+                                                          seed_only=False, verify_future=True)
+        build.assert_not_called()
+        self.playlist.add.assert_not_called()
+
+    def test_verified_refill_counts_existing_managed_future_episode(self):
+        meta = {'tmdb_id': 42, 'media_type': 'episode', 'season': 1, 'episode': 1,
+                '_play_er_queue_remaining': 2}
+        managed = {'customproperties': {'play_er.queue_managed': 'true', 'play_er.tmdb_id': '42',
+                                         'play_er.season': '1', 'play_er.episode': '2'}}
+        self.playlist.size.return_value = 2
+        self.playlist.getposition.return_value = 0
+        next_item = ('https://example.invalid/S02E01', MagicMock())
+        with patch.object(generator, '_active_episode_matches', return_value=True), \
+             patch.object(generator, '_get_video_playlist_snapshot', return_value=(self.playlist, 0, [{}, managed])), \
+             patch.object(generator, 'get_setting_int_with_bounds', return_value=3), \
+             patch.object(generator, '_build_managed_episode_item', return_value=next_item) as build:
+            generator.queue_following_episodes_from_tmdbh(meta, self.addon, self.instance,
+                                                          seed_only=False, verify_future=True)
+        self.assertEqual(build.call_args.args[-2:], (2, 1))
+        self.playlist.add.assert_called_once_with(*next_item)
+
     def test_continue_advances_once_and_preserves_remaining_limit(self):
         self.player.path = 'https://example.invalid/S01E02'
         self.run_playlist(start_from_next=True, use_resolve=False, remaining=2)

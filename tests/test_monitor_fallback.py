@@ -212,6 +212,49 @@ class MonitorFallbackTests(unittest.TestCase):
         self.assertEqual(monitor.current_meta, next_episode)
         history.assert_called_once_with(next_episode, 'queued-source', skip_refresh=True)
 
+    def test_propertyless_managed_episode_with_remaining_budget_requests_refill(self):
+        module, window, monitor, history, episode = self.make_active_episode()
+        url = 'https://example.invalid/next-episode'
+        next_episode = dict(episode, episode=3, _play_er_queue_remaining=1)
+        self.queue_record(module, window, monitor, url, next_episode)
+        self.set_playing_url(monitor, url)
+        module.get_url.return_value = 'plugin://plugin.video.play_er/?action=refill_episode_queue'
+        module.xbmc.executebuiltin.reset_mock()
+        monitor.onAVStarted()
+        module.get_url.assert_called_with(action='refill_episode_queue', meta=json.dumps(next_episode), verify_future='true')
+        module.xbmc.executebuiltin.assert_called_once_with(
+            'RunPlugin(plugin://plugin.video.play_er/?action=refill_episode_queue)')
+
+    def test_propertyless_episode_with_exhausted_budget_does_not_refill(self):
+        module, window, monitor, history, episode = self.make_active_episode()
+        url = 'https://example.invalid/last-episode'
+        self.queue_record(module, window, monitor, url, dict(episode, episode=3, _play_er_queue_remaining=0))
+        self.set_playing_url(monitor, url)
+        module.get_url.reset_mock()
+        monitor.onAVStarted()
+        module.get_url.assert_not_called()
+
+    def test_explicit_unmanaged_property_does_not_use_queue_fallback(self):
+        module, window, monitor, history, episode = self.make_active_episode()
+        url = 'https://example.invalid/unmanaged-episode'
+        self.queue_record(module, window, monitor, url, dict(episode, episode=3, _play_er_queue_remaining=1))
+        self.set_playing_url(monitor, url)
+        monitor.item.getProperty.side_effect = lambda key: 'false' if key == 'play_er.queue_managed' else ''
+        module.get_url.reset_mock()
+        monitor.onAVStarted()
+        module.get_url.assert_not_called()
+
+    def test_explicit_managed_episode_keeps_existing_refill_request(self):
+        module, window, monitor, history, episode = self.make_active_episode()
+        url = 'https://example.invalid/managed-episode'
+        next_episode = dict(episode, episode=3, _play_er_queue_remaining=1)
+        self.queue_record(module, window, monitor, url, next_episode)
+        self.set_playing_url(monitor, url)
+        monitor.item.getProperty.side_effect = lambda key: 'true' if key == 'play_er.queue_managed' else ''
+        module.get_url.reset_mock()
+        monitor.onAVStarted()
+        module.get_url.assert_called_once_with(action='refill_episode_queue', meta=json.dumps(next_episode))
+
     def test_owned_movie_with_stripped_properties_uses_its_queue_record(self):
         module, window, monitor, history, episode = self.make_active_episode()
         url = 'https://example.invalid/next-movie'

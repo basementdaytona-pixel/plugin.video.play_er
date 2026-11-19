@@ -1418,7 +1418,7 @@ def _active_episode_matches(player, win, meta):
         return False
 
 
-def queue_following_episodes_from_tmdbh(meta, addon, plugin_instance, seed_only=True):
+def queue_following_episodes_from_tmdbh(meta, addon, plugin_instance, seed_only=True, verify_future=False):
     """Seed one episode after TMDBH selection, then refill only missing queue entries."""
     if str(addon.getSetting("autolist_enable")).lower() == "false":
         return
@@ -1470,6 +1470,13 @@ def queue_following_episodes_from_tmdbh(meta, addon, plugin_instance, seed_only=
                 return
 
             future_items = [] if seed_only else _managed_future_episode_items(meta, items, position)
+            # If the current ListItem lost its properties, do not risk
+            # duplicating or appending behind future items we cannot identify.
+            if not seed_only and verify_future and (
+                len(items) != size or len(future_items) != size - position - 1
+            ):
+                log("FIX PRE-EMPTIVE AND FILTERS - Queue: nelze ověřit následující položky", xbmc.LOGINFO)
+                return
             # FIX PRE-EMPTIVE AND FILTERS [REFILL ONLY WITHIN THE ORIGINAL LIMIT]
             # Original rolling target recreated the same number after EVERY episode:
             # target_future_count = 1 if seed_only else max(0, configured_count - 1)
