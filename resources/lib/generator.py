@@ -330,6 +330,26 @@ def get_preemptive_episode_target(meta, tmdb_client):
         )
 
 
+def _movie_playlist_is_current(player, allowed_urls, allowed_sources):
+    """Only extend a queue while one of its movies is still playing."""
+    try:
+        if not player.isPlayingVideo():
+            return False
+    except Exception:
+        return False
+    try:
+        if str(player.getPlayingFile()).split('|', 1)[0] in allowed_urls:
+            return True
+    except Exception:
+        pass
+    try:
+        item = player.getPlayingItem()
+        identity = (item.getProperty('play_er.meta_id'), item.getProperty('play_er.link'))
+        return bool(all(identity) and identity in allowed_sources)
+    except Exception:
+        return False
+
+
 def create_movie_playlist(start_meta, addon, active_provider, tmdb_client, handle, plugin_instance, start_from_next=False, source_list=None):
     from resources.lib import plugin as plugin_module
     from resources.lib import actions
@@ -345,11 +365,11 @@ def create_movie_playlist(start_meta, addon, active_provider, tmdb_client, handl
         return
 
     win = xbmcgui.Window(10000)
+    if win.getProperty("player.movie_playlist_active") == "true":
+        return
+    win.setProperty("player.movie_playlist_active", "true")
+    progress_dialog = None
     try:
-        if win.getProperty("player.movie_playlist_active") == "true":
-            return
-        win.setProperty("player.movie_playlist_active", "true")
-
         tmdb_id = start_meta.get("tmdb_id")
         title = start_meta.get("title", "")
 
@@ -472,6 +492,7 @@ def create_movie_playlist(start_meta, addon, active_provider, tmdb_client, handl
                     progress_dialog.close()
                 except Exception:
                     pass
+                progress_dialog = None
 
                 if handle and handle > 0:
                     xbmcplugin.setResolvedUrl(handle, True, li)
@@ -491,19 +512,24 @@ def create_movie_playlist(start_meta, addon, active_provider, tmdb_client, handl
 
                         try:
                             player = xbmc.Player()
-                            if not player.isPlaying():
+                            allowed_urls = {str(playable_url).split('|', 1)[0]}
+                            allowed_sources = {(str(meta_uuid), str(selected_source['link']))} if meta_uuid and selected_source.get('link') else set()
+                            if not _movie_playlist_is_current(player, allowed_urls, allowed_sources):
                                 return
 
                             playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
                             bg_added = 1
 
                             recommendations = tmdb_client.get_recommendations_raw("movie", start_tmdb_id)
-                            if not recommendations:
+                            if not isinstance(recommendations, list) or not recommendations:
                                 return
 
                             for rec_item in recommendations[:50]:
-                                if bg_added >= max_count or not player.isPlaying():
+                                if bg_added >= max_count or not _movie_playlist_is_current(player, allowed_urls, allowed_sources):
                                     break
+
+                                if not isinstance(rec_item, dict):
+                                    continue
 
                                 rec_tmdb_id = rec_item.get("id")
                                 if not rec_tmdb_id:
@@ -555,6 +581,7 @@ def create_movie_playlist(start_meta, addon, active_provider, tmdb_client, handl
                                     li_rec.setPath(playable_url_rec)
                                     attach_subtitles(li_rec, selected_rec["link"])
 
+                                    rec_meta_uuid = ''
                                     try:
                                         rec_trakt_id = ""
                                         if str(addon.getSetting("enable_trakt_scrobbling")).lower() == "true":
@@ -571,6 +598,11 @@ def create_movie_playlist(start_meta, addon, active_provider, tmdb_client, handl
                                     except Exception:
                                         pass
 
+                                    if not _movie_playlist_is_current(player, allowed_urls, allowed_sources):
+                                        break
+                                    allowed_urls.add(str(playable_url_rec).split('|', 1)[0])
+                                    if rec_meta_uuid and selected_rec.get('link'):
+                                        allowed_sources.add((str(rec_meta_uuid), str(selected_rec['link'])))
                                     playlist.add(playable_url_rec, li_rec)
                                     history_keys.add(rec_key)
                                     bg_added += 1
@@ -586,6 +618,11 @@ def create_movie_playlist(start_meta, addon, active_provider, tmdb_client, handl
             xbmcplugin.setResolvedUrl(handle, False, xbmcgui.ListItem())
 
     finally:
+        if progress_dialog is not None:
+            try:
+                progress_dialog.close()
+            except Exception:
+                pass
         win.clearProperty("player.movie_playlist_active")
 
 
