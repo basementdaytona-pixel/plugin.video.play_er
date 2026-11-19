@@ -856,7 +856,10 @@ def get_entry_key(entry):
     media_type = meta.get("media_type", "")
     key = str(meta.get("tmdb_id", ""))
     if media_type == "episode":
-        key += str(meta.get("season", "")) + str(meta.get("episode", ""))
+        key = "episode_" + json.dumps(
+            [key, str(meta.get("season", "")), str(meta.get("episode", ""))],
+            separators=(",", ":"),
+        )
     elif media_type == "movie" and key:
         key = "movie_" + key
     return key

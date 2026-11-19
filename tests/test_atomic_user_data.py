@@ -203,3 +203,26 @@ class ConsumerBehaviorTests(unittest.TestCase):
         self.assertEqual([item['meta']['tmdb_id'] for item in cache.user_data_get('playback_history')], [6, 5, 4])
         actions.remove_playback_item({'type': 'movie', 'movie_title': '5'}, None)
         self.assertEqual([item['meta']['tmdb_id'] for item in cache.user_data_get('playback_history')], [6, 4])
+
+    def test_playback_history_keeps_distinct_episodes_and_replaces_duplicates(self):
+        first = {'tmdb_id': 42, 'media_type': 'episode', 'tv_show_title': 'Show',
+                 'season': 1, 'episode': 11}
+        second = dict(first, season=11, episode=1)
+        duplicate = dict(first, tmdb_id='42', season='1', episode='11', title='Updated')
+        with patch.object(plugin.xbmc, 'Player') as player:
+            player.return_value.isPlayingVideo.return_value = False
+            for item in (first, second, duplicate):
+                plugin.save_playback_history(item)
+        self.assertEqual([item['meta'] for item in cache.user_data_get('playback_history')],
+                         [duplicate, second])
+
+    def test_bulk_history_does_not_drop_episode_with_colliding_digits(self):
+        first = {'tmdb_id': 42, 'media_type': 'episode', 'tv_show_title': 'Show',
+                 'season': 1, 'episode': 11}
+        second = dict(first, season=11, episode=1)
+        third = dict(first, tmdb_id=421, episode=1)
+        plugin.save_playback_history(first, skip_refresh=True)
+        plugin.save_playback_history_bulk([{'meta': second, 'link': ''},
+                                           {'meta': third, 'link': ''}])
+        self.assertEqual([item['meta'] for item in cache.user_data_get('playback_history')],
+                         [third, second, first])
