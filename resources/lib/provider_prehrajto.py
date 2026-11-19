@@ -1012,6 +1012,43 @@ class PrehrajTo(BaseProvider):
                 break
         return videos
 
+    def _catalog_video(self, item, mark_multi, include_series=False):
+        """Normalize one history/ranking item without discarding later results."""
+        if not isinstance(item, dict):
+            return None
+        title = next((value for value in (item.get('title'), item.get('name'))
+                      if isinstance(value, str) and value.strip()), 'Neznámý titul')
+        title = self._apply_multi_indicator(item, title, mark_multi)
+        link = next((value.strip() for key in ('videoPage', 'pageUrl', 'link', 'url')
+                     if isinstance((value := item.get(key)), str) and value.strip()), None)
+        ident = item.get('id')
+        if not link and isinstance(ident, (str, int)) and not isinstance(ident, bool) and str(ident).strip() and ident != 0:
+            link = urljoin(self.base_url, f"/videos/{str(ident).strip()}")
+        if not link:
+            return None
+        size = item.get('size')
+        size_str = ''
+        if size is not None:
+            try:
+                size_str = convert_size(int(size))
+            except (TypeError, ValueError, OverflowError):
+                size_str = str(size)
+        thumbs = item.get('thumbs')
+        thumbs = thumbs.get('global') if isinstance(thumbs, dict) else None
+        try:
+            likes = int(thumbs.get('up', 0)) if isinstance(thumbs, dict) else 0
+        except (TypeError, ValueError, OverflowError):
+            likes = 0
+        video = {
+            'title': title, 'link': link, 'size_str': size_str,
+            'duration_str': str(item.get('duration') or item.get('length') or ''),
+            'id': ident, 'provider': 'prehraj.to', 'provider_color': Colors.ORANGE,
+            'likes': likes,
+        }
+        if include_series:
+            video['is_series'] = item.get('type') == 'series' or 'S0' in title.upper() or 'E0' in title.upper()
+        return video
+
     def get_most_watched(self):
         use_cache = get_setting_bool(self.addon, "enable_most_watched_cache", True)
         max_pages = get_setting_int_with_bounds(self.addon, 'max_pages', default=5, min_val=1, max_val=10)
@@ -1036,39 +1073,9 @@ class PrehrajTo(BaseProvider):
                 return videos
 
             for it in items:
-                title = it.get('title') or it.get('name') or 'Neznámý titul'
-                title = self._apply_multi_indicator(it, title, mark_multi)
-                link = it.get('videoPage') or it.get('pageUrl') or it.get('link') or it.get('url')
-                if not link and it.get('id'):
-                    link = urljoin(self.base_url, f"/videos/{it.get('id')}")
-
-                size_str = ''
-                if it.get('size') is not None:
-                    try:
-                        size_str = convert_size(int(it.get('size')))
-                    except Exception:
-                        size_str = str(it.get('size'))
-
-                likes = 0
-                thumbs = it.get('thumbs', {}).get('global', {})
-                if thumbs:
-                    try:
-                        likes = int(thumbs.get('up', 0))
-                    except Exception:
-                        pass
-
-                if link:
-                    videos.append({
-                        'title': title,
-                        'link': link,
-                        'size_str': size_str,
-                        'duration_str': str(it.get('duration') or it.get('length') or ''),
-                        'id': it.get('id'),
-                        'provider': 'prehraj.to',
-                        'provider_color': Colors.ORANGE,
-                        'likes': likes,
-                        'is_series': it.get('type') == 'series' or 'S0' in title.upper() or 'E0' in title.upper()
-                    })
+                video = self._catalog_video(it, mark_multi, include_series=True)
+                if video:
+                    videos.append(video)
         except Exception:
             pass
 
@@ -1089,38 +1096,9 @@ class PrehrajTo(BaseProvider):
 
                 videos = []
                 for it in items:
-                    title = it.get('title') or it.get('name') or 'Neznámý titul'
-                    title = self._apply_multi_indicator(it, title, mark_multi)
-                    link = it.get('videoPage') or it.get('pageUrl') or it.get('link') or it.get('url')
-                    if not link and it.get('id'):
-                        link = urljoin(self.base_url, f"/videos/{it.get('id')}")
-
-                    size_str = ''
-                    if it.get('size') is not None:
-                        try:
-                            size_str = convert_size(int(it.get('size')))
-                        except Exception:
-                            size_str = str(it.get('size'))
-
-                    likes = 0
-                    thumbs = it.get('thumbs', {}).get('global', {})
-                    if thumbs:
-                        try:
-                            likes = int(thumbs.get('up', 0))
-                        except Exception:
-                            pass
-
-                    if link:
-                        videos.append({
-                            'title': title,
-                            'link': link,
-                            'size_str': size_str,
-                            'duration_str': str(it.get('duration') or it.get('length') or ''),
-                            'id': it.get('id'),
-                            'provider': 'prehraj.to',
-                            'provider_color': Colors.ORANGE,
-                            'likes': likes
-                        })
+                    video = self._catalog_video(it, mark_multi)
+                    if video:
+                        videos.append(video)
                 return videos
         except Exception:
             pass

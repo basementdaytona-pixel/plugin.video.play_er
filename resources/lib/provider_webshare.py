@@ -242,34 +242,39 @@ class Webshare(BaseProvider):
             response = safe_post(self.session, url, data=payload, timeout=15)
             if response and response.status_code == 200:
                 xml_response = ET.fromstring(response.content)
-                if xml_response.find('status').text == 'OK':
+                if xml_response.findtext('status') == 'OK':
                     for item_xml in xml_response.iter('file'):
                         item = {child.tag: child.text for child in item_xml}
-                        size_bytes = int(item.get("size", 0))
-                        size_str = convert_size(size_bytes)
-                        name = item.get("name", "Neznámý soubor")
+                        ident = (item.get("ident") or "").strip()
+                        if not ident:
+                            continue
+                        try:
+                            size_str = convert_size(int(item.get("size") or 0))
+                        except (TypeError, ValueError, OverflowError):
+                            size_str = ""
+                        name = item.get("name") or "Neznámý soubor"
                         ext = name.split('.')[-1].lower() if '.' in name else ''
 
                         all_videos.append({
                             "title": name,
-                            "link": item.get("ident"),
+                            "link": ident,
                             "size_str": size_str,
                             "duration_str": "",
-                            "file_id": item.get("ident"),
+                            "file_id": ident,
                             "provider": "webshare.cz",
                             "provider_color": Colors.LIMEGREEN,
                             "tags": [],
                             "extension": ext
                         })
                 else:
-                    message = xml_response.find('message').text
+                    message = xml_response.findtext('message') or ''
                     log(f"WEBSHARE - Chyba při vyhledávání: {message}", xbmc.LOGERROR)
                     if message == "Invalid token":
                         self.addon.setSetting("webshare_token", "")
                         self._auth_token = None
                         notify_error("WEBSHARE.CZ NEPLATNÝ TOKEN", "PROVIDER")
             else:
-                log(f"WEBSHARE - Chyba HTTP: {response.status_code if response else 'žádná odpověď'}", xbmc.LOGERROR)
+                log(f"WEBSHARE - Chyba HTTP: {response.status_code if response is not None else 'žádná odpověď'}", xbmc.LOGERROR)
         except Exception as e:
             log(f"WEBSHARE - Výjimka při vyhledávání: {e}", xbmc.LOGERROR)
 
@@ -368,13 +373,13 @@ class Webshare(BaseProvider):
                 xml = ET.fromstring(response.content)
                 if xml.find('status').text == 'OK':
                     direct_url = xml.find('link').text
-                    log(f"WEBSHARE - Získán přímý odkaz pro {file_id}: {direct_url}", xbmc.LOGINFO)
+                    log(f"WEBSHARE - Získán přímý odkaz pro {file_id}", xbmc.LOGINFO)
                     return direct_url, None
                 else:
                     log(f"WEBSHARE - Chyba při získávání odkazu: {xml.find('message').text}", xbmc.LOGERROR)
                     notify_error("WEBSHARE.CZ CHYBA ODKAZU", "PROVIDER")
             else:
-                log(f"WEBSHARE - Chyba HTTP při získávání odkazu: {response.status_code if response else 'žádná odpověď'}", xbmc.LOGERROR)
+                log(f"WEBSHARE - Chyba HTTP při získávání odkazu: {response.status_code if response is not None else 'žádná odpověď'}", xbmc.LOGERROR)
         except Exception as e:
             log(f"WEBSHARE - Výjimka při získávání odkazu: {e}", xbmc.LOGERROR)
         return None, None
