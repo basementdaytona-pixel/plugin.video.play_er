@@ -85,6 +85,22 @@ class MySQLIntegrationTests(unittest.TestCase):
             cursor.execute('DROP DATABASE IF EXISTS `' + name.replace('`', '``') + '`')
             cursor.close()
 
+    def test_clear_section_invalidates_widget_and_preserves_history(self):
+        properties = {}
+        window = SimpleNamespace(getProperty=lambda key: properties.get(key, ''),
+                                 setProperty=lambda key, value: properties.__setitem__(key, value),
+                                 clearProperty=lambda key: properties.pop(key, None))
+        with patch.object(self.cache, '_get_mysql_pool', return_value=self.pool), \
+                patch.object(self.cache, 'DB_TYPE', 'MySQL (MariaDB)'), \
+                patch.object(self.cache, 'WINDOW', window):
+            self.cache.cache_set('CSFD', 'daily_tips', {'title': 'old'})
+            self.cache.user_data_set('history', [1])
+            self.cache.window_cache_set('daily_tips', {'title': 'old'})
+            self.cache.cache_clear('CSFD')
+            self.assertIsNone(self.cache.window_cache_get('daily_tips'))
+            self.assertIsNone(self.cache.cache_get('CSFD', 'daily_tips'))
+            self.assertEqual(self.cache.user_data_get('history'), [1])
+
     def test_reconnect_killed_idle_connection_restores_autocommit(self):
         conn = self.pool.get_connection()
         cursor = conn.cursor()

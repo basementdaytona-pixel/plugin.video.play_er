@@ -20,6 +20,7 @@ import sqlite3
 import hashlib
 import threading
 import traceback
+import uuid
 
 import xbmc
 import xbmcgui
@@ -571,7 +572,8 @@ def window_cache_get(key):
         prop = WINDOW.getProperty(f"play_er.wcache.{key}")
         if prop:
             item = json.loads(prop)
-            if time.time() < item.get("exp", 0):
+            if (item.get("generation", "") == WINDOW.getProperty("play_er.cache_generation")
+                    and time.time() < item.get("exp", 0)):
                 return item.get("data")
             WINDOW.clearProperty(f"play_er.wcache.{key}")
     except Exception:
@@ -581,10 +583,20 @@ def window_cache_get(key):
 
 def window_cache_set(key, data, ttl=300):
     try:
-        payload = json.dumps({"exp": time.time() + ttl, "data": data}, ensure_ascii=False)
+        payload = json.dumps({"exp": time.time() + ttl, "data": data,
+                              "generation": WINDOW.getProperty("play_er.cache_generation")},
+                             ensure_ascii=False)
         WINDOW.setProperty(f"play_er.wcache.{key}", payload)
     except Exception:
         pass
+
+
+def _invalidate_window_cache():
+    """Invalidate short-lived widget entries in every Kodi plugin interpreter."""
+    try:
+        WINDOW.setProperty("play_er.cache_generation", uuid.uuid4().hex)
+    except Exception as exc:
+        log(f"CACHE - Window cache invalidation failed: {exc}", xbmc.LOGWARNING)
 
 
 def user_data_get(key):
@@ -787,6 +799,7 @@ def clear_ram_cache():
     with CACHE_LOCK:
         CACHE_RAM.clear()
         IN_MEMORY_CACHE_STATS = {'hits': 0, 'misses': 0, 'sets': 0}
+    _invalidate_window_cache()
 
 
 def cache_clear(folder=None):
@@ -820,6 +833,7 @@ def cache_clear(folder=None):
                     conn.commit()
                     cursor.execute("VACUUM")
 
+        _invalidate_window_cache()
         notify_ok(f"CACHE CLEAR ({folder or 'ALL'}) - HOTOVO", "CACHE")
     except Exception as e:
         log(f"CACHE - CLEAR ERROR: {e}", xbmc.LOGERROR)
@@ -869,6 +883,7 @@ def reset_database():
             if not is_mysql:
                 conn.commit()
                 cursor.execute("VACUUM")
+        _invalidate_window_cache()
         log(f"CACHE - RESET DATABASE COMPLETE ({DB_TYPE})", xbmc.LOGINFO)
         notify_ok("COMPLETE Databáze byla úspěšně resetována", category="SYSTEM", time=5000)
         safe_refresh()

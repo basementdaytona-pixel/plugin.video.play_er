@@ -169,5 +169,76 @@ class SQLiteTests(unittest.TestCase):
         self.assertEqual(cache.cache_get('USER_DATA', 'legacy'), {'value': 2})
 
 
+class FakeWindow:
+    def __init__(self):
+        self.properties = {}
+
+    def getProperty(self, name):
+        return self.properties.get(name, '')
+
+    def setProperty(self, name, value):
+        self.properties[name] = value
+
+    def clearProperty(self, name):
+        self.properties.pop(name, None)
+
+
+class WindowInvalidationTests(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.settings = patch.multiple(cache, CACHE_DB_PATH=str(Path(self.tmp.name) / 'cache.db'),
+                                       DB_TYPE='SQLite', SQLITE_INITIALIZED=False)
+        self.settings.start()
+        self.addCleanup(self.settings.stop)
+        cache.clear_ram_cache()
+        self.window = FakeWindow()
+        self.window_patch = patch.object(cache, 'WINDOW', self.window)
+        self.window_patch.start()
+        self.addCleanup(self.window_patch.stop)
+
+    def test_clear_section_invalidates_widget_cache_and_keeps_other_sql_data(self):
+        cache.cache_set('CSFD', 'daily_tips', {'title': 'Old'})
+        cache.user_data_set('history', {'watched': [1]})
+        cache.window_cache_set('daily_tips', {'title': 'Old'})
+        self.assertEqual(cache.window_cache_get('daily_tips'), {'title': 'Old'})
+        cache.cache_clear('CSFD')
+        self.assertIsNone(cache.window_cache_get('daily_tips'))
+        self.assertIsNone(cache.cache_get('CSFD', 'daily_tips'))
+        self.assertEqual(cache.user_data_get('history'), {'watched': [1]})
+        cache.window_cache_set('daily_tips', {'title': 'New'})
+        self.assertEqual(cache.window_cache_get('daily_tips'), {'title': 'New'})
+
+    def test_ram_clear_invalidates_shared_window_without_deleting_database(self):
+        other = load_module('resources.lib.cache_manager')
+        cache.user_data_set('history', [1])
+        with patch.object(other, 'WINDOW', self.window):
+            other.window_cache_set('other_interpreter', {'data': 1})
+            cache.clear_ram_cache()
+            self.assertIsNone(other.window_cache_get('other_interpreter'))
+            self.assertEqual(cache.user_data_get('history'), [1])
+
+    def test_failed_database_clear_leaves_widget_data_intact(self):
+        cache.window_cache_set('daily_tips', [1])
+        with patch.object(cache, '_get_db_connection', return_value=(None, False)):
+            self.assertFalse(cache.cache_clear('CSFD'))
+        self.assertEqual(cache.window_cache_get('daily_tips'), [1])
+
+    def test_successful_reset_invalidates_window_and_removes_persistent_data(self):
+        cache.user_data_set('history', [1])
+        cache.window_cache_set('daily_tips', [2])
+        with patch.object(cache.xbmcgui, 'Dialog') as dialog:
+            dialog.return_value.yesno.return_value = True
+            cache.reset_database()
+        self.assertIsNone(cache.window_cache_get('daily_tips'))
+        self.assertIsNone(cache.user_data_get('history'))
+
+    def test_old_window_payload_is_invalidated_on_first_clear(self):
+        self.window.setProperty('play_er.wcache.legacy', '{"exp": 99999999999, "data": "old"}')
+        self.assertEqual(cache.window_cache_get('legacy'), 'old')
+        cache.clear_ram_cache()
+        self.assertIsNone(cache.window_cache_get('legacy'))
+
+
 if __name__ == '__main__':
     unittest.main()
