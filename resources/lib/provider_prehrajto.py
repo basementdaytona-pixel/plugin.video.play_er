@@ -1015,7 +1015,8 @@ class PrehrajTo(BaseProvider):
     def get_most_watched(self):
         use_cache = get_setting_bool(self.addon, "enable_most_watched_cache", True)
         max_pages = get_setting_int_with_bounds(self.addon, 'max_pages', default=5, min_val=1, max_val=10)
-        cache_key = f"prehrajto_most_watched_pages_{max_pages}"
+        mark_multi = get_setting_bool(self.addon, 'prehrajto_mark_multi_streams', True)
+        cache_key = f"prehrajto_most_watched_pages_{max_pages}_multi_{int(mark_multi)}"
         if use_cache:
             cached_videos = cache_manager.cache_get("MOST_WATCHED", cache_key)
             if cached_videos:
@@ -1024,7 +1025,6 @@ class PrehrajTo(BaseProvider):
         self.get_premium_cookies()
         videos = []
         try:
-            mark_multi = get_setting_bool(self.addon, 'prehrajto_mark_multi_streams', True)
             items = None
             for period in (None, 'day', 'week', 'month', 'all'):
                 params = {'time-period': period} if period else None

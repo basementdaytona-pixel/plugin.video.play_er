@@ -2398,8 +2398,8 @@ msgid "How many items from Trakt.tv social feed to load in lists."
 msgstr "Kolik položek ze sociálního feed Trakt.tv se načte v seznamech."
 
 msgctxt "#30316"
-msgid "How many pages of results to load when browsing on Trakt.tv."
-msgstr "Kolik stránek výsledků se načte při procházení na Trakt.tv"
+msgid "How many items per page to load when browsing on Trakt.tv."
+msgstr "Kolik položek na stránku se načte při procházení na Trakt.tv."
 
 msgctxt "#30317"
 msgid "Prioritizes Czech results when searching on Trakt.tv for localization."

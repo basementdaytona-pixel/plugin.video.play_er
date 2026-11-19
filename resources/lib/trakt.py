@@ -607,11 +607,11 @@ def trakt_trending(params, addon, handle, session=None):
 
     category = params.get("category", "movies")
     page = int(params.get("page", 1))
-    limit = get_setting_int_with_bounds(addon, 'trakt_social_feed_limit', 20)
+    limit = get_setting_int_with_bounds(addon, 'trakt_page_limit', 20)
 
     use_czech = addon.getSettingBool('trakt_prefer_czech_search')
     lang_suffix = "_cs" if use_czech else ""
-    cache_key = f"trakt_trending_{category}_{page}{lang_suffix}"
+    cache_key = f"trakt_trending_{category}_{page}{lang_suffix}_limit_{limit}"
 
     cached_content = load_trakt_cache(cache_key)
     if cached_content and isinstance(cached_content, (tuple, list)) and len(cached_content) == 2:
@@ -655,7 +655,7 @@ def trakt_anticipated(params, addon, handle, session=None):
 
     use_czech = addon.getSettingBool('trakt_prefer_czech_search')
     lang_suffix = "_cs" if use_czech else ""
-    cache_key = f"trakt_anticipated_{category}_{page}{lang_suffix}"
+    cache_key = f"trakt_anticipated_{category}_{page}{lang_suffix}_limit_{limit}"
 
     cached_content = load_trakt_cache(cache_key)
     if cached_content and isinstance(cached_content, (tuple, list)) and len(cached_content) == 2:
@@ -734,7 +734,7 @@ def trakt_popular_lists(params, addon, handle, session=None):
     if "list_id" not in params:
         use_czech = addon.getSettingBool('trakt_prefer_czech_search')
         lang_suffix = "_cs" if use_czech else ""
-        cache_key = f"trakt_popular_lists_{page}{lang_suffix}"
+        cache_key = f"trakt_popular_lists_{page}{lang_suffix}_limit_{limit}"
         cached_content = load_trakt_cache(cache_key)
 
         if cached_content and isinstance(cached_content, (tuple, list)) and len(cached_content) == 2:
@@ -775,7 +775,7 @@ def trakt_popular_lists(params, addon, handle, session=None):
     list_id = params["list_id"]
     use_czech = addon.getSettingBool('trakt_prefer_czech_search')
     lang_suffix = "_cs" if use_czech else ""
-    cache_key = f"trakt_list_items_{list_id}_{page}{lang_suffix}"
+    cache_key = f"trakt_list_items_{list_id}_{page}{lang_suffix}_limit_{limit}"
     cached_content = load_trakt_cache(cache_key)
 
     if cached_content and isinstance(cached_content, (tuple, list)) and len(cached_content) == 2:
@@ -818,7 +818,7 @@ def trakt_list_items(params, addon, handle, session=None):
     limit = get_setting_int_with_bounds(addon, 'trakt_page_limit', 20)
     use_czech = addon.getSettingBool('trakt_prefer_czech_search')
     lang_suffix = "_cs" if use_czech else ""
-    cache_key = f"trakt_personal_list_items_{list_id}_{page}{lang_suffix}"
+    cache_key = f"trakt_personal_list_items_{list_id}_{page}{lang_suffix}_limit_{limit}"
 
     cached_content = load_trakt_cache(cache_key)
     if cached_content and isinstance(cached_content, (tuple, list)) and len(cached_content) == 2:
@@ -884,7 +884,7 @@ def trakt_genres(params, addon, handle, session=None):
         if kb.isConfirmed():
             year = kb.getText()
 
-    cache_key = f"trakt_g_{category}_{genre}_{year}_{page}"
+    cache_key = f"trakt_g_{category}_{genre}_{year}_{page}_limit_{limit}"
     cached = load_trakt_cache(cache_key)
     if cached and isinstance(cached, (tuple, list)) and len(cached) == 2:
         items, headers = cached
@@ -943,7 +943,7 @@ def trakt_recommended(params, addon, handle, session=None):
     limit = get_setting_int_with_bounds(addon, 'trakt_page_limit', 20)
     use_czech = addon.getSettingBool('trakt_prefer_czech_search')
     lang_suffix = "_cs" if use_czech else ""
-    cache_key = f"trakt_recommended_{category}_{page}{lang_suffix}"
+    cache_key = f"trakt_recommended_{category}_{page}{lang_suffix}_limit_{limit}"
 
     cached_content = load_trakt_cache(cache_key)
     if cached_content and isinstance(cached_content, (tuple, list)) and len(cached_content) == 2:
@@ -1001,7 +1001,7 @@ def trakt_watchlist(params, addon, handle, session=None):
     limit = get_setting_int_with_bounds(addon, 'trakt_page_limit', 20)
     category = params["category"]
     use_czech = addon.getSettingBool('trakt_prefer_czech_search')
-    cache_key = f"trakt_wl_{category}_{page}{'_cs' if use_czech else ''}"
+    cache_key = f"trakt_wl_{category}_{page}{'_cs' if use_czech else ''}_limit_{limit}"
 
     cached = load_trakt_cache(cache_key)
     if cached and isinstance(cached, (tuple, list)) and len(cached) == 2:
@@ -1062,7 +1062,7 @@ def trakt_favorites(params, addon, handle, session=None):
             return list_episodes(params, addon, handle, _session)
 
     use_czech = addon.getSettingBool('trakt_prefer_czech_search')
-    cache_key = f"trakt_fav_{params['category']}_{page}{'_cs' if use_czech else ''}"
+    cache_key = f"trakt_fav_{params['category']}_{page}{'_cs' if use_czech else ''}_limit_{limit}"
 
     cached = load_trakt_cache(cache_key)
     if cached and isinstance(cached, (tuple, list)) and len(cached) == 2:
@@ -1332,7 +1332,7 @@ def trakt_watched_history(params, addon, handle, session=None):
         xbmcplugin.endOfDirectory(handle, succeeded=False)
         return
     use_czech = addon.getSettingBool('trakt_prefer_czech_search')
-    cache_key = f"trakt_hist_{category}_{page}{'_cs' if use_czech else ''}"
+    cache_key = f"trakt_hist_{category}_{page}{'_cs' if use_czech else ''}_limit_{limit}"
 
     cached = load_trakt_cache(cache_key)
     if cached and isinstance(cached, (tuple, list)) and len(cached) == 2:
@@ -1456,7 +1456,7 @@ def trakt_user_history(params, addon, handle, session=None):
 
     page = int(params.get("page", "1"))
     limit = get_setting_int_with_bounds(addon, 'trakt_social_feed_limit', 20)
-    cache_key = f"trakt_social_feed_{username}_{category}_{page}"
+    cache_key = f"trakt_social_feed_{username}_{category}_{page}_limit_{limit}"
     cached_content = load_trakt_cache(cache_key)
 
     if cached_content and isinstance(cached_content, (tuple, list)) and len(cached_content) == 2:

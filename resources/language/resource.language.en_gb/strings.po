@@ -2448,7 +2448,7 @@ msgid "How many items from Trakt.tv social feed to load in lists."
 msgstr ""
 
 msgctxt "#30316"
-msgid "How many pages of results to load when browsing on Trakt.tv."
+msgid "How many items per page to load when browsing on Trakt.tv."
 msgstr ""
 
 msgctxt "#30317"
