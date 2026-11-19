@@ -32,6 +32,7 @@ import xbmcvfs
 from resources.lib.monitor_orchestrator import get_orchestrator
 from resources.lib.utils_logging import log
 from resources.lib.stream_state import get_streams, attach_subtitles, publish_active_streams
+from resources.lib.playback_identity import EXPECTED_OWNER, EXPECTED_URL, expect_stream, stream_key
 from resources.lib import cache_manager
 from resources.lib.utils_files import SafeVFSFile
 from resources.lib.utils_notification import (
@@ -1925,6 +1926,8 @@ class KodiPlayerMonitor(xbmc.Player):
         self.is_buffering_since = 0
         # FIX PRE-EMPTIVE AND FILTERS [SINGLE ACTIVE PLAYBACK INVOCATION]
         self._playback_owner = None
+        self._playback_confirmed = False
+        self._last_owned_meta = None
         # FIX PRE-EMPTIVE AND FILTERS [COALESCE SEEK SCROBBLES]
         self.seek_scrobble_timer = None
         self._seek_generation = 0
@@ -1937,6 +1940,8 @@ class KodiPlayerMonitor(xbmc.Player):
     # FIX PRE-EMPTIVE AND FILTERS [MONITOR HANDOFF BETWEEN PLUGIN INVOCATIONS]
     def claim_playback(self):
         self._playback_owner = f"{id(self)}:{time.time_ns()}"
+        self._playback_confirmed = False
+        self._last_owned_meta = None
         self._last_av_started_key = None
         self._last_av_started_at = 0.0
         xbmcgui.Window(10000).setProperty('play_er.monitor_owner', self._playback_owner)
@@ -1984,14 +1989,14 @@ class KodiPlayerMonitor(xbmc.Player):
         if executor is not None:
             executor.shutdown(wait=False)
 
-    def release_playback(self):
+    def release_playback(self, current_item_changed=False):
         try:
             with self._playback_action_lock:
-                self._release_playback_locked()
+                self._release_playback_locked(current_item_changed)
         finally:
             self._close_scrobble_queue()
 
-    def _release_playback_locked(self):
+    def _release_playback_locked(self, current_item_changed=False):
         self._cancel_pending_scrobble_start()
         self._cancel_pending_subtitles()
         self._cancel_seek_scrobble()
@@ -2003,7 +2008,7 @@ class KodiPlayerMonitor(xbmc.Player):
                 mid = self.media_id
                 mtype = self.media_type
                 progress = self.last_known_progress
-                if progress == 0.0 and self.isPlaying():
+                if progress == 0.0 and not current_item_changed and self.isPlaying():
                     try:
                         total = self.getTotalTime()
                         if total > 0:
@@ -2018,8 +2023,15 @@ class KodiPlayerMonitor(xbmc.Player):
                     except Exception as e:
                         log(f"TRAKT - Failed to stop scrobble while releasing playback: {e}", xbmc.LOGWARNING)
             win.clearProperty("play_er.seamless_switching")
-            xbmcgui.Window(10000).clearProperty('play_er.monitor_owner')
+            if current_item_changed and win.getProperty(EXPECTED_OWNER) == self._playback_owner:
+                for key in ('play_er.current_meta', 'play_er.current_meta_uuid',
+                            'play_er.current_media_type', 'play_er.current_trakt_id',
+                            'play_er.current_stream_qualities', EXPECTED_URL, EXPECTED_OWNER):
+                    win.clearProperty(key)
+            win.clearProperty('play_er.monitor_owner')
         self._playback_owner = None
+        self._playback_confirmed = False
+        self._last_owned_meta = None
         with self.progress_lock:
             for timer in (self.progress_update_timer, self.downgrade_timer):
                 if timer:
@@ -2399,6 +2411,89 @@ class KodiPlayerMonitor(xbmc.Player):
         except Exception:
             pass
 
+    def _legacy_episode_matches_playlist(self, key, record):
+        """Recognize pre-update queue records only in the active series playlist."""
+        previous = self._last_owned_meta or {}
+        meta = record.get('meta') or {}
+        show_id = previous.get('tmdb_id')
+        if (not self._playback_confirmed or previous.get('media_type') != 'episode'
+                or meta.get('media_type') != 'episode' or not show_id
+                or str(meta.get('tmdb_id')) != str(show_id)):
+            return False, False
+        try:
+            position = xbmc.PlayList(xbmc.PLAYLIST_VIDEO).getposition()
+            request = json.dumps({'jsonrpc': '2.0', 'method': 'Playlist.GetItems',
+                                  'params': {'playlistid': 1, 'properties': ['file']}, 'id': 1})
+            response = json.loads(xbmc.executeJSONRPC(request) or '{}')
+            items = response.get('result', {}).get('items', [])
+            if isinstance(position, int) and 0 <= position < len(items):
+                return stream_key(items[position].get('file', '')) == key, True
+        except (TypeError, ValueError, AttributeError, RuntimeError):
+            pass
+        # A Kodi callback can precede the playlist position update. Wait for a
+        # later callback instead of treating a plausible legacy item as foreign.
+        return False, True
+
+    def _identify_playback(self, playing_item, win):
+        """Identify this owner's item without trusting stale global metadata."""
+        paths = []
+        try:
+            paths.append(self.getPlayingFile())
+        except Exception:
+            pass
+        try:
+            paths.append(playing_item.getPath())
+        except Exception:
+            pass
+        keys = {stream_key(path) for path in paths} - {''}
+        try:
+            records = json.loads(win.getProperty('play_er.episode_queue_metadata') or '{}')
+        except (TypeError, ValueError):
+            records = {}
+        queue_record = None
+        legacy_pending = False
+        if isinstance(records, dict):
+            for key in keys:
+                candidate = records.get(key)
+                if not (isinstance(candidate, dict) and isinstance(candidate.get('meta'), dict)
+                        and candidate['meta']):
+                    continue
+                if candidate.get('owner') == self._playback_owner:
+                    queue_record = candidate
+                    break
+                if 'owner' not in candidate:
+                    matched, related = self._legacy_episode_matches_playlist(key, candidate)
+                    legacy_pending = legacy_pending or related
+                    if matched:
+                        queue_record = candidate
+                        break
+        item_meta = playing_item.getProperty('play_er.meta_id')
+        item_link = playing_item.getProperty('play_er.link')
+        item_type = playing_item.getProperty('play_er.media_type')
+        if queue_record and ((item_meta and item_meta != queue_record.get('meta_id', ''))
+                             or (item_link and item_link != queue_record.get('link', ''))):
+            queue_record = None
+        expected = (win.getProperty(EXPECTED_OWNER) == self._playback_owner
+                    and win.getProperty(EXPECTED_URL) in keys)
+        def is_own_plugin(path):
+            if not isinstance(path, str):
+                return False
+            try:
+                parsed = urlparse(path)
+                return parsed.scheme == 'plugin' and parsed.netloc == 'plugin.video.play_er'
+            except ValueError:
+                return False
+
+        plugin_item = any(is_own_plugin(path) for path in paths)
+        switched = False
+        if win.getProperty('play_er.seamless_switching') == 'true' and self._playback_confirmed:
+            try:
+                switched = any(stream_key(url) in keys for url in get_streams(playing_item).values())
+            except Exception:
+                pass
+        owned = bool(item_meta or item_link or item_type or queue_record or expected or plugin_item or switched)
+        return owned, queue_record, bool(keys) and not legacy_pending
+
     # FIX PRE-EMPTIVE AND FILTERS [HANDLE PLAYLIST AV CHANGE]
     def onAVChange(self):
         """Handle playlist item transitions, which Kodi can report via onAVChange."""
@@ -2410,6 +2505,11 @@ class KodiPlayerMonitor(xbmc.Player):
 
             playing_item = self.getPlayingItem()
             win = xbmcgui.Window(10000)
+            owned, queue_record, identifiable = self._identify_playback(playing_item, win)
+            if not owned:
+                if identifiable and self._playback_confirmed:
+                    self.release_playback(current_item_changed=True)
+                return
             candidate_meta = {}
             meta_id = playing_item.getProperty("play_er.meta_id")
             if meta_id:
@@ -2419,15 +2519,8 @@ class KodiPlayerMonitor(xbmc.Player):
                 except Exception:
                     candidate_meta = {}
 
-            if not candidate_meta:
-                try:
-                    current_url = str(playing_item.getPath()).split("|", 1)[0]
-                    url_key = hashlib.sha256(current_url.encode("utf-8")).hexdigest()
-                    queue_records = json.loads(win.getProperty("play_er.episode_queue_metadata") or "{}")
-                    queue_record = queue_records.get(url_key, {}) if isinstance(queue_records, dict) else {}
-                    candidate_meta = queue_record.get("meta", {}) if isinstance(queue_record, dict) else {}
-                except Exception:
-                    candidate_meta = {}
+            if not candidate_meta and queue_record:
+                candidate_meta = queue_record.get("meta", {})
 
             if not candidate_meta or candidate_meta.get("media_type") != "episode":
                 return
@@ -2467,24 +2560,20 @@ class KodiPlayerMonitor(xbmc.Player):
         try:
             playing_item = self.getPlayingItem()
             win = xbmcgui.Window(10000)
-            # Consume the switch even without Trakt, and before Kodi's duplicate
-            # episode callback guard. Otherwise a later real Stop is ignored.
+            owned, queue_record, identifiable = self._identify_playback(playing_item, win)
+            if not owned:
+                if identifiable and self._playback_confirmed:
+                    self.release_playback(current_item_changed=True)
+                return
+            self._playback_confirmed = True
+            try:
+                expect_stream(win, self.getPlayingFile())
+            except Exception:
+                pass
+            # Consume only a verified switch so an unrelated item cannot inherit it.
             is_seamless = win.getProperty("play_er.seamless_switching") == "true"
             if is_seamless:
                 win.clearProperty("play_er.seamless_switching")
-
-            queue_record = None
-            try:
-                try:
-                    current_url = playing_item.getPath()
-                except Exception:
-                    current_url = self.getPlayingFile()
-                current_url = str(current_url).split("|", 1)[0]
-                url_key = hashlib.sha256(current_url.encode("utf-8")).hexdigest()
-                queue_records = json.loads(win.getProperty("play_er.episode_queue_metadata") or "{}")
-                queue_record = queue_records.get(url_key) if isinstance(queue_records, dict) else None
-            except Exception:
-                queue_record = None
 
             item_meta_id = playing_item.getProperty('play_er.meta_id')
             item_trakt_id = playing_item.getProperty('play_er.trakt_id')
@@ -2522,6 +2611,7 @@ class KodiPlayerMonitor(xbmc.Player):
                 new_media_type = self.current_meta.get("media_type", "movie")
 
             if self.current_meta:
+                self._last_owned_meta = dict(self.current_meta)
                 # Keep global fallback properties in sync as Kodi advances playlist items.
                 win.setProperty("play_er.current_meta", json.dumps(self.current_meta, ensure_ascii=False))
                 win.setProperty("play_er.current_meta_uuid", str(meta_uuid or ""))

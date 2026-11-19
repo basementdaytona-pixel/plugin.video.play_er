@@ -2555,7 +2555,7 @@ def _wait_for_playback_monitor(player):
     deadline = time.monotonic() + 60.0
     try:
         while player.owns_playback() and not monitor.abortRequested():
-            if player.isPlayingVideo():
+            if player.isPlayingVideo() and player._playback_confirmed:
                 deadline = time.monotonic() + 30.0
             elif time.monotonic() >= deadline:
                 break

@@ -118,6 +118,28 @@ class SeriesPlaylistTests(unittest.TestCase):
         generator.xbmcplugin.setResolvedUrl.assert_not_called()
         self.player.play.assert_called_once()
 
+    def test_series_start_publishes_metadata_and_owner_for_stripped_item(self):
+        from resources.lib.playback_identity import EXPECTED_OWNER, EXPECTED_URL, stream_key
+        self.window.setProperty('play_er.monitor_owner', 'series-owner')
+        self.run_playlist()
+        self.assertEqual(self.window.getProperty(EXPECTED_OWNER), 'series-owner')
+        self.assertEqual(self.window.getProperty(EXPECTED_URL), stream_key('https://example.invalid/S01E01'))
+        self.assertEqual(json.loads(self.window.getProperty('play_er.current_meta'))['episode'], 1)
+        records = json.loads(self.window.getProperty('play_er.episode_queue_metadata'))
+        self.assertEqual(records[stream_key('https://example.invalid/S01E02')]['owner'], 'series-owner')
+
+    def test_cancelled_guard_does_not_replace_active_fallback_identity(self):
+        from resources.lib.playback_identity import EXPECTED_OWNER, EXPECTED_URL
+        self.window.setProperty(EXPECTED_OWNER, 'old-owner')
+        self.window.setProperty(EXPECTED_URL, 'old-hash')
+        self.player.playing = False
+        self.playlist.add.side_effect = lambda url, item: setattr(self.player, 'playing', True)
+        self.run_playlist(start_from_next=True, use_resolve=False,
+                          start_guard=lambda: not self.player.isPlaying())
+        self.assertEqual(self.window.getProperty(EXPECTED_OWNER), 'old-owner')
+        self.assertEqual(self.window.getProperty(EXPECTED_URL), 'old-hash')
+        self.player.play.assert_not_called()
+
     def test_guarded_continue_starts_when_player_stays_idle(self):
         self.player.playing = False
         self.run_playlist(start_from_next=True, use_resolve=False, remaining=1,

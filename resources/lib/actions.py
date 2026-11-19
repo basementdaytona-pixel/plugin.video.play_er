@@ -788,11 +788,8 @@ def resolve_video(link, provider_name, meta_json, source_list=None, return_url_o
 
     # Keep the monitor's fallback identity aligned with the resolved item.
     # Kodi can omit the ListItem properties when reporting the active stream.
-    win = xbmcgui.Window(10000)
-    win.setProperty("play_er.current_meta", json.dumps(meta))
-    win.setProperty("play_er.current_meta_uuid", str(meta_uuid or ""))
-    win.setProperty("play_er.current_media_type", str(media_type or ""))
-    win.setProperty("play_er.current_trakt_id", str(trakt_id or ""))
+    from resources.lib.playback_identity import publish_fallback
+    publish_fallback(xbmcgui.Window(10000), final_url, meta, meta_uuid, media_type, trakt_id)
 
     li.setProperty('play_er.link', str(link))
     li.setProperty('play_er.meta_id', str(meta_uuid))

@@ -35,14 +35,16 @@ from resources.lib import cache_manager
 from resources.lib.utils_notification import notify_info, notify_error
 from resources.lib.utils_theme import Colors
 from resources.lib.stream_state import attach_subtitles
+from resources.lib.playback_identity import publish_fallback
 
 
-def _remember_episode_playlist_item(url, meta, meta_id, trakt_id, source_link):
+def _remember_playlist_item(url, meta, meta_id, trakt_id, source_link):
     """Retain per-URL metadata if Kodi omits custom properties on direct playlist URLs."""
     try:
         url_key = hashlib.sha256(str(url).split("|", 1)[0].encode("utf-8")).hexdigest()
         win = xbmcgui.Window(10000)
         try:
+            # Preserve the existing property name for queue consumers.
             records = json.loads(win.getProperty("play_er.episode_queue_metadata") or "{}")
         except Exception:
             records = {}
@@ -52,8 +54,9 @@ def _remember_episode_playlist_item(url, meta, meta_id, trakt_id, source_link):
             "meta": dict(meta or {}),
             "meta_id": str(meta_id or ""),
             "trakt_id": str(trakt_id or ""),
-            "media_type": "episode",
-            "link": str(source_link or "")
+            "media_type": str((meta or {}).get("media_type") or "episode"),
+            "link": str(source_link or ""),
+            "owner": win.getProperty("play_er.monitor_owner")
         }
         while len(records) > 25:
             records.pop(next(iter(records)))
@@ -494,6 +497,7 @@ def create_movie_playlist(start_meta, addon, active_provider, tmdb_client, handl
                     pass
                 progress_dialog = None
 
+                publish_fallback(win, playable_url, start_meta, meta_uuid, 'movie', trakt_id_movie)
                 if handle and handle > 0:
                     xbmcplugin.setResolvedUrl(handle, True, li)
                 else:
@@ -606,6 +610,9 @@ def create_movie_playlist(start_meta, addon, active_provider, tmdb_client, handl
                                     allowed_urls.add(str(playable_url_rec).split('|', 1)[0])
                                     if rec_meta_uuid and selected_rec.get('link'):
                                         allowed_sources.add((str(rec_meta_uuid), str(selected_rec['link'])))
+                                    _remember_playlist_item(
+                                        playable_url_rec, rec_meta_full, rec_meta_uuid,
+                                        rec_trakt_id, selected_rec.get('link'))
                                     playlist.add(playable_url_rec, li_rec)
                                     history_keys.add(rec_key)
                                     bg_added += 1
@@ -897,6 +904,7 @@ def create_series_playlist(
             li.setProperty('play_er.source_list', str(source_list))
 
         if use_resolve and handle and handle > 0:
+            publish_fallback(win, final_url, current_episode_meta_dict, meta_uuid, 'episode', trakt_id)
             xbmcplugin.setResolvedUrl(handle, True, li)
         else:
             pl = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
@@ -910,6 +918,7 @@ def create_series_playlist(
             pl.add(final_url, li)
             if start_guard is not None and not start_guard():
                 return
+            publish_fallback(win, final_url, current_episode_meta_dict, meta_uuid, 'episode', trakt_id)
             xbmc.Player().play(pl)
             if on_started is not None:
                 on_started()
@@ -1054,7 +1063,7 @@ def create_series_playlist(
                             if ep_meta_uuid and sel.get('link'):
                                 allowed_sources.add((str(ep_meta_uuid), str(sel['link'])))
                             pl.add(url, ep_li)
-                            _remember_episode_playlist_item(
+                            _remember_playlist_item(
                                 url, ep_meta,
                                 ep_li.getProperty("play_er.meta_id"),
                                 ep_li.getProperty("play_er.trakt_id"),
@@ -1387,7 +1396,7 @@ def _build_managed_episode_item(meta, addon, plugin_instance, show_props, show_c
     except Exception:
         pass
     list_item.setProperty("play_er.trakt_id", str(trakt_id))
-    _remember_episode_playlist_item(final_url, episode_meta, meta_id, trakt_id, selected.get("link"))
+    _remember_playlist_item(final_url, episode_meta, meta_id, trakt_id, selected.get("link"))
     return final_url, list_item
 
 

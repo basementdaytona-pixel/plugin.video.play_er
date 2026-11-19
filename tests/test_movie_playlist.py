@@ -137,6 +137,20 @@ class MoviePlaylistTests(unittest.TestCase):
         self.player.play.assert_called_once_with(self.playlist)
         generator.xbmcplugin.setResolvedUrl.assert_not_called()
 
+    def test_movie_start_and_queued_recommendation_publish_owned_identity(self):
+        import json
+        from resources.lib.playback_identity import EXPECTED_OWNER, EXPECTED_URL, stream_key
+        self.window.setProperty('play_er.monitor_owner', 'movie-owner')
+        self.tmdb.get_recommendations_raw.return_value = [{'id': 3}]
+        self.run_playlist()
+        self.assertEqual(self.window.getProperty(EXPECTED_OWNER), 'movie-owner')
+        self.assertEqual(self.window.getProperty(EXPECTED_URL), stream_key('https://example.invalid/start'))
+        self.assertEqual(json.loads(self.window.getProperty('play_er.current_meta'))['tmdb_id'], 1)
+        records = json.loads(self.window.getProperty('play_er.episode_queue_metadata'))
+        queued = records[stream_key('https://example.invalid/3')]
+        self.assertEqual((queued['owner'], queued['media_type'], queued['meta']['tmdb_id']),
+                         ('movie-owner', 'movie', 3))
+
     def test_failed_direct_start_does_not_clear_existing_queue(self):
         self.actions.resolve_video.side_effect = lambda *a, **kw: None
         self.run_playlist(handle=0)
