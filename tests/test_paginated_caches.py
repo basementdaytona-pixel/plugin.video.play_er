@@ -58,8 +58,8 @@ class TraktPaginationTests(unittest.TestCase):
 
         fake_tmdb = MagicMock()
         with patch.dict(sys.modules, {'resources.lib.tmdb': fake_tmdb}), \
-                patch.object(trakt, 'load_trakt_cache', side_effect=cached.get), \
-                patch.object(trakt, 'save_trakt_cache', side_effect=lambda key, value: cached.update({key: value})), \
+                patch.object(trakt, 'load_trakt_cache', side_effect=lambda key, **kw: cached.get((kw.get('section', 'TRAKT'), key))), \
+                patch.object(trakt, 'save_trakt_cache', side_effect=lambda key, value, **kw: cached.update({(kw.get('section', 'TRAKT'), key): value})), \
                 patch.object(trakt, 'safe_get', side_effect=request), \
                 patch.object(trakt, 'handle_trakt_401', side_effect=request), \
                 patch.object(trakt, 'trakt_get_headers', return_value={}), \

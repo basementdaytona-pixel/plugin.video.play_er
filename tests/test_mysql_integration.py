@@ -101,6 +101,22 @@ class MySQLIntegrationTests(unittest.TestCase):
             self.assertIsNone(self.cache.cache_get('CSFD', 'daily_tips'))
             self.assertEqual(self.cache.user_data_get('history'), [1])
 
+    def test_trakt_group_clear_removes_personal_sections_only(self):
+        properties = {}
+        window = SimpleNamespace(getProperty=lambda key: properties.get(key, ''),
+                                 setProperty=lambda key, value: properties.__setitem__(key, value),
+                                 clearProperty=lambda key: properties.pop(key, None))
+        with patch.object(self.cache, '_get_mysql_pool', return_value=self.pool), \
+                patch.object(self.cache, 'DB_TYPE', 'MySQL (MariaDB)'), \
+                patch.object(self.cache, 'WINDOW', window):
+            for section in ('TRAKT', 'TRAKT_WATCHLIST', 'TRAKT_FAVORITES'):
+                self.cache.cache_set(section, 'item', [section])
+            self.cache.user_data_set('history', [1])
+            self.cache.cache_clear('TRAKT', notify_success=False)
+            for section in ('TRAKT', 'TRAKT_WATCHLIST', 'TRAKT_FAVORITES'):
+                self.assertIsNone(self.cache.cache_get(section, 'item'))
+            self.assertEqual(self.cache.user_data_get('history'), [1])
+
     def test_container_refresh_reuses_database_connection(self):
         with patch.object(self.cache, 'DB_POOL', self.pool), \
                 patch.object(self.cache, 'MYSQL_AVAILABLE', True), \

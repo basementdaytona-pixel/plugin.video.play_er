@@ -153,6 +153,7 @@ class CacheStorageError(RuntimeError):
 
 
 PERSISTENT_SECTIONS = frozenset(("USER_DATA", "SERIES_DB", "WATCHED_DB", "URL_CACHE"))
+TRAKT_PERSONAL_SECTIONS = ("TRAKT_WATCHLIST", "TRAKT_FAVORITES")
 
 
 class MySQLPoolTimeoutError(TimeoutError):
@@ -547,7 +548,7 @@ def _folder_ttl(folder):
         return TTL_USER_DATA
     if folder == "WATCH":
         return TTL_WATCH
-    if folder == "TRAKT":
+    if folder == "TRAKT" or folder in TRAKT_PERSONAL_SECTIONS:
         return TTL_TRAKT
     if folder == "CSFD":
         return TTL_CSFD
@@ -597,6 +598,30 @@ def _invalidate_window_cache():
         WINDOW.setProperty("play_er.cache_generation", uuid.uuid4().hex)
     except Exception as exc:
         log(f"CACHE - Window cache invalidation failed: {exc}", xbmc.LOGWARNING)
+
+
+def personal_cache_epoch(section):
+    """Use a Kodi-session epoch so stale personal lists cannot return after restart."""
+    if section not in TRAKT_PERSONAL_SECTIONS:
+        raise ValueError("Unknown personal cache section")
+    try:
+        key = f"play_er.personal_cache_epoch.{section}"
+        epoch = WINDOW.getProperty(key)
+        if not epoch:
+            epoch = uuid.uuid4().hex
+            WINDOW.setProperty(key, epoch)
+        return epoch
+    except Exception:
+        # A missing Window must never make old database rows look current.
+        return uuid.uuid4().hex
+
+
+def _invalidate_personal_epochs(sections):
+    for section in sections:
+        try:
+            WINDOW.setProperty(f"play_er.personal_cache_epoch.{section}", uuid.uuid4().hex)
+        except Exception as exc:
+            log(f"CACHE - Personal cache invalidation failed: {exc}", xbmc.LOGWARNING)
 
 
 def user_data_get(key):
@@ -802,11 +827,13 @@ def clear_ram_cache():
     _invalidate_window_cache()
 
 
-def cache_clear(folder=None):
+def cache_clear(folder=None, notify_success=True):
     global CACHE_RAM, IN_MEMORY_CACHE_STATS
+    folders = (("TRAKT",) + TRAKT_PERSONAL_SECTIONS if folder == "TRAKT" else (folder,)) if folder else ()
     with CACHE_LOCK:
         if folder:
-            keys_to_del = [k for k in CACHE_RAM.keys() if k.startswith(f"{folder}:")]
+            prefixes = tuple(f"{section}:" for section in folders)
+            keys_to_del = [k for k in CACHE_RAM if k.startswith(prefixes)]
             for k in keys_to_del:
                 del CACHE_RAM[k]
         else:
@@ -822,8 +849,9 @@ def cache_clear(folder=None):
         with lock_context:
             cursor = conn.cursor()
             if folder:
-                sql = "DELETE FROM cache_store WHERE section = %s" if is_mysql else "DELETE FROM cache_store WHERE section = ?"
-                cursor.execute(sql, (folder,))
+                placeholder = "%s" if is_mysql else "?"
+                sql = f"DELETE FROM cache_store WHERE section IN ({', '.join([placeholder] * len(folders))})"
+                cursor.execute(sql, folders)
                 if not is_mysql:
                     conn.commit()
             else:
@@ -833,8 +861,11 @@ def cache_clear(folder=None):
                     conn.commit()
                     cursor.execute("VACUUM")
 
+        _invalidate_personal_epochs(TRAKT_PERSONAL_SECTIONS if not folder else
+                                    tuple(section for section in folders if section in TRAKT_PERSONAL_SECTIONS))
         _invalidate_window_cache()
-        notify_ok(f"CACHE CLEAR ({folder or 'ALL'}) - HOTOVO", "CACHE")
+        if notify_success:
+            notify_ok(f"CACHE CLEAR ({folder or 'ALL'}) - HOTOVO", "CACHE")
     except Exception as e:
         log(f"CACHE - CLEAR ERROR: {e}", xbmc.LOGERROR)
         notify_error("Chyba při mazání cache", "CACHE")
@@ -883,6 +914,7 @@ def reset_database():
             if not is_mysql:
                 conn.commit()
                 cursor.execute("VACUUM")
+        _invalidate_personal_epochs(TRAKT_PERSONAL_SECTIONS)
         _invalidate_window_cache()
         log(f"CACHE - RESET DATABASE COMPLETE ({DB_TYPE})", xbmc.LOGINFO)
         notify_ok("COMPLETE Databáze byla úspěšně resetována", category="SYSTEM", time=5000)

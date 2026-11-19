@@ -91,12 +91,26 @@ def _trakt_set_globals(addon=None, session=None, handle=None):
             _handle = handle
 
 
-def save_trakt_cache(cache_name, data):
-    cache_manager.cache_set("TRAKT", cache_name, data)
+def save_trakt_cache(cache_name, data, section="TRAKT"):
+    cache_manager.cache_set(section, cache_name, data)
 
 
-def load_trakt_cache(cache_name, ttl_hours=None):
-    return cache_manager.cache_get("TRAKT", cache_name)
+def load_trakt_cache(cache_name, ttl_hours=None, section="TRAKT"):
+    return cache_manager.cache_get(section, cache_name)
+
+
+def _personal_list_cache_key(addon, section, key):
+    """Keep cached pages specific to an account and Kodi session."""
+    token = addon.getSetting("trakt_access_token").strip() or _get_trakt_access_token()
+    if not token:
+        return None
+    identity = hashlib.sha256(token.encode("utf-8")).hexdigest()
+    return f"{key}_{identity}_{cache_manager.personal_cache_epoch(section)}"
+
+
+def _invalidate_personal_list(section):
+    # Leave the public Trakt catalogue and persistent user data intact.
+    cache_manager.cache_clear(section, notify_success=False)
 
 
 def _get_trakt_access_token():
@@ -972,7 +986,7 @@ def trakt_recommended(params, addon, handle, session=None):
 
 
 def trakt_watchlist(params, addon, handle, session=None):
-    _trakt_set_globals(session=session)
+    _trakt_set_globals(addon=addon, session=session)
     xbmcplugin.setPluginCategory(handle, "Watchlist")
 
     if "reauth" in params:
@@ -1003,7 +1017,8 @@ def trakt_watchlist(params, addon, handle, session=None):
     use_czech = addon.getSettingBool('trakt_prefer_czech_search')
     cache_key = f"trakt_wl_{category}_{page}{'_cs' if use_czech else ''}_limit_{limit}"
 
-    cached = load_trakt_cache(cache_key)
+    cache_key = _personal_list_cache_key(addon, "TRAKT_WATCHLIST", cache_key)
+    cached = load_trakt_cache(cache_key, section="TRAKT_WATCHLIST") if cache_key else None
     if cached and isinstance(cached, (tuple, list)) and len(cached) == 2:
         items, headers = cached
     else:
@@ -1017,7 +1032,8 @@ def trakt_watchlist(params, addon, handle, session=None):
             return
         items = resp.json()
         headers = dict(resp.headers)
-        save_trakt_cache(cache_key, (items, headers))
+        if cache_key:
+            save_trakt_cache(cache_key, (items, headers), section="TRAKT_WATCHLIST")
 
     items = sorted(items, key=lambda x: x.get("movie", x.get("show", {})).get("title", ""))
 
@@ -1039,7 +1055,7 @@ def trakt_watchlist(params, addon, handle, session=None):
 
 
 def trakt_favorites(params, addon, handle, session=None):
-    _trakt_set_globals(session=session)
+    _trakt_set_globals(addon=addon, session=session)
     xbmcplugin.setPluginCategory(handle, "Favorites")
 
     if "reauth" in params:
@@ -1064,7 +1080,8 @@ def trakt_favorites(params, addon, handle, session=None):
     use_czech = addon.getSettingBool('trakt_prefer_czech_search')
     cache_key = f"trakt_fav_{params['category']}_{page}{'_cs' if use_czech else ''}_limit_{limit}"
 
-    cached = load_trakt_cache(cache_key)
+    cache_key = _personal_list_cache_key(addon, "TRAKT_FAVORITES", cache_key)
+    cached = load_trakt_cache(cache_key, section="TRAKT_FAVORITES") if cache_key else None
     if cached and isinstance(cached, (tuple, list)) and len(cached) == 2:
         items, headers = cached
     else:
@@ -1078,7 +1095,8 @@ def trakt_favorites(params, addon, handle, session=None):
             return
         items = resp.json()
         headers = dict(resp.headers)
-        save_trakt_cache(cache_key, (items, headers))
+        if cache_key:
+            save_trakt_cache(cache_key, (items, headers), section="TRAKT_FAVORITES")
 
     from resources.lib.tmdb import TMDB
     tmdb = TMDB(addon, handle, _session)
@@ -2946,6 +2964,7 @@ def trakt_add_to_watchlist(params, addon, handle, session=None):
             if trakt_refresh_token(addon=addon, session=_session):
                 response = safe_post(_session, add_url, headers=trakt_get_headers(addon=addon, write=True), json=add_data, timeout=10)
         if response is not None and response.status_code == 201:
+            _invalidate_personal_list("TRAKT_WATCHLIST")
             notify_ok("ACTION Položka přidána do watchlistu", category="TRAKT", time=3000)
         else:
             notify_error("ERROR Chyba při přidávání", category="TRAKT")
@@ -2979,6 +2998,7 @@ def handle_watchlist_remove(params, session, addon):
             if trakt_refresh_token(addon=addon, session=session):
                 response = safe_post(session, remove_url, headers=trakt_get_headers(addon=addon, write=True), json=remove_data, timeout=10)
         if response is not None and response.status_code == 200:
+            _invalidate_personal_list("TRAKT_WATCHLIST")
             notify_ok("ACTION Položka odstraněna z watchlistu", category="TRAKT", time=3000)
             try:
                 cache_manager.safe_refresh()
@@ -3008,6 +3028,7 @@ def trakt_add_to_favorites(params, addon, handle, session=None):
             if trakt_refresh_token(addon=addon, session=_session):
                 response = safe_post(_session, url, headers=trakt_get_headers(addon=addon, write=True), json=data, timeout=10)
         if response is not None and response.status_code == 201:
+            _invalidate_personal_list("TRAKT_FAVORITES")
             notify_ok("ACTION Přidáno do Oblíbených", category="TRAKT", time=3000)
     except Exception:
         pass
