@@ -166,7 +166,8 @@ class TMDB:
 
         params["api_key"] = self.api_key
         url = f"{self.base_url}/{endpoint}"
-        log(f"TMDB - FETCH : {url} params: {params}", xbmc.LOGDEBUG)
+        log_params = {key: value for key, value in params.items() if key != "api_key"}
+        log(f"TMDB - FETCH : {url} params: {log_params}", xbmc.LOGDEBUG)
 
 
         try:

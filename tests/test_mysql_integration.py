@@ -4,6 +4,7 @@ import unittest
 import uuid
 from concurrent.futures import ThreadPoolExecutor
 from unittest.mock import patch
+from types import SimpleNamespace
 
 from kodi_test_support import load_module
 
@@ -54,6 +55,35 @@ class MySQLIntegrationTests(unittest.TestCase):
             self.assertEqual(self.cache.MYSQL_CHECKOUT_COUNT, 0)
             self.assertEqual(len(self.pool._available), 3)
             self.assertEqual(self.pool._in_use, set())
+
+    def test_provisioning_handles_quoted_database_and_credentials(self):
+        import mysql.connector
+        tag = uuid.uuid4().hex[:10]
+        name = 'play`er_' + tag
+        user = "pe'" + tag
+        password = "test'\\password"
+        connector = SimpleNamespace(connect=lambda **kwargs: mysql.connector.connect(**self.config))
+        try:
+            with patch.object(self.cache, 'mysql', SimpleNamespace(connector=connector)):
+                self.cache._ensure_mysql_database('127.0.0.1', self.config['port'], user, password, name, 3)
+            cursor = self.admin.cursor()
+            cursor.execute('SELECT User, Host FROM mysql.user WHERE User=%s AND Host=%s', (user, '%'))
+            self.assertEqual(cursor.fetchone(), (user, '%'))
+            cursor.close()
+            login = mysql.connector.connect(host='127.0.0.1', port=self.config['port'],
+                                            user=user, password=password, database=name,
+                                            use_pure=True, connection_timeout=3)
+            try:
+                cursor = login.cursor()
+                cursor.execute('CREATE TABLE example (id INT)')
+                cursor.close()
+            finally:
+                login.close()
+        finally:
+            cursor = self.admin.cursor()
+            cursor.execute("DROP USER IF EXISTS %s@%s", (user, '%'))
+            cursor.execute('DROP DATABASE IF EXISTS `' + name.replace('`', '``') + '`')
+            cursor.close()
 
     def test_reconnect_killed_idle_connection_restores_autocommit(self):
         conn = self.pool.get_connection()

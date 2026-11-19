@@ -254,56 +254,22 @@ def _managed_future_episode_items(meta, items, position):
 
 
 def _next_episode_coordinates(tmdb_id, season, episode, tmdb_client):
-    """Advance through TMDB episode numbers, including specials and season gaps.
-
-    Unknown metadata is not proof of a successor: credits must leave the
-    current episode playing when the next episode cannot be verified.
-    """
-    season, episode = int(season), int(episode)
-    if season < 0 or episode < 0 or not tmdb_id or not tmdb_client:
-        return None
-
-    def episode_numbers(season_number):
-        data = tmdb_client._fetch(f"tv/{tmdb_id}/season/{season_number}")
-        if not isinstance(data, dict) or "status_code" in data:
-            return None
-        rows = data.get("episodes")
-        if not isinstance(rows, list):
-            return None
-        numbers = set()
-        for row in rows:
-            try:
-                number = int(row["episode_number"])
-                if number > 0:
-                    numbers.add(number)
-            except (KeyError, TypeError, ValueError):
-                continue
-        return sorted(numbers)
-
+    season = int(season)
+    episode = int(episode)
+    if season < 1:
+        return 1, 1
     try:
-        numbers = episode_numbers(season)
-        if numbers is None:
-            return None
-        following = [number for number in numbers if number > episode]
-        if following:
-            return season, following[0]
-
-        details = tmdb_client.get_full_details("tv", tmdb_id) or {}
-        following_seasons = sorted({
-            int(row["season_number"]) for row in details.get("seasons", [])
-            if isinstance(row, dict) and str(row.get("season_number", "")).isascii()
-            and str(row.get("season_number", "")).isdecimal()
-            and int(row["season_number"]) > season
-        })
-        for next_season in following_seasons:
-            numbers = episode_numbers(next_season)
-            if numbers is None:
+        season_data = tmdb_client._fetch(f"tv/{tmdb_id}/season/{season}")
+        episode_count = len(season_data.get("episodes", [])) if season_data else 0
+        if episode_count and episode >= episode_count:
+            next_season = season + 1
+            next_season_data = tmdb_client._fetch(f"tv/{tmdb_id}/season/{next_season}")
+            if not next_season_data or not next_season_data.get("episodes"):
                 return None
-            if numbers:
-                return next_season, numbers[0]
-    except Exception as exc:
-        log(f"CONTINUE - Nelze ověřit následující epizodu: {exc}", xbmc.LOGWARNING)
-    return None
+            return next_season, 1
+    except Exception:
+        pass
+    return season, episode + 1
 
 
 def is_next_episode_queued(meta, tmdb_client):
@@ -714,13 +680,25 @@ def create_series_playlist(
             max_items = min(max_items, remaining)
 
         if start_from_next:
-            coordinates = _next_episode_coordinates(tmdb_id, season_num, episode_num, tmdb_client)
-            if coordinates is None:
-                notify_info("INFO Další epizoda není dostupná", category="CONTINUE")
-                if use_resolve and handle and handle > 0:
-                    xbmcplugin.setResolvedUrl(handle, False, xbmcgui.ListItem())
-                return
-            season_num, episode_num = coordinates
+            try:
+                s_details = tmdb_client._fetch(f"tv/{tmdb_id}/season/{season_num}")
+                if s_details and "episodes" in s_details:
+                    ep_count = len(s_details["episodes"])
+                    if episode_num >= ep_count:
+                        season_num += 1
+                        episode_num = 1
+                        next_s_details = tmdb_client._fetch(f"tv/{tmdb_id}/season/{season_num}")
+                        if not next_s_details or not next_s_details.get("episodes") or "status_code" in next_s_details:
+                            notify_info("INFO Konec seriálu (další epizoda nenalezena)", category="CONTINUE")
+                            if use_resolve and handle and handle > 0:
+                                xbmcplugin.setResolvedUrl(handle, False, xbmcgui.ListItem())
+                            return
+                    else:
+                        episode_num += 1
+                else:
+                    episode_num += 1
+            except Exception:
+                episode_num += 1
 
         search_query = f"{tv_show_title} S{season_num:02d}E{episode_num:02d}"
 
@@ -899,24 +877,29 @@ def create_series_playlist(
                 try:
                     pl = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
                     c_season = season_num
-                    c_ep = episode_num
+                    c_ep = episode_num + 1
                     added = 1
-                    player = xbmc.Player()
 
                     while added < max_items:
-                        if not player.isPlayingVideo() or not _active_episode_matches(player, win_bg, current_episode_meta_dict):
+                        if not xbmc.Player().isPlaying():
                             break
-                        playing_file = player.getPlayingFile()
-                        coordinates = _next_episode_coordinates(tmdb_id, c_season, c_ep, tmdb_client)
-                        if coordinates is None:
-                            break
-                        c_season, c_ep = coordinates
 
                         bg_ep_props = {}
                         try:
                             bg_data = tmdb_client._fetch(f"tv/{tmdb_id}/season/{c_season}/episode/{c_ep}", params={"append_to_response": "credits"})
                             if not bg_data or "status_code" in bg_data:
-                                break
+                                season_data = tmdb_client._fetch(f"tv/{tmdb_id}/season/{c_season}")
+                                if season_data and "episodes" in season_data:
+                                    if c_ep > len(season_data["episodes"]):
+                                        c_season += 1
+                                        c_ep = 1
+                                        bg_data = tmdb_client._fetch(f"tv/{tmdb_id}/season/{c_season}/episode/{c_ep}", params={"append_to_response": "credits"})
+                                        if not bg_data or "status_code" in bg_data:
+                                            break
+                                    else:
+                                        break
+                                else:
+                                    break
 
                             if bg_data:
                                 bg_ep_props = tmdb_client._build_metadata_props(bg_data, 'episode')
@@ -1006,10 +989,6 @@ def create_series_playlist(
                             except Exception:
                                 pass
 
-                            if (not player.isPlayingVideo()
-                                    or player.getPlayingFile() != playing_file
-                                    or not _active_episode_matches(player, win_bg, current_episode_meta_dict)):
-                                break
                             pl.add(url, ep_li)
                             _remember_episode_playlist_item(
                                 url, ep_meta,
@@ -1018,8 +997,7 @@ def create_series_playlist(
                                 sel.get("link")
                             )
                             added += 1
-                        else:
-                            break
+                        c_ep += 1
 
                 finally:
                     win_bg.clearProperty("play_er.bg_playlist_active")

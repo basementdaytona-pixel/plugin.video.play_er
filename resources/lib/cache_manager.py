@@ -277,7 +277,7 @@ class LazyMySQLPool:
                 pass
 
 
-def _ensure_mysql_database(host, port, user, password, db_name):
+def _ensure_mysql_database(host, port, user, password, db_name, timeout=10):
     if not MYSQL_AVAILABLE:
         return
     conn = None
@@ -288,16 +288,19 @@ def _ensure_mysql_database(host, port, user, password, db_name):
             port=port,
             user=user,
             password=password,
-            autocommit=True
+            autocommit=True,
+            connection_timeout=timeout
         )
         cursor = conn.cursor()
-        cursor.execute(f"CREATE DATABASE IF NOT EXISTS `{db_name}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;")
+        # Identifiers cannot be bound as SQL parameters; escape backticks.
+        database_identifier = db_name.replace("`", "``")
+        cursor.execute(f"CREATE DATABASE IF NOT EXISTS `{database_identifier}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;")
         try:
-            cursor.execute(f"CREATE USER IF NOT EXISTS '{user}'@'%' IDENTIFIED BY '{password}';")
+            cursor.execute("CREATE USER IF NOT EXISTS %s@%s IDENTIFIED BY %s", (user, "%", password))
         except Exception:
             pass
         try:
-            cursor.execute(f"GRANT ALL PRIVILEGES ON `{db_name}`.* TO '{user}'@'%';")
+            cursor.execute(f"GRANT ALL PRIVILEGES ON `{database_identifier}`.* TO %s@%s", (user, "%"))
             cursor.execute("FLUSH PRIVILEGES;")
         except Exception:
             pass
@@ -335,7 +338,7 @@ def _get_mysql_pool():
             db_name = ADDON.getSetting("db_name") if ADDON and ADDON.getSetting("db_name") else "XBMC--PLAY.ER"
             db_timeout = get_setting_int_with_bounds(ADDON, "db_timeout", 10) if ADDON else 10
 
-            _ensure_mysql_database(db_host, db_port, db_user, db_pass, db_name)
+            _ensure_mysql_database(db_host, db_port, db_user, db_pass, db_name, db_timeout)
 
             dbconfig = {
                 "host": db_host,
@@ -676,7 +679,9 @@ def cache_get(folder, key, max_age=None):
                     data = json.loads(data_json)
                     with CACHE_LOCK:
                         _store_in_ram(ram_key, data, created_at, expires_at)
-                    return copy.deepcopy(data) if isinstance(data, (dict, list)) else data
+                    # _store_in_ram keeps its own copy, so this freshly decoded
+                    # value can be returned without a second deep copy.
+                    return data
                 except Exception as e:
                     if folder in PERSISTENT_SECTIONS:
                         raise CacheStorageError(f"Invalid stored data in {folder}") from e

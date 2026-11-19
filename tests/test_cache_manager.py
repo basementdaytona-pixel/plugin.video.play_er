@@ -3,6 +3,7 @@ import tempfile
 import threading
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
 from kodi_test_support import load_module
@@ -101,6 +102,23 @@ class PoolTests(unittest.TestCase):
         self.assertEqual(pool._in_use, set())
 
 
+class MySQLInitializationTests(unittest.TestCase):
+    def test_provisioning_uses_timeout_and_parameterized_credentials(self):
+        connector = MagicMock()
+        mysql = SimpleNamespace(connector=connector)
+        user, password, database = "test'user", "secret'with\\slash", "test`database"
+        with patch.object(cache, 'MYSQL_AVAILABLE', True), patch.object(cache, 'mysql', mysql, create=True):
+            cache._ensure_mysql_database('localhost', 3306, user, password, database, 4)
+        connector.connect.assert_called_once_with(host='localhost', port=3306, user=user,
+                                                  password=password, autocommit=True,
+                                                  connection_timeout=4)
+        cursor = connector.connect.return_value.cursor.return_value
+        self.assertIn('`test``database`', cursor.execute.call_args_list[0].args[0])
+        self.assertEqual(cursor.execute.call_args_list[1].args,
+                         ("CREATE USER IF NOT EXISTS %s@%s IDENTIFIED BY %s", (user, '%', password)))
+        self.assertEqual(cursor.execute.call_args_list[2].args[1], (user, '%'))
+
+
 class SQLiteTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
@@ -120,6 +138,13 @@ class SQLiteTests(unittest.TestCase):
         value['history'].append(3)
         self.assertEqual(cache.user_data_get('same'), {'history': [1, 2]})
         self.assertEqual(cache.cache_get('TMDB', 'same'), {'title': 'Test'})
+
+    def test_sql_read_returns_independent_nested_data(self):
+        self.assertTrue(cache.cache_set('USER_DATA', 'nested', {'items': [{'value': 1}]}))
+        cache.clear_ram_cache()
+        decoded = cache.user_data_get('nested')
+        decoded['items'][0]['value'] = 99
+        self.assertEqual(cache.user_data_get('nested'), {'items': [{'value': 1}]})
 
     def test_legacy_row_migrates_without_deleting_other_section(self):
         conn = cache._get_sqlite_connection()
