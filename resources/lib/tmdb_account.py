@@ -13,6 +13,7 @@
 
 import os
 import json
+import hashlib
 import requests
 import threading
 
@@ -188,6 +189,27 @@ def tmdb_start_auth_flow(addon, handle=None):
         notify_error(f"AUTH ERROR {e}", category="TMDB")
 
 
+def _account_cache_key(account, key):
+    """Do not share private responses between sessions or Kodi runs."""
+    session_id = account.get("session_id")
+    if not session_id:
+        return None
+    session_hash = hashlib.sha256(str(session_id).encode("utf-8")).hexdigest()
+    epoch = cache_manager.personal_cache_epoch("TMDB_ACCOUNT")
+    return f"{key}_{account.get('id')}_{session_hash}_{epoch}"
+
+
+def _refresh_account_cache():
+    try:
+        cache_manager.cache_clear("TMDB_ACCOUNT", notify_success=False)
+    except Exception as exc:
+        log(f"TMDB - Account cache cleanup failed: {exc}", xbmc.LOGWARNING)
+    try:
+        cache_manager.safe_refresh()
+    except Exception as exc:
+        log(f"TMDB - Account refresh failed: {exc}", xbmc.LOGWARNING)
+
+
 def _make_tmdb_request(endpoint_template, media_type=None, page=1, method="GET", payload=None):
     data = load_account_data()
     session_id = data.get("session_id")
@@ -199,7 +221,7 @@ def _make_tmdb_request(endpoint_template, media_type=None, page=1, method="GET",
 
     endpoint_part = endpoint_template.format(media_endpoint=media_type or "na")
     language = get_tmdb_language(ADDON)
-    cache_key = f"tmdb_account_{account_id}_{language}_{endpoint_part}_page_{page}"
+    cache_key = _account_cache_key(data, f"tmdb_account_{language}_{endpoint_part}_page_{page}")
 
     if method == "GET":
         w_data = cache_manager.window_cache_get(cache_key)
@@ -207,7 +229,7 @@ def _make_tmdb_request(endpoint_template, media_type=None, page=1, method="GET",
             return w_data
 
     if method == "GET":
-        cached_data = cache_manager.cache_get("TMDB", cache_key)
+        cached_data = cache_manager.cache_get("TMDB_ACCOUNT", cache_key)
         if cached_data is not None:
             cache_manager.window_cache_set(cache_key, cached_data)
             return cached_data
@@ -239,7 +261,7 @@ def _make_tmdb_request(endpoint_template, media_type=None, page=1, method="GET",
         response_data = res.json()
 
         if method == "GET":
-            cache_manager.cache_set("TMDB", cache_key, response_data)
+            cache_manager.cache_set("TMDB_ACCOUNT", cache_key, response_data)
             cache_manager.window_cache_set(cache_key, response_data)
 
         return response_data
@@ -310,29 +332,27 @@ def tmdb_get_user_lists(page=1):
 
 
 def tmdb_get_user_list_items(list_id, page=1):
+    account = load_account_data()
+    if not account.get("session_id"):
+        return None
     language = get_tmdb_language(ADDON)
-    cache_key = f"tmdb_list_{language}_{list_id}_page_{page}"
+    cache_key = _account_cache_key(account, f"tmdb_list_{language}_{list_id}_page_{page}")
 
     w_data = cache_manager.window_cache_get(cache_key)
     if w_data:
         return w_data
 
-    cached = cache_manager.cache_get("TMDB", cache_key)
+    cached = cache_manager.cache_get("TMDB_ACCOUNT", cache_key)
     if cached:
         cache_manager.window_cache_set(cache_key, cached)
         return cached
-
-    data = load_account_data()
-    session_id = data.get("session_id")
-    if not session_id:
-        return None
 
     url = f"{BASE_URL}/list/{list_id}"
     params = {"api_key": API_KEY, "language": language, "page": page}
     res = safe_get(SESSION, url, params=params, timeout=15)
     if res:
         data = res.json()
-        cache_manager.cache_set("TMDB", cache_key, data)
+        cache_manager.cache_set("TMDB_ACCOUNT", cache_key, data)
         cache_manager.window_cache_set(cache_key, data)
         return data
     return None
@@ -354,6 +374,7 @@ def _toggle_tmdb_list(list_name, tmdb_id, media_type, add=True):
         res.raise_for_status()
         resp_data = res.json()
         if resp_data.get("success") or resp_data.get("status_code") in [1, 12, 13]:
+            _refresh_account_cache()
             list_cz = "WATCHLISTU" if list_name == "watchlist" else "OBLÍBENÝCH"
             action_cz = "PŘIDÁNO DO" if add else "ODEBRÁNO Z"
 
@@ -383,7 +404,7 @@ def tmdb_remove_rating(tmdb_id, media_type="movie"):
     try:
         res = SESSION.delete(url, params=params, timeout=15)
         if res.status_code in [200, 13]:
-
+            _refresh_account_cache()
             notify_ok(f"RATE HODNOCENÍ ODSTRANĚNO", category="TMDB", time=3000)
     except Exception:
         pass
@@ -411,7 +432,7 @@ def tmdb_rate_prompt_and_send(tmdb_id, media_type="movie", handle=None):
         res = safe_post(SESSION, url, params=params, json={"value": val}, timeout=15)
 
         if res.status_code in [200, 201]:
-
+            _refresh_account_cache()
             notify_ok(f"RATE HODNOCENO {val}", category="TMDB", time=3000)
         else:
 

@@ -154,6 +154,10 @@ class CacheStorageError(RuntimeError):
 
 PERSISTENT_SECTIONS = frozenset(("USER_DATA", "SERIES_DB", "WATCHED_DB", "URL_CACHE"))
 TRAKT_PERSONAL_SECTIONS = ("TRAKT_WATCHLIST", "TRAKT_FAVORITES")
+TMDB_PERSONAL_SECTIONS = ("TMDB_ACCOUNT",)
+PERSONAL_CACHE_SECTIONS = TRAKT_PERSONAL_SECTIONS + TMDB_PERSONAL_SECTIONS
+_PERSONAL_PRUNE_INTERVAL = 3600
+_last_personal_prune = None
 
 
 class MySQLPoolTimeoutError(TimeoutError):
@@ -552,7 +556,7 @@ def _folder_ttl(folder):
         return TTL_TRAKT
     if folder == "CSFD":
         return TTL_CSFD
-    if folder == "TMDB":
+    if folder == "TMDB" or folder in TMDB_PERSONAL_SECTIONS:
         return TTL_TMDB
     return 86400
 
@@ -602,7 +606,7 @@ def _invalidate_window_cache():
 
 def personal_cache_epoch(section):
     """Use a Kodi-session epoch so stale personal lists cannot return after restart."""
-    if section not in TRAKT_PERSONAL_SECTIONS:
+    if section not in PERSONAL_CACHE_SECTIONS:
         raise ValueError("Unknown personal cache section")
     try:
         key = f"play_er.personal_cache_epoch.{section}"
@@ -756,6 +760,33 @@ def _store_in_ram(ram_key, data, created_at, expires_at):
         CACHE_RAM.popitem(last=False)
 
 
+def _prune_expired_personal_cache(cursor, conn, is_mysql):
+    """Bound old session namespaces without touching persistent user data."""
+    global _last_personal_prune
+    now = time.monotonic()
+    with CACHE_LOCK:
+        if _last_personal_prune is not None and now - _last_personal_prune < _PERSONAL_PRUNE_INTERVAL:
+            return
+        _last_personal_prune = now
+    placeholder = "%s" if is_mysql else "?"
+    sections = ", ".join([placeholder] * len(PERSONAL_CACHE_SECTIONS))
+    try:
+        cursor.execute(f"DELETE FROM cache_store WHERE expires_at <= {placeholder} AND section IN ({sections})",
+                       (time.time(), *PERSONAL_CACHE_SECTIONS))
+        if not is_mysql:
+            conn.commit()
+    except Exception as exc:
+        if not is_mysql:
+            try:
+                conn.rollback()
+            except Exception:
+                pass
+        with CACHE_LOCK:
+            if _last_personal_prune == now:
+                _last_personal_prune = None
+        log(f"CACHE - Expired personal cache cleanup failed: {exc}", xbmc.LOGWARNING)
+
+
 def cache_set(folder, key, data):
     global IN_MEMORY_CACHE_STATS
     key_hash = _hash_key((folder, key))
@@ -797,6 +828,8 @@ def cache_set(folder, key, data):
             )
             if not is_mysql:
                 conn.commit()
+            if folder in PERSONAL_CACHE_SECTIONS:
+                _prune_expired_personal_cache(cursor, conn, is_mysql)
             with CACHE_LOCK:
                 _store_in_ram(ram_key, data, now, expires_at)
                 IN_MEMORY_CACHE_STATS["sets"] += 1
@@ -829,7 +862,9 @@ def clear_ram_cache():
 
 def cache_clear(folder=None, notify_success=True):
     global CACHE_RAM, IN_MEMORY_CACHE_STATS
-    folders = (("TRAKT",) + TRAKT_PERSONAL_SECTIONS if folder == "TRAKT" else (folder,)) if folder else ()
+    groups = {"TRAKT": ("TRAKT",) + TRAKT_PERSONAL_SECTIONS,
+              "TMDB": ("TMDB",) + TMDB_PERSONAL_SECTIONS}
+    folders = groups.get(folder, (folder,)) if folder else ()
     with CACHE_LOCK:
         if folder:
             prefixes = tuple(f"{section}:" for section in folders)
@@ -861,8 +896,8 @@ def cache_clear(folder=None, notify_success=True):
                     conn.commit()
                     cursor.execute("VACUUM")
 
-        _invalidate_personal_epochs(TRAKT_PERSONAL_SECTIONS if not folder else
-                                    tuple(section for section in folders if section in TRAKT_PERSONAL_SECTIONS))
+        _invalidate_personal_epochs(PERSONAL_CACHE_SECTIONS if not folder else
+                                    tuple(section for section in folders if section in PERSONAL_CACHE_SECTIONS))
         _invalidate_window_cache()
         if notify_success:
             notify_ok(f"CACHE CLEAR ({folder or 'ALL'}) - HOTOVO", "CACHE")
@@ -914,7 +949,7 @@ def reset_database():
             if not is_mysql:
                 conn.commit()
                 cursor.execute("VACUUM")
-        _invalidate_personal_epochs(TRAKT_PERSONAL_SECTIONS)
+        _invalidate_personal_epochs(PERSONAL_CACHE_SECTIONS)
         _invalidate_window_cache()
         log(f"CACHE - RESET DATABASE COMPLETE ({DB_TYPE})", xbmc.LOGINFO)
         notify_ok("COMPLETE Databáze byla úspěšně resetována", category="SYSTEM", time=5000)

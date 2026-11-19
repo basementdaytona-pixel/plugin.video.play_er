@@ -117,6 +117,38 @@ class MySQLIntegrationTests(unittest.TestCase):
                 self.assertIsNone(self.cache.cache_get(section, 'item'))
             self.assertEqual(self.cache.user_data_get('history'), [1])
 
+    def test_tmdb_group_clear_and_personal_expiry_prune(self):
+        properties = {}
+        window = SimpleNamespace(getProperty=lambda key: properties.get(key, ''),
+                                 setProperty=lambda key, value: properties.__setitem__(key, value),
+                                 clearProperty=lambda key: properties.pop(key, None))
+        with patch.object(self.cache, '_get_mysql_pool', return_value=self.pool), \
+                patch.object(self.cache, 'DB_TYPE', 'MySQL (MariaDB)'), \
+                patch.object(self.cache, 'WINDOW', window), \
+                patch.object(self.cache, '_last_personal_prune', None):
+            import time
+            expired, persistent = 'expired_' + uuid.uuid4().hex, 'persistent_' + uuid.uuid4().hex
+            conn = self.pool.get_connection()
+            cursor = conn.cursor()
+            now = time.time()
+            cursor.execute('INSERT INTO cache_store VALUES (%s, %s, %s, %s, %s)',
+                           (expired, 'TRAKT_WATCHLIST', '{}', now - 10, now - 5))
+            cursor.execute('INSERT INTO cache_store VALUES (%s, %s, %s, %s, %s)',
+                           (persistent, 'USER_DATA', '{}', now - 10, now - 5))
+            cursor.close()
+            self.pool.put_connection(conn)
+            self.cache.cache_set('TMDB_ACCOUNT', 'personal', [1])
+            self.cache.cache_set('TMDB', 'public', [2])
+            conn = self.pool.get_connection()
+            cursor = conn.cursor()
+            cursor.execute('SELECT key_hash FROM cache_store WHERE key_hash IN (%s, %s)', (expired, persistent))
+            self.assertEqual({row[0] for row in cursor.fetchall()}, {persistent})
+            cursor.close()
+            self.pool.put_connection(conn)
+            self.cache.cache_clear('TMDB', notify_success=False)
+            self.assertIsNone(self.cache.cache_get('TMDB_ACCOUNT', 'personal'))
+            self.assertIsNone(self.cache.cache_get('TMDB', 'public'))
+
     def test_container_refresh_reuses_database_connection(self):
         with patch.object(self.cache, 'DB_POOL', self.pool), \
                 patch.object(self.cache, 'MYSQL_AVAILABLE', True), \
