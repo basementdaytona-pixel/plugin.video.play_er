@@ -330,8 +330,8 @@ def get_preemptive_episode_target(meta, tmdb_client):
         )
 
 
-def _movie_playlist_is_current(player, allowed_urls, allowed_sources):
-    """Only extend a queue while one of its movies is still playing."""
+def _playlist_playback_is_current(player, allowed_urls, allowed_sources):
+    """Only extend a queue while one of its items is still playing."""
     try:
         if not player.isPlayingVideo():
             return False
@@ -514,7 +514,7 @@ def create_movie_playlist(start_meta, addon, active_provider, tmdb_client, handl
                             player = xbmc.Player()
                             allowed_urls = {str(playable_url).split('|', 1)[0]}
                             allowed_sources = {(str(meta_uuid), str(selected_source['link']))} if meta_uuid and selected_source.get('link') else set()
-                            if not _movie_playlist_is_current(player, allowed_urls, allowed_sources):
+                            if not _playlist_playback_is_current(player, allowed_urls, allowed_sources):
                                 return
 
                             playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
@@ -525,7 +525,7 @@ def create_movie_playlist(start_meta, addon, active_provider, tmdb_client, handl
                                 return
 
                             for rec_item in recommendations[:50]:
-                                if bg_added >= max_count or not _movie_playlist_is_current(player, allowed_urls, allowed_sources):
+                                if bg_added >= max_count or not _playlist_playback_is_current(player, allowed_urls, allowed_sources):
                                     break
 
                                 if not isinstance(rec_item, dict):
@@ -598,7 +598,7 @@ def create_movie_playlist(start_meta, addon, active_provider, tmdb_client, handl
                                     except Exception:
                                         pass
 
-                                    if not _movie_playlist_is_current(player, allowed_urls, allowed_sources):
+                                    if not _playlist_playback_is_current(player, allowed_urls, allowed_sources):
                                         break
                                     allowed_urls.add(str(playable_url_rec).split('|', 1)[0])
                                     if rec_meta_uuid and selected_rec.get('link'):
@@ -751,14 +751,6 @@ def create_series_playlist(
         providers = plugin_instance.provider_manager.get_providers_to_search()
         sort_priority = str(addon.getSetting("multi_provider_sort"))
 
-        # FIX PRE-EMPTIVE AND FILTERS [CONTINUE AND AUTOLIST SEARCH]
-        # Původní větev ponechána jako komentář pro snadný návrat:
-        # def _get_filtered_sources(query):
-        #     if source_selection_enabled and method_str == "INTELIGENTNÍ":
-        #         raw_s = actions._search_providers_parallel(query, providers, apply_filters=False, sort_priority=sort_priority)
-        #         return _apply_continue_filters(raw_s, addon) if start_from_next else _apply_autolist_filters_ser(raw_s, addon)
-        #     else:
-        #         return actions._search_providers_parallel(query, providers, apply_filters=True, sort_priority=sort_priority)
         def _get_filtered_sources(query, season=None, episode=None):
             if start_from_next:
                 return _search_continue_sources(
@@ -907,18 +899,21 @@ def create_series_playlist(
 
         if max_items > 1:
             def _bg_series_loader():
-                xbmc.sleep(8000)
-                win_bg = xbmcgui.Window(10000)
-                win_bg.setProperty("play_er.bg_playlist_active", "true")
-
+                win_bg = None
                 try:
+                    xbmc.sleep(8000)
+                    win_bg = xbmcgui.Window(10000)
+                    win_bg.setProperty("play_er.bg_playlist_active", "true")
+                    player = xbmc.Player()
+                    allowed_urls = {str(final_url).split('|', 1)[0]}
+                    allowed_sources = {(str(meta_uuid), str(selected['link']))} if meta_uuid and selected.get('link') else set()
                     pl = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
                     c_season = season_num
                     c_ep = episode_num + 1
                     added = 1
 
                     while added < max_items:
-                        if not xbmc.Player().isPlaying():
+                        if not _playlist_playback_is_current(player, allowed_urls, allowed_sources):
                             break
 
                         bg_ep_props = {}
@@ -945,9 +940,13 @@ def create_series_playlist(
 
                         if not bg_ep_props:
                             break
+                        if not _playlist_playback_is_current(player, allowed_urls, allowed_sources):
+                            break
 
                         search_q = f"{tv_show_title} S{c_season:02d}E{c_ep:02d}"
                         srcs = _get_filtered_sources(search_q, c_season, c_ep)
+                        if not _playlist_playback_is_current(player, allowed_urls, allowed_sources):
+                            break
                         if not srcs:
                             if str(addon.getSetting('auto_prediction_stop_on_no_match')).lower() == 'true':
                                 from resources.lib.utils_auto_prediction import select_source
@@ -955,6 +954,7 @@ def create_series_playlist(
                             break
 
                         if source_selection_enabled and method_str == "PODLE POZICE":
+                            ep_meta_uuid = ''
                             try:
                                 pr = get_setting_int_with_bounds(addon, priority_setting, 1, 1, 5)
                             except Exception:
@@ -1026,6 +1026,11 @@ def create_series_playlist(
                             except Exception:
                                 pass
 
+                            if not _playlist_playback_is_current(player, allowed_urls, allowed_sources):
+                                break
+                            allowed_urls.add(str(url).split('|', 1)[0])
+                            if ep_meta_uuid and sel.get('link'):
+                                allowed_sources.add((str(ep_meta_uuid), str(sel['link'])))
                             pl.add(url, ep_li)
                             _remember_episode_playlist_item(
                                 url, ep_meta,
@@ -1034,14 +1039,23 @@ def create_series_playlist(
                                 sel.get("link")
                             )
                             added += 1
+                        else:
+                            break
                         c_ep += 1
 
                 finally:
-                    win_bg.clearProperty("play_er.bg_playlist_active")
-                    win_bg.clearProperty("play_er.bg_series_playlist_building")
+                    try:
+                        if win_bg is not None:
+                            win_bg.clearProperty("play_er.bg_playlist_active")
+                    finally:
+                        win.clearProperty("play_er.bg_series_playlist_building")
 
             win.setProperty("play_er.bg_series_playlist_building", "true")
-            threading.Thread(target=_bg_series_loader).start()
+            try:
+                threading.Thread(target=_bg_series_loader).start()
+            except Exception as e:
+                win.clearProperty("play_er.bg_series_playlist_building")
+                log(f"AUTOLIST SERIES - Nelze spustit načítání na pozadí: {e}", xbmc.LOGWARNING)
 
     except Exception as e:
         log(f"AUTOLIST SERIES - Kritická chyba: {e}", xbmc.LOGERROR)
