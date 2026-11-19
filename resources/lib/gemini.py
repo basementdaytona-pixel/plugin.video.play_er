@@ -62,7 +62,7 @@ def _text(ident):
 
 def _reason_words(plugin_instance):
     try:
-        return max(10, min(80, int(plugin_instance.addon.getSettingString('ai_reason_words') or 24)))
+        return max(10, min(80, int(plugin_instance.addon.getSetting('ai_reason_words') or 24)))
     except (TypeError, ValueError):
         return 24
 
@@ -101,7 +101,7 @@ def _request_key(plugin_instance, prompt, kind='recommendations'):
     keys = ('ai_provider', 'gemini_model', 'openrouter_model', 'gemini_temperature',
             'gemini_limit', 'ai_reason_words', 'ai_custom_instructions',
             'gemini_context_source_1', 'gemini_context_source_2', 'tmdb_language')
-    preferences = {key: plugin_instance.addon.getSettingString(key) for key in keys}
+    preferences = {key: plugin_instance.addon.getSetting(key) for key in keys}
     # Hash the effective model for both providers. Neutral defaults preserve
     # existing caches; inactive presets and equivalent custom aliases do not
     # cause unnecessary new requests.

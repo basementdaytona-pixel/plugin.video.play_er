@@ -204,23 +204,6 @@
                         </dependency>
                     </dependencies>
                 </setting>
-                <setting id="most_watched_time_range" label="30078" help="30079" type="string">
-                    <level>0</level>
-                    <default>7 Dní</default>
-                    <constraints>
-                        <options>
-                            <option label="30080">24 Hodin</option>
-                            <option label="30081">7 Dní</option>
-                            <option label="30082">14 Dní</option>
-                        </options>
-                    </constraints>
-                    <control type="list" format="string"/>
-                    <dependencies>
-                        <dependency type="visible">
-                            <condition operator="is" setting="show_section_mostwatched">true</condition>
-                        </dependency>
-                    </dependencies>
-                </setting>
                 <setting id="show_size" label="30143" help="30353" type="boolean">
                     <level>0</level>
                     <default>true</default>

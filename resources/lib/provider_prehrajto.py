@@ -642,7 +642,7 @@ class PrehrajTo(BaseProvider):
         pref_quality = self.addon.getSettingString("prehrajto_pref_quality") or "highest"
 
         try:
-            max_bandwidth = float(self.addon.getSettingString("max_bandwidth_mbps") or "0")
+            max_bandwidth = float(self.addon.getSetting("max_bandwidth_mbps") or "0")
         except Exception:
             max_bandwidth = 0.0
 

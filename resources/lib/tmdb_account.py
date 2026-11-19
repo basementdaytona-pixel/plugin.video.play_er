@@ -50,7 +50,8 @@ from resources.lib.utils_settings import (
     get_setting_int_with_bounds,
     get_setting_bool,
     get_setting_int,
-    get_setting_str
+    get_setting_str,
+    get_tmdb_language
 )
 
 from resources.lib.utils_theme import (
@@ -71,7 +72,7 @@ from resources.lib.utils import (
 TMDB_LOCK = threading.Lock()
 ADDON = xbmcaddon.Addon()
 API_KEY = ADDON.getSetting("api_key")
-LANGUAGE = ADDON.getSetting("tmdb_language") or "cs_CZ"
+LANGUAGE = get_tmdb_language(ADDON)
 BASE_URL = "https://api.themoviedb.org/3"
 SESSION = requests.Session()
 
@@ -85,7 +86,7 @@ def _tmdb_set_globals(addon=None, session=None):
             ADDON = addon
             try:
                 API_KEY = ADDON.getSetting("api_key")
-                LANGUAGE = ADDON.getSetting("tmdb_language") or "cs_CZ"
+                LANGUAGE = get_tmdb_language(ADDON)
             except Exception:
                 pass
         if session is not None:
@@ -197,7 +198,8 @@ def _make_tmdb_request(endpoint_template, media_type=None, page=1, method="GET",
     account_id = data.get("id")
 
     endpoint_part = endpoint_template.format(media_endpoint=media_type or "na")
-    cache_key = f"tmdb_account_{endpoint_part}_page_{page}"
+    language = get_tmdb_language(ADDON)
+    cache_key = f"tmdb_account_{account_id}_{language}_{endpoint_part}_page_{page}"
 
     if method == "GET":
         w_data = cache_manager.window_cache_get(cache_key)
@@ -219,7 +221,7 @@ def _make_tmdb_request(endpoint_template, media_type=None, page=1, method="GET",
     params = {
         "api_key": API_KEY,
         "session_id": session_id,
-        "language": LANGUAGE.replace("_", "-"),
+        "language": language,
     }
     if method == "GET":
         params["page"] = page
@@ -273,7 +275,8 @@ def tmdb_get_recommendations(media_type="movie", page=1):
     if not item_id:
         return None
 
-    cache_key = f"tmdb_recs_for_{media_type}_{item_id}_page_{page}"
+    language = get_tmdb_language(ADDON)
+    cache_key = f"tmdb_recs_for_{language}_{media_type}_{item_id}_page_{page}"
 
     w_data = cache_manager.window_cache_get(cache_key)
     if w_data:
@@ -287,7 +290,7 @@ def tmdb_get_recommendations(media_type="movie", page=1):
     url = f"{BASE_URL}/{media_type}/{item_id}/recommendations"
     params = {
         "api_key": API_KEY,
-        "language": LANGUAGE.replace("_", "-"),
+        "language": language,
         "page": page,
     }
     try:
@@ -307,7 +310,8 @@ def tmdb_get_user_lists(page=1):
 
 
 def tmdb_get_user_list_items(list_id, page=1):
-    cache_key = f"tmdb_list_{list_id}_page_{page}"
+    language = get_tmdb_language(ADDON)
+    cache_key = f"tmdb_list_{language}_{list_id}_page_{page}"
 
     w_data = cache_manager.window_cache_get(cache_key)
     if w_data:
@@ -324,7 +328,7 @@ def tmdb_get_user_list_items(list_id, page=1):
         return None
 
     url = f"{BASE_URL}/list/{list_id}"
-    params = {"api_key": API_KEY, "language": LANGUAGE.replace("_", "-"), "page": page}
+    params = {"api_key": API_KEY, "language": language, "page": page}
     res = safe_get(SESSION, url, params=params, timeout=15)
     if res:
         data = res.json()

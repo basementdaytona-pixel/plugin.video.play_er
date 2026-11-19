@@ -103,6 +103,17 @@ class PoolTests(unittest.TestCase):
 
 
 class MySQLInitializationTests(unittest.TestCase):
+    def test_pool_honors_explicit_empty_password(self):
+        addon, pool = MagicMock(), MagicMock()
+        addon.getSetting.side_effect = lambda key: {'db_pass': ''}.get(key, '')
+        with patch.object(cache, 'DB_POOL', None), patch.object(cache, 'MYSQL_AVAILABLE', True), \
+                patch.object(cache, 'ADDON', addon), patch.object(cache, 'LazyMySQLPool', return_value=pool) as factory, \
+                patch.object(cache, '_ensure_mysql_database') as provision, \
+                patch.object(cache, '_init_db_tables', return_value=True):
+            self.assertIs(cache._get_mysql_pool(), pool)
+        self.assertEqual(factory.call_args.kwargs['password'], '')
+        self.assertEqual(provision.call_args.args[3], '')
+
     def test_provisioning_uses_timeout_and_parameterized_credentials(self):
         connector = MagicMock()
         mysql = SimpleNamespace(connector=connector)

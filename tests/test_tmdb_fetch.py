@@ -27,3 +27,46 @@ class FetchTests(unittest.TestCase):
         self.assertEqual(request.call_args.kwargs['params']['api_key'], client.api_key)
         self.assertNotIn(client.api_key, str(log.call_args_list))
         self.assertIn('region', str(log.call_args_list))
+
+    def test_cached_catalogues_respect_language_and_filter_changes(self):
+        client = object.__new__(tmdb.TMDB)
+        client.api_key, client.language = 'synthetic-key', 'cs-CZ'
+        client.base_url, client.session = 'https://example.invalid/3', MagicMock()
+        client.addon = MagicMock()
+        client.addon.getSetting.return_value = 'OFF'
+        storage, store = {}, MagicMock()
+        store.window_cache_get.side_effect = storage.get
+        store.cache_get.side_effect = lambda folder, key: storage.get(key)
+        store.cache_set.side_effect = lambda folder, key, data: storage.update({key: data})
+        response = MagicMock()
+        response.json.side_effect = lambda: {'results': [
+            {'id': 1, 'title': 'Example', 'original_language': 'en'},
+            {'id': 2, 'title': 'Example 2', 'original_language': 'ja'}]}
+        with patch.object(tmdb, 'cache_manager', store), patch.object(tmdb, 'safe_get', return_value=response) as fetch:
+            self.assertEqual(len(client._fetch('movie/popular', cache_key='popular_page_1')['results']), 2)
+            client.addon.getSetting.return_value = 'HARD'
+            self.assertEqual(len(client._fetch('movie/popular', cache_key='popular_page_1')['results']), 1)
+            client.language = 'en-GB'
+            client._fetch('movie/popular', cache_key='popular_page_1')
+            client._fetch('movie/popular', cache_key='popular_page_1')
+            self.assertEqual(fetch.call_count, 3)
+            client._fetch('movie/popular', cache_key='popular_page_1', skip_filter=True)
+            self.assertEqual(fetch.call_count, 4)
+
+    def test_detail_cache_uses_same_variant_as_fetch(self):
+        client = object.__new__(tmdb.TMDB)
+        client.api_key, client.language = 'synthetic-key', 'cs-CZ'
+        client.base_url, client.session = 'https://example.invalid/3', MagicMock()
+        client.addon = MagicMock()
+        client.addon.getSetting.return_value = 'OFF'
+        storage, store = {}, MagicMock()
+        store.cache_get.side_effect = lambda folder, key: storage.get(key)
+        store.cache_set.side_effect = lambda folder, key, data: storage.update({key: data})
+        response = MagicMock()
+        response.json.side_effect = lambda: {'id': 1, 'credits': {}}
+        with patch.object(tmdb, 'cache_manager', store), patch.object(tmdb, 'safe_get', return_value=response) as fetch:
+            client.get_full_details('movie', 1)
+            client.get_full_details('movie', 1)
+            client.get_full_details('movie', 1, lang='en-GB')
+            client.get_full_details('movie', 1, lang='en-GB')
+            self.assertEqual(fetch.call_count, 2)

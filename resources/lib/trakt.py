@@ -2200,7 +2200,7 @@ class KodiPlayerMonitor(xbmc.Player):
 
         try:
             enable_downgrade = self.addon.getSettingBool("enable_auto_downgrade")
-            tolerance = int(self.addon.getSettingString("downgrade_tolerance") or "5")
+            tolerance = int(self.addon.getSetting("downgrade_tolerance") or "5")
         except Exception:
             enable_downgrade = False
             tolerance = 5

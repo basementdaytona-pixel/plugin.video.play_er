@@ -132,3 +132,16 @@ def get_setting_str(addon, setting_id, default=""):
         return str(value) if value is not None and value != "" else default
     except Exception:
         return default
+
+
+def get_tmdb_language(addon):
+    """Resolve the shared language preference to a TMDB language tag."""
+    language = get_setting_str(addon, "tmdb_language", "cs_CZ")
+    if language == "auto":
+        import xbmc
+
+        code = xbmc.getLanguage(xbmc.ISO_639_1) or "en"
+        language = {"cs": "cs-CZ", "sk": "sk-SK", "en": "en-US",
+                    "de": "de-DE", "fr": "fr-FR", "pl": "pl-PL",
+                    "es": "es-ES", "it": "it-IT"}.get(code, f"{code}-{code.upper()}")
+    return language.replace("_", "-")

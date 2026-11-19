@@ -334,7 +334,7 @@ def _get_mysql_pool():
             db_host = ADDON.getSetting("db_host") if ADDON and ADDON.getSetting("db_host") else "127.0.0.1"
             db_port = get_setting_int_with_bounds(ADDON, "db_port", 3306) if ADDON else 3306
             db_user = ADDON.getSetting("db_user") if ADDON and ADDON.getSetting("db_user") else "root"
-            db_pass = ADDON.getSetting("db_pass") if ADDON and ADDON.getSetting("db_pass") else "PLAYER123!"
+            db_pass = ADDON.getSetting("db_pass") if ADDON else "PLAYER123!"
             db_name = ADDON.getSetting("db_name") if ADDON and ADDON.getSetting("db_name") else "XBMC--PLAY.ER"
             db_timeout = get_setting_int_with_bounds(ADDON, "db_timeout", 10) if ADDON else 10
 

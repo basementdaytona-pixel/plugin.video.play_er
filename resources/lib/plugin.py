@@ -482,6 +482,7 @@ def reinitialize_clients():
     global tmdb_client, addon, csfd_instance, provider_manager, series_manager, plugin_instance
     with PLUGIN_LOCK:
         addon = SafeAddonWrapper(xbmcaddon.Addon(id="plugin.video.play_er"))
+        tmdb_account._tmdb_set_globals(addon=addon, session=session)
         tmdb_client = TMDB(addon, _handle, session)
         csfd_instance = CSFD(addon, tmdb_client)
         provider_manager = ProviderManager(addon, _handle, session, tmdb_client)

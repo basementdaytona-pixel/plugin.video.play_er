@@ -60,7 +60,8 @@ from resources.lib.utils_settings import (
     get_setting_int_with_bounds,
     get_setting_bool,
     get_setting_int,
-    get_setting_str
+    get_setting_str,
+    get_tmdb_language
 )
 
 from resources.lib.utils_theme import (
@@ -95,23 +96,8 @@ class TMDB:
         self._handle = handle
         self.session = session
         self.api_key = get_setting_str(self.addon, "api_key", "")
-        lang_setting = get_setting_str(self.addon, "tmdb_language", "cs_CZ")
         self.genres_cache = {}
-        if lang_setting == "auto":
-            kodiFLang = xbmc.getLanguage(xbmc.ISO_639_1) or "en"
-            lang_map = {
-                "cs": "cs-CZ",
-                "sk": "sk-SK",
-                "en": "en-US",
-                "de": "de-DE",
-                "fr": "fr-FR",
-                "pl": "pl-PL",
-                "es": "es-ES",
-                "it": "it-IT",
-            }
-            self.language = lang_map.get(kodiFLang, f"{kodiFLang}-{kodiFLang.upper()}")
-        else:
-            self.language = lang_setting.replace("_", "-")
+        self.language = get_tmdb_language(addon)
         log(
             f"TMDB FETCH : L A N G U A G E : INICIALIZACE - JAZYK NASTAVEN NA[ '{self.language}' ]",
             xbmc.LOGDEBUG,
@@ -121,6 +107,15 @@ class TMDB:
         self.image_base_url = "https://image.tmdb.org/t/p/"
         self.main_window = xbmcgui.Window(10000)
 
+
+
+    def _cache_variant(self, key, language=None, skip_filter=False):
+        """Keep cached translations and filter preferences independent."""
+        try:
+            mode = (self.addon.getSetting("filter_tmdb_language") or "SOFT").strip().upper()
+        except Exception:
+            mode = "SOFT"
+        return f"{key}_{language or self.language}_{'OFF' if skip_filter else mode}"
 
 
     def _fetch(self, endpoint, params=None, cache_key=None, skip_filter=False, language_override=None):
@@ -147,6 +142,9 @@ class TMDB:
             identity = [endpoint, {k: v for k, v in params.items() if k != "api_key"}, skip_filter]
             digest = hashlib.sha256(json.dumps(identity, sort_keys=True).encode("utf-8")).hexdigest()
             cache_key = "tv_detail_" + digest
+
+        if cache_key:
+            cache_key = self._cache_variant(cache_key, lang_to_use, skip_filter)
 
         if cache_key and "page" in cache_key:
             w_data = cache_manager.window_cache_get(cache_key)
@@ -452,7 +450,7 @@ class TMDB:
         endpoint = f"{media_type}/{tmdb_id}"
 
 
-        detail_data = cache_manager.cache_get("TMDB", cache_key)
+        detail_data = cache_manager.cache_get("TMDB", self._cache_variant(cache_key, lang))
 
 
         is_valid = False
@@ -1913,7 +1911,7 @@ class TMDB:
         -- Získá URL na YouTube trailer z TMDB. Využívá SSD/RAM cache_manager.
         """
 
-        cache_key = f"trailer_{media_type}_{tmdb_id}"
+        cache_key = f"trailer_{media_type}_{tmdb_id}_{self.language}"
         cached = cache_manager.cache_get("TMDB", cache_key)
         if cached:
             return cached
