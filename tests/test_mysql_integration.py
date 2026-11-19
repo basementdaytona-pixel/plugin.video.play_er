@@ -253,8 +253,19 @@ class MySQLIntegrationTests(unittest.TestCase):
                 cursor = login.cursor()
                 cursor.execute('CREATE TABLE example (id INT)')
                 cursor.close()
+                self.assertTrue(self.cache._init_db_tables(login, is_mysql=True))
             finally:
                 login.close()
+            pool = self.cache.LazyMySQLPool(host='127.0.0.1', port=self.config['port'],
+                                            user=user, password=password, database=name, use_pure=True,
+                                            connection_timeout=3, pool_size=1, pool_timeout=3)
+            try:
+                with patch.object(self.cache, 'DB_TYPE', 'MySQL (MariaDB)'), \
+                        patch.object(self.cache, '_get_mysql_pool', return_value=pool):
+                    self.assertTrue(self.cache.user_data_update('watch_later', lambda current: ['limited-user']))
+                    self.assertEqual(self.cache.user_data_get('watch_later'), ['limited-user'])
+            finally:
+                pool.close_all()
         finally:
             cursor = self.admin.cursor()
             cursor.execute("DROP USER IF EXISTS %s@%s", (user, '%'))
@@ -324,6 +335,134 @@ class MySQLIntegrationTests(unittest.TestCase):
             self.cache.cache_clear('TMDB', notify_success=False)
             self.assertIsNone(self.cache.cache_get('TMDB_ACCOUNT', 'personal'))
             self.assertIsNone(self.cache.cache_get('TMDB', 'public'))
+
+    def test_atomic_shared_list_across_interpreters_and_rollback(self):
+        other = load_module('resources.lib.cache_manager')
+        other.DB_TYPE, other.MYSQL_AVAILABLE = 'MySQL (MariaDB)', True
+        second_pool = other.LazyMySQLPool(**self.config, database=self.database, pool_size=2, pool_timeout=5)
+        self.addCleanup(second_pool.close_all)
+        first = self.cache
+        keyhash, legacy = first._hash_key(('USER_DATA', 'watch_later')), first._hash_key('watch_later')
+        cursor = self.admin.cursor()
+        cursor.execute(f'DELETE FROM `{self.database}`.cache_store WHERE key_hash IN (%s, %s)', (keyhash, legacy))
+        cursor.close()
+        entered, release, started = threading.Event(), threading.Event(), threading.Event()
+        def slow(values):
+            entered.set()
+            if not release.wait(5):
+                raise TimeoutError('test did not release updater')
+            return (values or []) + ['first']
+        def second_write():
+            started.set()
+            return other.user_data_update('watch_later', lambda values: (values or []) + ['second'])
+        with patch.object(first, 'DB_TYPE', 'MySQL (MariaDB)'), \
+                patch.object(first, '_get_mysql_pool', return_value=self.pool), \
+                patch.object(other, '_get_mysql_pool', return_value=second_pool):
+            with ThreadPoolExecutor(max_workers=2) as executor:
+                a = executor.submit(first.user_data_update, 'watch_later', slow)
+                try:
+                    self.assertTrue(entered.wait(2))
+                    b = executor.submit(second_write)
+                    self.assertTrue(started.wait(2))
+                    with self.assertRaises(TimeoutError):
+                        b.result(timeout=0.2)
+                finally:
+                    release.set()
+                self.assertTrue(a.result(timeout=4))
+                self.assertTrue(b.result(timeout=4))
+            self.assertEqual(first.user_data_get('watch_later'), ['first', 'second'])
+            self.assertEqual(other.user_data_get('watch_later'), ['first', 'second'])
+            with self.assertRaises(first.CacheStorageError):
+                first.user_data_update('watch_later', lambda values: values + [object()])
+            self.assertEqual(first.user_data_get('watch_later'), ['first', 'second'])
+            self.assertTrue(first.user_data_update('watch_later', lambda values: values + ['third']))
+            self.assertEqual(other.user_data_get('watch_later'), ['first', 'second', 'third'])
+            conn = self.pool.get_connection()
+            self.assertTrue(conn.autocommit)
+            self.assertFalse(conn.in_transaction)
+            self.pool.put_connection(conn)
+
+    def test_atomic_different_lists_progress_without_gap_lock_deadlock(self):
+        first, other = self.cache, load_module('resources.lib.cache_manager')
+        other.DB_TYPE, other.MYSQL_AVAILABLE = 'MySQL (MariaDB)', True
+        second_pool = other.LazyMySQLPool(**self.config, database=self.database, pool_size=1, pool_timeout=3)
+        self.addCleanup(second_pool.close_all)
+        keys = [first._hash_key(('USER_DATA', key)) for key in ('watch_later', 'playback_history')]
+        keys += [first._hash_key(key) for key in ('watch_later', 'playback_history')]
+        cursor = self.admin.cursor()
+        cursor.execute(f'DELETE FROM `{self.database}`.cache_store WHERE key_hash IN (%s,%s,%s,%s)', keys)
+        cursor.close()
+        entered, release = threading.Event(), threading.Event()
+        def slow(values):
+            entered.set()
+            if not release.wait(5):
+                raise TimeoutError('test did not release updater')
+            return ['watch']
+        with patch.object(first, 'DB_TYPE', 'MySQL (MariaDB)'), \
+                patch.object(first, '_get_mysql_pool', return_value=self.pool), \
+                patch.object(other, '_get_mysql_pool', return_value=second_pool):
+            with ThreadPoolExecutor(max_workers=2) as executor:
+                pending = executor.submit(first.user_data_update, 'watch_later', slow)
+                try:
+                    self.assertTrue(entered.wait(2))
+                    independent = executor.submit(other.user_data_update, 'playback_history', lambda values: ['history'])
+                    self.assertTrue(independent.result(timeout=3))
+                finally:
+                    release.set()
+                self.assertTrue(pending.result(timeout=3))
+            self.assertEqual(first.user_data_get('watch_later'), ['watch'])
+            self.assertEqual(other.user_data_get('playback_history'), ['history'])
+
+    def test_atomic_mysql_migrates_legacy_without_touching_other_section(self):
+        import time
+        legacy = self.cache._hash_key('watch_later')
+        canonical = self.cache._hash_key(('USER_DATA', 'watch_later'))
+        cursor = self.admin.cursor()
+        cursor.execute(f'DELETE FROM `{self.database}`.cache_store WHERE key_hash IN (%s, %s)', (legacy, canonical))
+        now = time.time()
+        cursor.execute(f'INSERT INTO `{self.database}`.cache_store VALUES (%s,%s,%s,%s,%s)',
+                       (legacy, 'USER_DATA', '["legacy"]', now, now + 30))
+        cursor.close()
+        with patch.object(self.cache, 'DB_TYPE', 'MySQL (MariaDB)'), \
+                patch.object(self.cache, '_get_mysql_pool', return_value=self.pool):
+            self.assertTrue(self.cache.user_data_update('watch_later', lambda values: values + ['new']))
+            self.assertEqual(self.cache.user_data_get('watch_later'), ['legacy', 'new'])
+        cursor = self.admin.cursor()
+        cursor.execute(f'SELECT key_hash FROM `{self.database}`.cache_store WHERE key_hash IN (%s,%s)', (legacy, canonical))
+        self.assertEqual({row[0] for row in cursor.fetchall()}, {canonical})
+        cursor.close()
+
+    def test_atomic_update_rejects_non_transactional_table(self):
+        import mysql.connector
+        name = 'play_er_engine_' + uuid.uuid4().hex
+        cursor = self.admin.cursor()
+        cursor.execute(f'CREATE DATABASE `{name}`')
+        cursor.close()
+        try:
+            conn = mysql.connector.connect(**self.config, database=name)
+            cur = conn.cursor()
+            cur.execute('CREATE TABLE cache_store (key_hash VARCHAR(64) PRIMARY KEY, section VARCHAR(32), '
+                        'data LONGTEXT, created_at DOUBLE, expires_at DOUBLE) ENGINE=MyISAM')
+            cur.close()
+            conn.close()
+            pool = self.cache.LazyMySQLPool(**self.config, database=name, pool_size=1, pool_timeout=3)
+            try:
+                with patch.object(self.cache, 'DB_TYPE', 'MySQL (MariaDB)'), \
+                        patch.object(self.cache, '_get_mysql_pool', return_value=pool):
+                    with self.assertRaises(self.cache.CacheStorageError):
+                        self.cache.user_data_update('watch_later', lambda current: ['must-not-write'])
+                conn = pool.get_connection()
+                cur = conn.cursor()
+                cur.execute('SELECT COUNT(*) FROM cache_store')
+                self.assertEqual(cur.fetchone()[0], 0)
+                cur.close()
+                pool.put_connection(conn)
+            finally:
+                pool.close_all()
+        finally:
+            cursor = self.admin.cursor()
+            cursor.execute(f'DROP DATABASE `{name}`')
+            cursor.close()
 
     def test_container_refresh_reuses_database_connection(self):
         with patch.object(self.cache, 'DB_POOL', self.pool), \

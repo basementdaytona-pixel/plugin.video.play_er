@@ -834,31 +834,20 @@ def resolve_video(link, provider_name, meta_json, source_list=None, return_url_o
         import time
         from resources.lib import cache_manager
 
-        history = cache_manager.user_data_get("playback_history") or []
+        def update_history(history):
+            def is_same_item(item):
+                imeta = item.get("meta", {})
+                if str(imeta.get("tmdb_id")) != str(tmdb_id):
+                    return False
+                if media_type == "episode":
+                    return str(imeta.get("season")) == str(meta.get("season")) and str(imeta.get("episode")) == str(meta.get("episode"))
+                return imeta.get("media_type") == media_type
 
-        # --- Filtrační funkce - odstraníme případný starý záznam pro stejný titul (posuneme ho tak úplně nahoru)
+            result = [item for item in (history or []) if not is_same_item(item)]
+            result.insert(0, {"meta": meta, "link": str(link), "timestamp": int(time.time())})
+            return result[:100]
 
-        def is_same_item(item):
-            imeta = item.get("meta", {})
-            if str(imeta.get("tmdb_id")) != str(tmdb_id):
-                return False
-            if media_type == "episode":
-                return str(imeta.get("season")) == str(meta.get("season")) and str(imeta.get("episode")) == str(meta.get("episode"))
-            return imeta.get("media_type") == media_type
-
-        history = [x for x in history if not is_same_item(x)]
-
-        # --- Vložíme na začátek seznamu
-
-        history.insert(0, {
-            "meta": meta,
-            "link": str(link),
-            "timestamp": int(time.time())
-        })
-
-        # --- Ponecháme pouze max 100 posledních záznamů
-
-        cache_manager.user_data_set("playback_history", history[:100])
+        cache_manager.user_data_update("playback_history", update_history)
         log("RESOLVE - PLAYBACK HISTORIE PŘEHRÁVÁNÍ BYLA ULOŽENA / AKTUALIZOVÁNA", xbmc.LOGINFO)
 
     except Exception as e:
@@ -2105,21 +2094,22 @@ def remove_playback_item(params, plugin_instance):
     episode_episode = params.get("episode")
     movie_title = params.get("movie_title")
 
+    def update(history):
+        new_history = []
+        for item in history or []:
+            meta = item.get("meta", {})
+            remove = False
+            if item_type == "movie" and meta.get("title") == movie_title: remove = True
+            elif item_type == "show" and meta.get("tv_show_title") == show_title_param and meta.get("media_type") == "episode": remove = True
+            elif item_type == "episode" and meta.get("tv_show_title") == show_title_param and str(meta.get("season")) == episode_season and str(meta.get("episode")) == episode_episode: remove = True
+            if not remove:
+                new_history.append(item)
+        return new_history
+
     try:
-        history = cache_manager.user_data_get("playback_history") or[]
-    except: return
-
-    new_hist =[]
-    for item in history:
-        m = item.get("meta", {})
-        remove = False
-        if item_type == "movie" and m.get("title") == movie_title: remove = True
-        elif item_type == "show" and m.get("tv_show_title") == show_title_param and m.get("media_type") == "episode": remove = True
-        elif item_type == "episode" and m.get("tv_show_title") == show_title_param and str(m.get("season")) == episode_season and str(m.get("episode")) == episode_episode: remove = True
-
-        if not remove: new_hist.append(item)
-
-    cache_manager.user_data_set("playback_history", new_hist)
+        cache_manager.user_data_update("playback_history", update)
+    except cache_manager.CacheStorageError:
+        return
     cache_manager.safe_refresh()
 
 
@@ -2252,20 +2242,22 @@ def add_to_watch_later(params, plugin_instance):
         tmdb_id = meta.get('tmdb_id')
         media_type = meta.get('media_type')
 
-        items = cache_manager.user_data_get("watch_later") or[]
-
         episode_coordinates = _watch_later_episode_coordinates(meta) if media_type == 'episode' else None
-        if any(
-            str(item.get('tmdb_id')) == str(tmdb_id)
-            and item.get('media_type') == media_type
-            and (media_type != 'episode' or _watch_later_episode_coordinates(item) == episode_coordinates)
-            for item in items
-        ):
+
+        def update(items):
+            items = items or []
+            if any(
+                str(item.get('tmdb_id')) == str(tmdb_id)
+                and item.get('media_type') == media_type
+                and (media_type != 'episode' or _watch_later_episode_coordinates(item) == episode_coordinates)
+                for item in items
+            ):
+                return cache_manager.NO_USER_DATA_CHANGE
+            return [meta] + items
+
+        if not cache_manager.user_data_update("watch_later", update):
             notify_info("INFO Položka již existuje", category="WATCH LATER")
             return
-
-        items.insert(0, meta)
-        cache_manager.user_data_set("watch_later", items)
 
         notify_ok("Položka byla přidána", category="WATCH LATER")
         try:
@@ -2291,24 +2283,30 @@ def remove_from_watch_later(params, plugin_instance=None):
     if not tmdb_id:
         return
 
-    items = cache_manager.user_data_get("watch_later") or []
+    ambiguous = [False]
 
-    matches = [item for item in items
-               if str(item.get('tmdb_id')) == str(tmdb_id)
-               and item.get('media_type') == media_type]
-    if media_type == 'episode':
-        coordinates = _watch_later_episode_coordinates(params)
-        if coordinates is None:
-            # Older callers may supply only an ID. Do not guess among episodes.
-            if len(matches) > 1 or any(params.get(key) not in (None, '') for key in ('season', 'episode')):
-                notify_error("Nelze určit epizodu k odebrání", category="WATCH LATER")
-                return
-        else:
-            matches = [item for item in matches if _watch_later_episode_coordinates(item) == coordinates]
-    if not matches:
+    def update(items):
+        items = items or []
+        matches = [item for item in items
+                   if str(item.get('tmdb_id')) == str(tmdb_id)
+                   and item.get('media_type') == media_type]
+        if media_type == 'episode':
+            coordinates = _watch_later_episode_coordinates(params)
+            if coordinates is None:
+                # Older callers may supply only an ID. Do not guess among episodes.
+                if len(matches) > 1 or any(params.get(key) not in (None, '') for key in ('season', 'episode')):
+                    ambiguous[0] = True
+                    return cache_manager.NO_USER_DATA_CHANGE
+            else:
+                matches = [item for item in matches if _watch_later_episode_coordinates(item) == coordinates]
+        if not matches:
+            return cache_manager.NO_USER_DATA_CHANGE
+        return [item for item in items if item not in matches]
+
+    if not cache_manager.user_data_update("watch_later", update):
+        if ambiguous[0]:
+            notify_error("Nelze určit epizodu k odebrání", category="WATCH LATER")
         return
-    items = [item for item in items if item not in matches]
-    cache_manager.user_data_set("watch_later", items)
 
     try:
         cache_manager.safe_refresh()

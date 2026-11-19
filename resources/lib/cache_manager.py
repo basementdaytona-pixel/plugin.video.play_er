@@ -156,6 +156,8 @@ class CacheStorageError(RuntimeError):
 
 
 PERSISTENT_SECTIONS = frozenset(("USER_DATA", "SERIES_DB", "WATCHED_DB", "URL_CACHE"))
+SHARED_LIST_KEYS = frozenset(("playback_history", "watch_later"))
+NO_USER_DATA_CHANGE = object()
 TRAKT_PERSONAL_SECTIONS = ("TRAKT_WATCHLIST", "TRAKT_FAVORITES")
 TMDB_PERSONAL_SECTIONS = ("TMDB_ACCOUNT",)
 PERSONAL_CACHE_SECTIONS = TRAKT_PERSONAL_SECTIONS + TMDB_PERSONAL_SECTIONS
@@ -273,6 +275,18 @@ class LazyMySQLPool:
                 conn.close()
             except Exception:
                 pass
+
+    def discard_connection(self, conn):
+        """Remove an unsafe checkout without returning it to the pool."""
+        with self._condition:
+            if id(conn) not in self._in_use:
+                return
+            self._in_use.remove(id(conn))
+            self._condition.notify_all()
+        try:
+            conn.close()
+        except Exception:
+            pass
 
     def close_all(self):
         with self._condition:
@@ -405,13 +419,16 @@ def _get_db_connection():
                                 self._pool = real_pool
                                 self._closed = False
 
-                            def close(self):
+                            def close(self, discard=False):
                                 global MYSQL_CHECKOUT_COUNT
                                 if self._closed:
                                     return
                                 self._closed = True
                                 try:
-                                    self._pool.put_connection(self._real)
+                                    if discard:
+                                        self._pool.discard_connection(self._real)
+                                    else:
+                                        self._pool.put_connection(self._real)
                                 finally:
                                     try:
                                         with DB_LOCK:
@@ -511,7 +528,7 @@ def _init_db_tables(conn, is_mysql=False):
                     data LONGTEXT,
                     created_at DOUBLE,
                     expires_at DOUBLE
-                ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
+                ) ENGINE=InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
             """)
             _ensure_mysql_index(cursor, "idx_section", "section")
             _ensure_mysql_index(cursor, "idx_expires", "expires_at")
@@ -639,6 +656,109 @@ def user_data_set(key, data):
     return cache_set("USER_DATA", key, data)
 
 
+def user_data_update(key, updater):
+    """Atomically update one shared list; the callback must only transform data.
+
+    Return False when the callback returns NO_USER_DATA_CHANGE, True after a
+    committed update. Database/decoding/callback failures raise CacheStorageError.
+    """
+    if not isinstance(key, str) or key not in SHARED_LIST_KEYS:
+        raise ValueError("Unsupported shared list")
+    key_hash = _hash_key(("USER_DATA", key))
+    legacy_hash = _hash_key(key)
+    with _KEY_LOCKS[int(key_hash[:8], 16) % len(_KEY_LOCKS)]:
+        conn, is_mysql = _get_db_connection()
+        if not conn:
+            raise CacheStorageError("Cannot update USER_DATA: configured database unavailable")
+        lock_context = threading.RLock() if is_mysql else DB_LOCK
+        cursor = None
+        transaction_started = False
+        discard_connection = False
+        try:
+            with lock_context:
+                cursor = conn.cursor()
+                if is_mysql:
+                    cursor.execute("SELECT ENGINE FROM information_schema.TABLES "
+                                   "WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='cache_store'")
+                    engine = cursor.fetchone()
+                    if not engine or str(engine[0]).lower() != "innodb":
+                        raise CacheStorageError("Atomic USER_DATA updates require InnoDB")
+                    conn.start_transaction(isolation_level="READ COMMITTED")
+                else:
+                    conn.execute("BEGIN IMMEDIATE")
+                transaction_started = True
+                placeholder = "%s" if is_mysql else "?"
+                marker = "__play_er_pending_" + uuid.uuid4().hex
+                now = time.time()
+                values = (key_hash, "USER_DATA", marker, now, now + TTL_USER_DATA)
+                if is_mysql:
+                    cursor.execute("INSERT INTO cache_store (key_hash, section, data, created_at, expires_at) "
+                                   "VALUES (%s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE key_hash=key_hash", values)
+                else:
+                    cursor.execute("INSERT OR IGNORE INTO cache_store (key_hash, section, data, created_at, expires_at) "
+                                   "VALUES (?, ?, ?, ?, ?)", values)
+                suffix = " FOR UPDATE" if is_mysql else ""
+                cursor.execute(f"SELECT data, created_at FROM cache_store WHERE key_hash = {placeholder} "
+                               f"AND section = {placeholder}{suffix}", (key_hash, "USER_DATA"))
+                row = cursor.fetchone()
+                if row is None:
+                    raise CacheStorageError("Conflicting cache key in another section")
+                raw, created = (row[0], row[1])
+                if raw == marker:
+                    cursor.execute(f"SELECT data, created_at FROM cache_store WHERE key_hash = {placeholder} "
+                                   f"AND section = {placeholder}{suffix}", (legacy_hash, "USER_DATA"))
+                    row = cursor.fetchone()
+                    raw, created = (row[0], row[1]) if row else (None, None)
+                if raw is None or now - created >= TTL_USER_DATA:
+                    current = None
+                else:
+                    current = json.loads(raw)
+                updated = updater(current)
+                if updated is NO_USER_DATA_CHANGE:
+                    conn.rollback()
+                    transaction_started = False
+                    return False
+                data_json = json.dumps(updated, ensure_ascii=False)
+                write_time = time.time()
+                cursor.execute(f"UPDATE cache_store SET data={placeholder}, created_at={placeholder}, "
+                               f"expires_at={placeholder} WHERE key_hash={placeholder} AND section={placeholder}",
+                               (data_json, write_time, write_time + TTL_USER_DATA, key_hash, "USER_DATA"))
+                cursor.execute(f"DELETE FROM cache_store WHERE key_hash={placeholder} AND section={placeholder}",
+                               (legacy_hash, "USER_DATA"))
+                conn.commit()
+                transaction_started = False
+                with CACHE_LOCK:
+                    CACHE_RAM.pop(f"USER_DATA:{key_hash}", None)
+                    IN_MEMORY_CACHE_STATS["sets"] += 1
+                return True
+        except Exception as exc:
+            # START TRANSACTION may fail after reaching the server. Never put a
+            # connection with an uncertain transaction back into the pool.
+            if transaction_started or is_mysql:
+                try:
+                    conn.rollback()
+                except Exception:
+                    discard_connection = is_mysql
+            if isinstance(exc, CacheStorageError):
+                log(f"CACHE - Atomic user data update failed: {exc}", xbmc.LOGERROR)
+                raise
+            log(f"CACHE - Atomic user data update failed: {type(exc).__name__}", xbmc.LOGERROR)
+            raise CacheStorageError("Cannot update USER_DATA") from exc
+        finally:
+            if cursor is not None:
+                try:
+                    cursor.close()
+                except Exception:
+                    pass
+            try:
+                if discard_connection:
+                    conn.close(discard=True)
+                else:
+                    conn.close()
+            except Exception:
+                pass
+
+
 def get_all_from_section(section):
     items = []
     conn, is_mysql = _get_db_connection()
@@ -681,9 +801,10 @@ def cache_get(folder, key, max_age=None):
 def _cache_get_locked(folder, key, key_hash, max_age):
     global IN_MEMORY_CACHE_STATS
     ram_key = f"{folder}:{key_hash}"
+    use_ram = not (folder == "USER_DATA" and isinstance(key, str) and key in SHARED_LIST_KEYS)
     with CACHE_LOCK:
         generation = _ram_generation
-        if ram_key in CACHE_RAM:
+        if use_ram and ram_key in CACHE_RAM:
             value, cached_at, created_at, expires_at = CACHE_RAM[ram_key]
             now = time.time()
             if (now - cached_at) < RAM_TTL and not _cache_expired(now, created_at, expires_at, max_age):
@@ -728,7 +849,7 @@ def _cache_get_locked(folder, key, key_hash, max_age):
                 try:
                     data = json.loads(data_json)
                     with CACHE_LOCK:
-                        if generation == _ram_generation:
+                        if use_ram and generation == _ram_generation:
                             _store_in_ram(ram_key, data, created_at, expires_at)
                     # _store_in_ram keeps its own copy, so this freshly decoded
                     # value can be returned without a second deep copy.
@@ -806,8 +927,11 @@ def cache_set(folder, key, data):
 def _cache_set_locked(folder, key, key_hash, data):
     global IN_MEMORY_CACHE_STATS
     ram_key = f"{folder}:{key_hash}"
+    use_ram = not (folder == "USER_DATA" and isinstance(key, str) and key in SHARED_LIST_KEYS)
     with CACHE_LOCK:
         generation = _ram_generation
+        if not use_ram:
+            CACHE_RAM.pop(ram_key, None)
     now = time.time()
     ttl = _folder_ttl(folder)
     expires_at = now + ttl
@@ -848,7 +972,7 @@ def _cache_set_locked(folder, key, key_hash, data):
             if folder in PERSONAL_CACHE_SECTIONS:
                 _prune_expired_personal_cache(cursor, conn, is_mysql)
             with CACHE_LOCK:
-                if generation == _ram_generation:
+                if use_ram and generation == _ram_generation:
                     _store_in_ram(ram_key, data, now, expires_at)
                 IN_MEMORY_CACHE_STATS["sets"] += 1
             return True

@@ -863,7 +863,6 @@ def get_entry_key(entry):
 
 
 def save_playback_history(meta, link=None, skip_refresh=False):
-    history = cache_manager.user_data_get("playback_history") or []
     media_type = meta.get("media_type", "movie")
 
     if media_type == "episode" and not meta.get("tv_show_title"):
@@ -875,12 +874,14 @@ def save_playback_history(meta, link=None, skip_refresh=False):
 
     entry = {"meta": meta, "link": ""}
     entry_key = get_entry_key(entry)
-    history = [h for h in history if get_entry_key(h) != entry_key]
-    history.insert(0, entry)
-
     limit = get_setting_int_with_bounds(addon, "playback_history_limit", 40)
-    history = history[:limit]
-    cache_manager.user_data_set("playback_history", history)
+
+    def update(history):
+        history = [h for h in (history or []) if get_entry_key(h) != entry_key]
+        history.insert(0, entry)
+        return history[:limit]
+
+    cache_manager.user_data_update("playback_history", update)
 
     if skip_refresh or xbmc.Player().isPlayingVideo():
         main_window.setProperty("player.needs_refresh_on_stop", "true")
@@ -892,13 +893,16 @@ def save_playback_history(meta, link=None, skip_refresh=False):
 def save_playback_history_bulk(items_to_add):
     if not items_to_add:
         return
-    history = cache_manager.user_data_get("playback_history") or []
-    existing_keys = {get_entry_key(h) for h in history}
-    new_items_to_prepend = [item for item in reversed(items_to_add) if get_entry_key(item) not in existing_keys]
-    history = new_items_to_prepend + [h for h in history if get_entry_key(h) not in {get_entry_key(i) for i in new_items_to_prepend}]
     limit = get_setting_int_with_bounds(addon, "playback_history_limit", 40)
-    history = history[:limit]
-    cache_manager.user_data_set("playback_history", history)
+
+    def update(history):
+        history = history or []
+        existing_keys = {get_entry_key(h) for h in history}
+        new_items = [item for item in reversed(items_to_add) if get_entry_key(item) not in existing_keys]
+        new_keys = {get_entry_key(item) for item in new_items}
+        return (new_items + [h for h in history if get_entry_key(h) not in new_keys])[:limit]
+
+    cache_manager.user_data_update("playback_history", update)
 
 
 def has_series_in_playback_history():
