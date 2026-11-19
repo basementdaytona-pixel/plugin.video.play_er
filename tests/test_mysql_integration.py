@@ -1,10 +1,11 @@
 """Optional real database checks; set PLAY_ER_TEST_MYSQL_PORT on localhost."""
 import os
+import sys
 import threading
 import unittest
 import uuid
 from concurrent.futures import ThreadPoolExecutor
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 from types import SimpleNamespace
 
 from kodi_test_support import load_module
@@ -99,6 +100,43 @@ class MySQLIntegrationTests(unittest.TestCase):
             self.assertEqual(self.cache.MYSQL_CHECKOUT_COUNT, 0)
             self.assertEqual(len(self.pool._available), 3)
             self.assertEqual(self.pool._in_use, set())
+
+    def test_resolver_history_limit_and_idless_source_removal(self):
+        import resources.lib
+        actions = load_module('resources.lib.actions', (
+            'resources.lib.sf_context_style', 'resources.lib.utils_files',
+            'resources.lib.trakt', 'resources.lib.stream_state', 'resources.lib.ui_builder',
+            'resources.lib.utils_filter', 'resources.lib.utils_theme', 'resources.lib.utils',
+        ))
+        instance = MagicMock()
+        instance.addon.getSetting.side_effect = lambda key: '5000' if key == 'playback_history_limit' else 'false'
+        instance.addon.getSettingBool.return_value = False
+        instance.provider_manager.get_provider.return_value.get_video_link.return_value = ('https://example.invalid/video', None)
+        fake_filter = MagicMock()
+        fake_filter.clean_display_title.return_value = ('Film', False, [], None)
+        fake_utils = MagicMock()
+        fake_utils.store_meta_in_cache.return_value = 'meta-key'
+        meta = {'media_type': 'movie', 'title': 'Příliš žluťoučký', 'cast_full': ['A'], 'poster': 'P', 'plot': 'P'}
+        initial = [{'meta': {'tmdb_id': n, 'media_type': 'movie', 'title': str(n)}, 'link': ''}
+                   for n in range(1, 5002)]
+        with patch.object(self.cache, '_get_mysql_pool', return_value=self.pool), \
+                patch.object(self.cache, 'DB_TYPE', 'MySQL (MariaDB)'), \
+                patch.object(actions, 'cache_manager', self.cache), \
+                patch.dict(sys.modules, {'resources.lib.utils_filter': fake_filter,
+                                         'resources.lib.utils': fake_utils,
+                                         'resources.lib.cache_manager': self.cache}), \
+                patch.object(resources.lib, 'cache_manager', self.cache, create=True):
+            self.assertTrue(self.cache.user_data_set('playback_history', initial))
+            for provider in ('webshare.cz', 'prehraj.to', 'webshare.cz'):
+                actions.resolve_video('shared', provider, dict(meta), plugin_instance=instance)
+            history = self.cache.user_data_get('playback_history')
+            self.assertEqual(len(history), 5000)
+            self.assertEqual([x['provider'] for x in history[:2]], ['webshare.cz', 'prehraj.to'])
+            actions.remove_playback_item({'type': 'movie', 'movie_title': meta['title'], 'history_no_id': '1',
+                                          'history_source': '1', 'history_source_link': 'shared',
+                                          'history_source_provider': 'webshare.cz'}, None)
+            history = self.cache.user_data_get('playback_history')
+            self.assertEqual((len(history), history[0]['provider']), (4999, 'prehraj.to'))
 
     def _pause_connection(self, phase, entered, release):
         original = self.cache._get_db_connection

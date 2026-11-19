@@ -153,6 +153,26 @@ class ConsumerBehaviorTests(unittest.TestCase):
             patcher.start()
             self.addCleanup(patcher.stop)
 
+    def _resolve_history(self, instance, source, provider, meta, **kwargs):
+        import resources.lib
+        fake_filter = MagicMock()
+        fake_filter.clean_display_title.return_value = ('Film', False, [], None)
+        fake_utils = MagicMock()
+        fake_utils.store_meta_in_cache.return_value = 'meta-key'
+        with patch.dict(sys.modules, {'resources.lib.utils_filter': fake_filter,
+                                      'resources.lib.utils': fake_utils,
+                                      'resources.lib.cache_manager': cache}), \
+                patch.object(resources.lib, 'cache_manager', cache, create=True):
+            return actions.resolve_video(source, provider, dict(meta), plugin_instance=instance, **kwargs)
+
+    def _resolver_instance(self, limit):
+        instance = MagicMock()
+        instance.handle = 7
+        instance.addon.getSetting.side_effect = lambda key: limit if key == 'playback_history_limit' else 'false'
+        instance.addon.getSettingBool.return_value = False
+        instance.provider_manager.get_provider.return_value.get_video_link.return_value = ('https://example.invalid/video', None)
+        return instance
+
     def test_watch_later_episode_identity_duplicate_and_ambiguity(self):
         one = {'tmdb_id': 8, 'media_type': 'episode', 'season': 0, 'episode': 1}
         two = dict(one, episode=2)
@@ -190,6 +210,100 @@ class ConsumerBehaviorTests(unittest.TestCase):
         self.assertIsInstance(item['timestamp'], int)
         actions.xbmcplugin.setResolvedUrl.assert_called()
         self.assertTrue(actions.xbmcplugin.setResolvedUrl.call_args.args[1])
+
+    def test_resolver_respects_limit_and_default_above_100(self):
+        meta = {'tmdb_id': 999, 'media_type': 'movie', 'title': 'Film',
+                'cast_full': ['Actor'], 'poster': 'poster', 'plot': 'Plot'}
+        initial = [{'meta': {'tmdb_id': n, 'media_type': 'movie', 'title': str(n)}, 'link': ''} for n in range(1, 161)]
+        instance = self._resolver_instance('150')
+        cache.user_data_set('playback_history', initial)
+        self._resolve_history(instance, 'source', 'prehraj.to', meta)
+        self.assertEqual(len(cache.user_data_get('playback_history')), 150)
+        instance = self._resolver_instance('50')
+        self._resolve_history(instance, 'source', 'prehraj.to', meta)
+        self.assertEqual(len(cache.user_data_get('playback_history')), 50)
+        instance = self._resolver_instance('')
+        cache.user_data_set('playback_history', initial)
+        self._resolve_history(instance, 'source', 'prehraj.to', meta)
+        self.assertEqual(len(cache.user_data_get('playback_history')), 161)
+        large_history = [{'meta': {'tmdb_id': n, 'media_type': 'movie', 'title': str(n)}, 'link': ''}
+                         for n in range(1, 5002)]
+        instance = self._resolver_instance('5000')
+        cache.user_data_set('playback_history', large_history)
+        self._resolve_history(instance, 'source', 'prehraj.to', dict(meta, tmdb_id=9999))
+        items = cache.user_data_get('playback_history')
+        self.assertEqual(len(items), 5000)
+        self.assertEqual((items[0]['meta']['tmdb_id'], items[-1]['meta']['tmdb_id']), (9999, 4999))
+
+    def test_playlist_history_writers_use_the_same_limit_and_default(self):
+        initial = [{'meta': {'tmdb_id': n, 'media_type': 'movie', 'title': str(n)}, 'link': ''} for n in range(1, 161)]
+        instance = self._resolver_instance('')
+        with patch.object(plugin, 'addon', instance.addon), \
+                patch.object(plugin, 'get_setting_int_with_bounds', actions.get_setting_int_with_bounds):
+            cache.user_data_set('playback_history', initial)
+            plugin.save_playback_history({'tmdb_id': 999, 'media_type': 'movie', 'title': 'Film'}, skip_refresh=True)
+            self.assertEqual(len(cache.user_data_get('playback_history')), 161)
+            instance.addon.getSetting.side_effect = lambda key: '50' if key == 'playback_history_limit' else 'false'
+            plugin.save_playback_history_bulk([{'meta': {'tmdb_id': 1000, 'media_type': 'movie', 'title': 'Next'}, 'link': ''}])
+            self.assertEqual(len(cache.user_data_get('playback_history')), 50)
+
+    def test_playlist_history_treats_missing_media_type_as_movie(self):
+        movie = {'tmdb_id': 7, 'media_type': 'movie', 'title': 'Film'}
+        implicit = {'tmdb_id': '7', 'title': 'Film'}
+        cache.user_data_set('playback_history', [{'meta': implicit, 'link': ''}])
+        plugin.save_playback_history(movie, skip_refresh=True)
+        self.assertEqual([x['meta'] for x in cache.user_data_get('playback_history')], [movie])
+        plugin.save_playback_history(implicit, skip_refresh=True)
+        self.assertEqual([x['meta'] for x in cache.user_data_get('playback_history')], [implicit])
+
+    def test_resolver_does_not_merge_distinct_idless_sources(self):
+        old = {'meta': {'media_type': 'movie', 'title': 'Same'}, 'link': 'shared'}
+        cache.user_data_set('playback_history', [old])
+        instance = self._resolver_instance('150')
+        one = {'media_type': 'movie', 'title': 'Same', 'cast_full': ['A'], 'poster': 'P', 'plot': 'P'}
+        two = dict(one, title='Different')
+        for source, provider, meta in [('shared', 'webshare.cz', one), ('shared', 'prehraj.to', one),
+                                       ('other', 'webshare.cz', two), ('shared', 'webshare.cz', one)]:
+            self._resolve_history(instance, source, provider, meta)
+        items = cache.user_data_get('playback_history')
+        self.assertEqual([(x['meta']['title'], x.get('provider'), x['link']) for x in items],
+                         [('Same', 'webshare.cz', 'shared'), ('Different', 'webshare.cz', 'other'),
+                          ('Same', 'prehraj.to', 'shared'), ('Same', None, 'shared')])
+        actions.remove_playback_item({'type': 'movie', 'movie_title': 'Same', 'history_no_id': '1'}, None)
+        self.assertEqual(len(cache.user_data_get('playback_history')), 4)
+        actions.remove_playback_item({'type': 'movie', 'movie_title': 'Same', 'history_no_id': '1',
+                                      'history_source': '1', 'history_source_link': 'shared',
+                                      'history_source_provider': 'webshare.cz'}, None)
+        self.assertEqual([(x['meta']['title'], x.get('provider')) for x in cache.user_data_get('playback_history')],
+                         [('Different', 'webshare.cz'), ('Same', 'prehraj.to'), ('Same', None)])
+
+    def test_resolver_episode_matching_does_not_remove_movie(self):
+        movie = {'tmdb_id': 42, 'media_type': 'movie', 'title': 'Movie', 'season': 1, 'episode': 1}
+        episode = {'tmdb_id': 42, 'media_type': 'episode', 'tv_show_title': 'Show', 'season': 1, 'episode': 1,
+                   'title': 'Episode', 'cast_full': ['A'], 'poster': 'P', 'plot': 'P'}
+        cache.user_data_set('playback_history', [{'meta': movie, 'link': ''}, {'meta': episode, 'link': ''}])
+        self._resolve_history(self._resolver_instance('150'), 'ep', 'prehraj.to', episode)
+        self.assertEqual([x['meta'] for x in cache.user_data_get('playback_history')], [episode, movie])
+
+    def test_unidentified_provider_does_not_merge_sources(self):
+        instance = self._resolver_instance('150')
+        instance.provider_manager.get_active_provider.return_value = instance.provider_manager.get_provider.return_value
+        instance.provider_manager.get_provider.return_value = None
+        meta = {'media_type': 'movie', 'title': 'Film', 'cast_full': ['A'], 'poster': 'P', 'plot': 'P'}
+        for _ in range(2):
+            self._resolve_history(instance, 'source', 'unavailable', meta)
+        self.assertEqual(len(cache.user_data_get('playback_history')), 2)
+        self.assertTrue(all('provider' not in item for item in cache.user_data_get('playback_history')))
+
+    def test_url_only_and_failed_resolution_do_not_write_history(self):
+        instance = self._resolver_instance('150')
+        meta = {'tmdb_id': 7, 'media_type': 'movie', 'title': 'Film', 'cast_full': ['A'], 'poster': 'P', 'plot': 'P'}
+        cache.user_data_set('playback_history', [{'meta': meta, 'link': 'previous'}])
+        result = self._resolve_history(instance, 'source', 'prehraj.to', meta, return_url_only=True)
+        self.assertTrue(result.startswith('https://example.invalid/video|'))
+        instance.provider_manager.get_provider.return_value.get_video_link.return_value = (None, None)
+        self._resolve_history(instance, 'source', 'prehraj.to', meta)
+        self.assertEqual(cache.user_data_get('playback_history'), [{'meta': meta, 'link': 'previous'}])
 
     def test_playback_history_order_limit_and_bulk_semantics(self):
         def meta(i):
@@ -321,3 +435,44 @@ class ConsumerBehaviorTests(unittest.TestCase):
             add.reset_mock()
             actions.playback_show_history({'show_title': 'Same'}, instance)
             self.assertEqual(add.call_count, 3)
+
+    def test_idless_history_context_removes_only_selected_source(self):
+        from urllib.parse import parse_qsl, urlencode, urlsplit
+
+        movie = {'media_type': 'movie', 'title': 'Same'}
+        episode = {'media_type': 'episode', 'tv_show_title': 'Show', 'season': 0, 'episode': 1, 'title': 'Pilot'}
+        movies = [{'meta': movie, 'link': 'x&y=1', 'provider': name} for name in ('webshare.cz', 'prehraj.to')]
+        episodes = [{'meta': episode, 'link': 'z&v=2', 'provider': name} for name in ('webshare.cz', 'prehraj.to')]
+        cache.user_data_set('playback_history', episodes + movies)
+        instance = MagicMock()
+        instance.handle = 1
+        list_items = []
+
+        def make_item(*args, **kwargs):
+            item = MagicMock()
+            list_items.append(item)
+            return item
+
+        def removal_params(item):
+            menu = item.addContextMenuItems.call_args.args[0]
+            command = next(command for _, command in menu if 'action=remove_playback_item&' in command)
+            return dict(parse_qsl(urlsplit(command[len('RunPlugin('):-1]).query))
+
+        with patch.object(actions, 'get_url', side_effect=lambda **kwargs: 'plugin://addon/?' + urlencode(kwargs)), \
+                patch.object(actions, 'get_threadpool', return_value=1), \
+                patch.object(actions, '_get_community_share_context', return_value=None), \
+                patch.object(actions, '_sf_cm_items', side_effect=lambda items: items), \
+                patch.object(actions.xbmcgui, 'ListItem', side_effect=make_item):
+            actions.playback_history(instance)
+            params = removal_params(list_items[1])
+            self.assertEqual(params['history_source_link'], 'x&y=1')
+            self.assertEqual(params['history_source_provider'], 'webshare.cz')
+            actions.remove_playback_item(params, None)
+            self.assertEqual(cache.user_data_get('playback_history'), episodes + movies[1:])
+
+            list_items.clear()
+            actions.playback_show_history({'show_title': 'Show', 'history_no_id': '1'}, instance)
+            params = removal_params(list_items[0])
+            self.assertEqual(params['history_source_link'], 'z&v=2')
+            actions.remove_playback_item(params, None)
+            self.assertEqual(cache.user_data_get('playback_history'), episodes[1:] + movies[1:])

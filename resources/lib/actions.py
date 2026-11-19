@@ -51,6 +51,7 @@ from resources.lib import cache_manager
 from resources.lib.utils_logging import log
 from resources.lib.stream_state import get_streams, attach_subtitles, publish_active_streams
 from resources.lib.ui_builder import set_view_mode
+from resources.lib.utils_settings import get_setting_int_with_bounds
 
 
 from resources.lib.utils_notification import (
@@ -209,6 +210,9 @@ def _get_context_menu(menu_type, **kwargs):
     season = kwargs.get('season', '')
     episode = kwargs.get('episode', '')
     show_title = kwargs.get('show_title', '')
+    history_source = ({'history_source': '1', 'history_source_link': video_link,
+                       'history_source_provider': kwargs.get('history_provider', '')}
+                      if menu_type in ('playback_history_movie', 'playback_show_episodes') and not tmdb_id and video_link else {})
 
 
 
@@ -291,8 +295,8 @@ def _get_context_menu(menu_type, **kwargs):
         'next_episodes': (f"[COLOR {Colors.ORANGE}]► DALŠÍ EPIZODY[/COLOR]", f"RunPlugin({get_url(action='continue_watching_main', meta=json.dumps(props))})"),
 
         'remove_playback_item_show': (f"[COLOR {Colors.ORANGE}]► [/COLOR][COLOR {Colors.RED}]ODEBRAT POLOŽKU[/COLOR][COLOR {Colors.ORANGE}][/COLOR]", f"RunPlugin({get_url(action='remove_playback_item', type='show', tmdb_id=tmdb_id, history_no_id='' if tmdb_id else '1', show_title=kwargs.get('history_title', title))})"),
-        'remove_playback_item_movie': (f"[COLOR {Colors.ORANGE}]► [/COLOR][COLOR {Colors.RED}]ODEBRAT POLOŽKU[/COLOR][COLOR {Colors.ORANGE}][/COLOR]", f"RunPlugin({get_url(action='remove_playback_item', type='movie', tmdb_id=tmdb_id, history_no_id='' if tmdb_id else '1', movie_title=kwargs.get('history_title', title))})"),
-        'remove_playback_item_episode': (f"[COLOR {Colors.ORANGE}]► [/COLOR][COLOR {Colors.RED}]ODEBRAT POLOŽKU[/COLOR][COLOR {Colors.ORANGE}][/COLOR]", f"RunPlugin({get_url(action='remove_playback_item', type='episode', tmdb_id=tmdb_id, history_no_id='' if tmdb_id else '1', show_title=show_title, season=str(season), episode=str(episode))})"),
+        'remove_playback_item_movie': (f"[COLOR {Colors.ORANGE}]► [/COLOR][COLOR {Colors.RED}]ODEBRAT POLOŽKU[/COLOR][COLOR {Colors.ORANGE}][/COLOR]", f"RunPlugin({get_url(action='remove_playback_item', type='movie', tmdb_id=tmdb_id, history_no_id='' if tmdb_id else '1', movie_title=kwargs.get('history_title', title), **history_source)})"),
+        'remove_playback_item_episode': (f"[COLOR {Colors.ORANGE}]► [/COLOR][COLOR {Colors.RED}]ODEBRAT POLOŽKU[/COLOR][COLOR {Colors.ORANGE}][/COLOR]", f"RunPlugin({get_url(action='remove_playback_item', type='episode', tmdb_id=tmdb_id, history_no_id='' if tmdb_id else '1', show_title=show_title, season=str(season), episode=str(episode), **history_source)})"),
         'remove_playback_item_share': (f"[COLOR {Colors.ORANGE}]► [/COLOR][COLOR {Colors.RED}]ODEBRAT POLOŽKU[/COLOR][COLOR {Colors.ORANGE}][/COLOR]", f"RunPlugin({get_url(action='remove_community_share', share_key=kwargs.get('share_key', ''))})"),
 
         'settings': (f"[COLOR {Colors.LIMEGREEN}][ MENU NASTAVENÍ ][/COLOR]", "Addon.OpenSettings(plugin.video.play_er)")
@@ -664,6 +668,7 @@ def resolve_video(link, provider_name, meta_json, source_list=None, return_url_o
     # --- 2. ZÍSKÁNÍ ODKAZU OD PROVIDERA
 
     provider = plugin_instance.provider_manager.get_provider(provider_name)
+    history_provider = provider_name if provider else None
     if not provider:
         provider = plugin_instance.provider_manager.get_active_provider()
 
@@ -695,7 +700,6 @@ def resolve_video(link, provider_name, meta_json, source_list=None, return_url_o
     # FIX PRE-EMPTIVE AND FILTERS [NEW SOURCE SELECTION STARTS A FINITE SESSION]
     # Persist the budget BEFORE storing metadata for the active item/monitor.
     if meta.get('_play_er_tmdbh_source_search') and media_type == 'episode':
-        from resources.lib.utils_settings import get_setting_int_with_bounds
         configured_total = get_setting_int_with_bounds(
             plugin_instance.addon, 'continue_episodes_count', 3, 1, 20
         )
@@ -833,19 +837,34 @@ def resolve_video(link, provider_name, meta_json, source_list=None, return_url_o
     try:
         import time
         from resources.lib import cache_manager
+        limit = get_setting_int_with_bounds(plugin_instance.addon, "playback_history_limit", 500, 1, 5000)
+        entry = {"meta": meta, "link": str(link), "timestamp": int(time.time())}
+        if not tmdb_id and history_provider:
+            entry["provider"] = str(history_provider)
 
         def update_history(history):
             def is_same_item(item):
                 imeta = item.get("meta", {})
-                if str(imeta.get("tmdb_id")) != str(tmdb_id):
+                if imeta.get("media_type", "movie") != media_type:
                     return False
+                if tmdb_id:
+                    if str(imeta.get("tmdb_id")) != str(tmdb_id):
+                        return False
+                else:
+                    if imeta.get("tmdb_id") or not history_provider or not link:
+                        return False
+                    if (_history_source(item) != (str(history_provider), str(link))
+                            or imeta.get("title") != meta.get("title")):
+                        return False
                 if media_type == "episode":
-                    return str(imeta.get("season")) == str(meta.get("season")) and str(imeta.get("episode")) == str(meta.get("episode"))
-                return imeta.get("media_type") == media_type
+                    return (str(imeta.get("season")) == str(meta.get("season"))
+                            and str(imeta.get("episode")) == str(meta.get("episode"))
+                            and (bool(tmdb_id) or imeta.get("tv_show_title") == meta.get("tv_show_title")))
+                return True
 
             result = [item for item in (history or []) if not is_same_item(item)]
-            result.insert(0, {"meta": meta, "link": str(link), "timestamp": int(time.time())})
-            return result[:100]
+            result.insert(0, entry)
+            return result[:limit]
 
         cache_manager.user_data_update("playback_history", update_history)
         log("RESOLVE - PLAYBACK HISTORIE PŘEHRÁVÁNÍ BYLA ULOŽENA / AKTUALIZOVÁNA", xbmc.LOGINFO)
@@ -1780,6 +1799,21 @@ def _history_tmdb_id(meta):
     return str(value) if value else ""
 
 
+def _history_source(item):
+    meta = item.get("meta", {})
+    return (str(item.get("provider") or meta.get("provider") or ""),
+            str(item.get("link") or ""))
+
+
+def _history_legacy_identity(item, item_type):
+    tmdb_id = _history_tmdb_id(item.get("meta", {}))
+    if tmdb_id:
+        return "id", tmdb_id
+    if item_type in ("movie", "episode"):
+        return ("source",) + _history_source(item)
+    return ("no_id",)
+
+
 def _history_show_key(meta):
     tmdb_id = _history_tmdb_id(meta)
     return ("id", tmdb_id) if tmdb_id else ("title", meta.get("tv_show_title", "Neznámý seriál"))
@@ -1925,6 +1959,7 @@ def playback_history(plugin_instance, is_widget=False):
             plot=props.get("plot", ""),
             props=props,
             provider=meta.get('provider', ''),
+            history_provider=item.get('provider') or meta.get('provider') or '',
             video_link=link
         )
         list_item.addContextMenuItems(_sf_cm_items(context_menu), replaceItems=False)
@@ -2027,6 +2062,7 @@ def playback_show_history(params, plugin_instance):
             season=str(season),
             episode=str(episode),
             provider=meta.get('provider', ''),
+            history_provider=item.get('provider') or meta.get('provider') or '',
             video_link=link
         )
         list_item.addContextMenuItems(_sf_cm_items(context_menu), replaceItems=False)
@@ -2103,8 +2139,12 @@ def remove_playback_item(params, plugin_instance):
     movie_title = params.get("movie_title")
     tmdb_id = str(params.get("tmdb_id") or "")
     no_id_only = params.get("history_no_id") == "1"
+    source_match = item_type in ("movie", "episode") and no_id_only and params.get("history_source") == "1"
+    source = (str(params.get("history_source_provider") or ""), str(params.get("history_source_link") or ""))
     title = movie_title if item_type == "movie" else show_title_param
     if item_type not in ("movie", "show", "episode") or (not tmdb_id and not title):
+        return
+    if source_match and not source[1]:
         return
     if item_type == "episode" and (episode_season in (None, "") or episode_episode in (None, "")):
         return
@@ -2125,14 +2165,16 @@ def remove_playback_item(params, plugin_instance):
                     continue
             elif item_title != title or (no_id_only and item_id):
                 continue
+            if source_match and _history_source(item) != source:
+                continue
             if item_type == "episode" and (str(meta.get("season")) != str(episode_season) or
                                             str(meta.get("episode")) != str(episode_episode)):
                 continue
             matches.append(item)
         if not matches:
             return cache_manager.NO_USER_DATA_CHANGE
-        if not tmdb_id and not no_id_only:
-            identities = {_history_tmdb_id(item.get("meta", {})) for item in matches}
+        if not tmdb_id and (not no_id_only or item_type in ("movie", "episode")):
+            identities = {_history_legacy_identity(item, item_type) for item in matches}
             if len(identities) > 1:
                 ambiguous[0] = True
                 return cache_manager.NO_USER_DATA_CHANGE

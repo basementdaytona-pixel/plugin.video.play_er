@@ -853,7 +853,7 @@ def check_run_file():
 
 def get_entry_key(entry):
     meta = entry.get("meta", {})
-    media_type = meta.get("media_type", "")
+    media_type = meta.get("media_type", "movie")
     key = str(meta.get("tmdb_id", ""))
     if media_type == "episode":
         key = "episode_" + json.dumps(
@@ -877,7 +877,7 @@ def save_playback_history(meta, link=None, skip_refresh=False):
 
     entry = {"meta": meta, "link": ""}
     entry_key = get_entry_key(entry)
-    limit = get_setting_int_with_bounds(addon, "playback_history_limit", 40)
+    limit = get_setting_int_with_bounds(addon, "playback_history_limit", 500, 1, 5000)
 
     def update(history):
         history = [h for h in (history or []) if get_entry_key(h) != entry_key]
@@ -896,7 +896,7 @@ def save_playback_history(meta, link=None, skip_refresh=False):
 def save_playback_history_bulk(items_to_add):
     if not items_to_add:
         return
-    limit = get_setting_int_with_bounds(addon, "playback_history_limit", 40)
+    limit = get_setting_int_with_bounds(addon, "playback_history_limit", 500, 1, 5000)
 
     def update(history):
         history = history or []
