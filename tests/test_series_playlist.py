@@ -110,6 +110,29 @@ class SeriesPlaylistTests(unittest.TestCase):
         self.assertEqual(len(records), 2)
         self.assertEqual(self.window.getProperty('play_er.bg_series_playlist_building'), '')
 
+    def test_background_cache_failure_preserves_episode_queue(self):
+        store = self.utils.store_meta_in_cache.side_effect
+
+        def fail_second_episode(meta):
+            if (meta['season'], meta['episode']) == (1, 2):
+                raise OSError('Metadata cache unavailable')
+            return store(meta)
+
+        self.utils.store_meta_in_cache.side_effect = fail_second_episode
+        self.run_playlist()
+        self.assertEqual([call.args[0] for call in self.playlist.add.call_args_list],
+                         ['https://example.invalid/S01E02|Header=value',
+                          'https://example.invalid/S02E01|Header=value'])
+        records = list(json.loads(self.window.getProperty('play_er.episode_queue_metadata')).values())
+        self.assertEqual([(record['meta']['season'], record['meta']['episode']) for record in records],
+                         [(1, 2), (2, 1)])
+        self.assertEqual(records[0]['meta_id'], '')
+        self.assertEqual(records[0]['link'], 'S01E02')
+        self.assertEqual(records[0]['provider'], 'test')
+        self.assertEqual(records[1]['meta_id'], 'meta-2-1')
+        self.assertEqual(self.window.getProperty('play_er.bg_series_playlist_building'), '')
+        self.assertEqual(self.window.getProperty('play_er.bg_playlist_active'), '')
+
     def test_background_episode_is_identifiable_during_playlist_add(self):
         from test_monitor_fallback import load_monitor
         monitor_module = load_monitor()

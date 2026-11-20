@@ -1048,7 +1048,6 @@ def create_series_playlist(
                             break
 
                         if source_selection_enabled and method_str == "PODLE POZICE":
-                            ep_meta_uuid = ''
                             try:
                                 pr = get_setting_int_with_bounds(addon, priority_setting, 1, 1, 5)
                             except Exception:
@@ -1101,6 +1100,7 @@ def create_series_playlist(
                             set_view_identity(ep_li, ep_view_identity)
                             attach_subtitles(ep_li, sel["link"], provider=sel.get("provider"))
 
+                            ep_meta_uuid = ''
                             try:
                                 ep_meta_uuid = store_meta_in_cache(ep_meta)
                                 ep_li.setProperty('play_er.meta_id', str(ep_meta_uuid))
