@@ -211,6 +211,82 @@ class SeriesPlaylistTests(unittest.TestCase):
         self.assertFalse(any(call.args[1] == 'tv' for call in self.tmdb._build_metadata_props.call_args_list))
         self.tmdb.search_raw.assert_not_called()
 
+    def test_continue_does_not_reuse_previous_episode_details_when_tmdb_fails(self):
+        self.tmdb.get_full_details.return_value = None
+        old_fetch = self.tmdb._fetch.side_effect
+        self.tmdb._fetch.side_effect = lambda path, **kw: None if path.endswith('/episode/2') else old_fetch(path, **kw)
+        meta = {'tmdb_id': 42, 'media_type': 'episode', 'tv_show_title': 'Show',
+                'season': 1, 'episode': 1, 'title': 'Old episode', 'plot': 'Old plot',
+                'premiered': '2020-01-01', 'rating': '9.1', 'duration': '4500',
+                'votes': '123', 'cast_full': ['Old episode actor'], 'progress': 85,
+                'poster': 'show-poster', 'fanart': 'show-fanart', 'genre': 'Drama',
+                '_play_er_prediction_session': 'session', '_play_er_tmdbh_source_search': True}
+        self.player.path = 'https://example.invalid/S01E02'
+        generator.create_series_playlist(meta, self.addon, None, self.tmdb, 7, self.instance,
+                                         start_from_next=True, use_resolve=False, max_items=1)
+        self.player.play.assert_called_once()
+        saved = self.saved_meta[0]
+        self.assertEqual((saved['tmdb_id'], saved['season'], saved['episode'], saved['title']), (42, 1, 2, 'Epizoda 2'))
+        for key in ('plot', 'premiered', 'rating', 'duration', 'votes', 'progress'):
+            self.assertFalse(saved.get(key), key)
+        self.assertEqual(saved['cast_full'], [])
+        self.assertEqual((saved['poster'], saved['fanart'], saved['genre']), ('show-poster', 'show-fanart', 'Drama'))
+        self.assertEqual(saved['_play_er_prediction_session'], 'session')
+        self.assertNotIn('_play_er_tmdbh_source_search', saved)
+        self.assertEqual(meta['title'], 'Old episode')
+
+    def test_original_episode_fallback_keeps_its_metadata(self):
+        self.tmdb.get_full_details.return_value = None
+        self.tmdb._fetch.side_effect = None
+        self.tmdb._fetch.return_value = None
+        meta = {'tmdb_id': 42, 'media_type': 'episode', 'tv_show_title': 'Show',
+                'season': 1, 'episode': 1, 'title': 'Original title', 'plot': 'Original plot'}
+        generator.create_series_playlist(meta, self.addon, None, self.tmdb, 7, self.instance, max_items=1)
+        self.assertEqual((self.saved_meta[0]['title'], self.saved_meta[0]['plot']), ('Original title', 'Original plot'))
+
+    def test_managed_episode_does_not_inherit_old_details_when_response_is_sparse(self):
+        meta = {'tmdb_id': 42, 'media_type': 'episode', 'tv_show_title': 'Show',
+                'season': 1, 'episode': 1, 'title': 'Old episode', 'plot': 'Old plot',
+                'duration': '4500', 'progress': 85, 'poster': 'show-poster',
+                '_play_er_prediction_session': 'session'}
+        self.tmdb._build_metadata_props.side_effect = lambda raw, kind: {'title': 'New episode', 'cast_full': []}
+        with patch.object(generator, '_search_continue_sources', return_value=[
+                {'link': 'S01E02', 'provider': 'test', 'title': 'Show S01E02'}]):
+            result = generator._build_managed_episode_item(meta, self.addon, self.instance, {}, [], 1, 2)
+        self.assertIsNotNone(result)
+        saved = self.saved_meta[0]
+        self.assertEqual(saved['title'], 'New episode')
+        for key in ('plot', 'duration', 'progress'):
+            self.assertFalse(saved.get(key), key)
+        self.assertEqual(saved['poster'], 'show-poster')
+        self.assertEqual(saved['_play_er_prediction_session'], 'session')
+
+    def test_background_episode_does_not_inherit_sparse_metadata(self):
+        self.tmdb.get_full_details.return_value = None
+        self.tmdb._build_metadata_props.side_effect = lambda raw, kind: (
+            {'title': 'Episode 1', 'plot': 'Old plot', 'duration': '4500', 'cast_full': []}
+            if raw['episode'] == 1 else {'title': 'Episode 2', 'cast_full': []})
+        meta = {'tmdb_id': 42, 'media_type': 'episode', 'tv_show_title': 'Show',
+                'season': 1, 'episode': 1, 'title': 'Episode 1', 'progress': 80,
+                'poster': 'show-poster'}
+        generator.create_series_playlist(meta, self.addon, None, self.tmdb, 7, self.instance, max_items=2)
+        self.assertEqual(len(self.saved_meta), 2)
+        self.assertEqual(self.saved_meta[1]['title'], 'Episode 2')
+        self.assertFalse(self.saved_meta[1].get('plot'))
+        self.assertFalse(self.saved_meta[1].get('duration'))
+        self.assertFalse(self.saved_meta[1].get('progress'))
+        self.assertEqual(self.saved_meta[1]['poster'], 'show-poster')
+
+    def test_false_success_episode_response_uses_safe_fallback(self):
+        self.tmdb.get_full_details.return_value = None
+        old_fetch = self.tmdb._fetch.side_effect
+        self.tmdb._fetch.side_effect = lambda path, **kw: {'success': False} if path.endswith('/episode/2') else old_fetch(path, **kw)
+        self.tmdb._build_metadata_props.side_effect = lambda raw, kind: {'title': 'Invalid response', 'cast_full': []}
+        self.player.path = 'https://example.invalid/S01E02'
+        self.run_playlist(start_from_next=True, use_resolve=False, remaining=1)
+        self.assertEqual(self.saved_meta[0]['title'], 'Epizoda 2')
+        self.tmdb._build_metadata_props.assert_not_called()
+
     def test_series_start_publishes_metadata_and_owner_for_stripped_item(self):
         from resources.lib.playback_identity import EXPECTED_OWNER, EXPECTED_URL, stream_key
         self.window.setProperty('play_er.monitor_owner', 'series-owner')

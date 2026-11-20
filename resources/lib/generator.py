@@ -91,6 +91,24 @@ def validate_tmdb_id(tmdb_id: Any) -> Optional[int]:
         return None
 
 
+_EPISODE_FIELDS = frozenset((
+    'title', 'original_title', 'plot', 'tagline', 'year', 'premiered',
+    'rating', 'votes', 'duration', 'imdb_id', 'tvdb_id', 'cast', 'cast_full',
+    'director', 'progress', 'resume', 'resume_time', 'resume_position',
+    'playcount', 'last_played', 'last_watched', '_play_er_tmdbh_source_search',
+))
+
+
+def _episode_context(meta):
+    """Carry show/session context forward without copying an earlier episode's data."""
+    return {key: value for key, value in meta.items() if key not in _EPISODE_FIELDS}
+
+
+def _valid_episode_details(data):
+    return (isinstance(data, dict) and bool(data) and 'status_code' not in data
+            and data.get('success') is not False)
+
+
 @dataclass
 class EpisodeMetadata:
     media_type: str = "episode"
@@ -716,7 +734,7 @@ def create_series_playlist(
 
         # A title search may return another show. Keep the supplied episode identity.
         if not show_details:
-            show_props = start_meta.copy()
+            show_props = _episode_context(start_meta)
             show_props['cast_full'] = show_props.get('cast_full', [])
 
         show_cast = show_props.get("cast_full", [])
@@ -824,13 +842,13 @@ def create_series_playlist(
         ep_props = {}
         try:
             ep_data_raw = tmdb_client._fetch(f"tv/{tmdb_id}/season/{season_num}/episode/{episode_num}", params={"append_to_response": "credits"})
-            if ep_data_raw and "status_code" not in ep_data_raw:
+            if _valid_episode_details(ep_data_raw):
                 ep_props = tmdb_client._build_metadata_props(ep_data_raw, 'episode')
         except Exception:
             pass
 
         if not ep_props:
-            ep_props = start_meta.copy()
+            ep_props = _episode_context(start_meta) if start_from_next else start_meta.copy()
             ep_props['cast_full'] = ep_props.get('cast_full', [])
 
         final_cast = ep_props.get("cast_full", []) + show_cast
@@ -966,14 +984,14 @@ def create_series_playlist(
                         bg_ep_props = {}
                         try:
                             bg_data = tmdb_client._fetch(f"tv/{tmdb_id}/season/{c_season}/episode/{c_ep}", params={"append_to_response": "credits"})
-                            if not bg_data or "status_code" in bg_data:
+                            if not _valid_episode_details(bg_data):
                                 season_data = tmdb_client._fetch(f"tv/{tmdb_id}/season/{c_season}")
                                 if season_data and "episodes" in season_data:
                                     if c_ep > len(season_data["episodes"]):
                                         c_season += 1
                                         c_ep = 1
                                         bg_data = tmdb_client._fetch(f"tv/{tmdb_id}/season/{c_season}/episode/{c_ep}", params={"append_to_response": "credits"})
-                                        if not bg_data or "status_code" in bg_data:
+                                        if not _valid_episode_details(bg_data):
                                             break
                                     else:
                                         break
@@ -1018,7 +1036,7 @@ def create_series_playlist(
                                 break
 
                         bg_cast = bg_ep_props.get("cast_full", []) + show_cast
-                        ep_meta = current_episode_meta_dict.copy()
+                        ep_meta = _episode_context(current_episode_meta_dict)
                         # Replace all episode fields, including dates, duration and votes.
                         ep_meta.update(bg_ep_props)
                         for key in ("genre", "studio", "mpaa", "poster", "fanart"):
@@ -1207,7 +1225,7 @@ def _queue_following_episodes_from_tmdbh_legacy(meta, addon, plugin_instance):
                     params={"append_to_response": "credits"}
                 )
 
-                if not episode_data or "status_code" in episode_data:
+                if not _valid_episode_details(episode_data):
                     season_details = tmdb_client._fetch(f"tv/{tmdb_id}/season/{season_num}")
                     season_count = len(season_details.get("episodes", [])) if season_details else 0
                     if season_count and episode_num >= season_count:
@@ -1217,7 +1235,7 @@ def _queue_following_episodes_from_tmdbh_legacy(meta, addon, plugin_instance):
                             f"tv/{tmdb_id}/season/{candidate_season}/episode/{candidate_episode}",
                             params={"append_to_response": "credits"}
                         )
-                    if not episode_data or "status_code" in episode_data:
+                    if not _valid_episode_details(episode_data):
                         break
 
                 episode_props = tmdb_client._build_metadata_props(episode_data, "episode")
@@ -1236,7 +1254,7 @@ def _queue_following_episodes_from_tmdbh_legacy(meta, addon, plugin_instance):
                 else:
                     selected = sources[0]
 
-                episode_meta = dict(meta)
+                episode_meta = _episode_context(meta)
                 episode_meta.update(show_props)
                 episode_meta.update(episode_props)
                 episode_meta.update({
@@ -1330,7 +1348,7 @@ def _build_managed_episode_item(meta, addon, plugin_instance, show_props, show_c
         f"tv/{tmdb_id}/season/{season}/episode/{episode}",
         params={"append_to_response": "credits"}
     )
-    if not episode_data or "status_code" in episode_data:
+    if not _valid_episode_details(episode_data):
         return None
 
     episode_props = tmdb_client._build_metadata_props(episode_data, "episode")
@@ -1359,7 +1377,7 @@ def _build_managed_episode_item(meta, addon, plugin_instance, show_props, show_c
         if selected is None:
             return None
 
-    episode_meta = dict(meta)
+    episode_meta = _episode_context(meta)
     episode_meta.update(show_props)
     episode_meta.update(episode_props)
     # Match CONTINUE's merge: episode detail often omits show-level fields.
