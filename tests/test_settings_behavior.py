@@ -92,3 +92,25 @@ class AISettingsTests(unittest.TestCase):
         original = gemini._request_key(plugin, 'synthetic prompt')
         addon.values['gemini_temperature'] = '9'
         self.assertNotEqual(original, gemini._request_key(plugin, 'synthetic prompt'))
+
+
+class NumericSettingsTests(unittest.TestCase):
+    def test_non_finite_values_use_default_with_and_without_bounds(self):
+        for raw in ('NaN', 'nan', 'inf', '-inf', 'Infinity', '1e9999', '-1e9999'):
+            for bounds in ({}, {'min_val': 1, 'max_val': 100}):
+                with self.subTest(raw=raw, bounds=bounds):
+                    addon = NativeSettings(trakt_page_limit=raw)
+                    self.assertEqual(settings.get_setting_float_with_bounds(
+                        addon, 'trakt_page_limit', default=20, **bounds), 20.0)
+                    self.assertEqual(settings.get_setting_int_with_bounds(
+                        addon, 'trakt_page_limit', default=20, **bounds), 20)
+
+    def test_finite_values_preserve_decimal_conversion_clamping_and_defaults(self):
+        for raw, expected in [('12.5', 12.5), ('0', 1), ('200', 100),
+                              ('', 20), ('broken', 20)]:
+            with self.subTest(raw=raw):
+                addon = NativeSettings(trakt_page_limit=raw)
+                self.assertEqual(settings.get_setting_float_with_bounds(
+                    addon, 'trakt_page_limit', 20, 1, 100), expected)
+                self.assertEqual(settings.get_setting_int_with_bounds(
+                    addon, 'trakt_page_limit', 20, 1, 100), int(expected))

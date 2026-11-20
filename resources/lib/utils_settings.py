@@ -11,6 +11,8 @@
 #
 ##############################################################################
 
+import math
+
 import xbmcaddon
 
 
@@ -99,6 +101,8 @@ def get_setting_float_with_bounds(addon, setting_id, default=0.0, min_val=None, 
     try:
         val = addon.getSetting(setting_id)
         value = float(val) if val not in (None, "") else float(default)
+        if not math.isfinite(value):
+            value = float(default)
         if min_val is not None:
             value = max(value, min_val)
         if max_val is not None:
