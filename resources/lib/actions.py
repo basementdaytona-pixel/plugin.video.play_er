@@ -50,6 +50,7 @@ from resources.lib import trakt
 from resources.lib import cache_manager
 from resources.lib.utils_logging import log
 from resources.lib.stream_state import get_streams, attach_subtitles, publish_active_streams
+from resources.lib.source_order import order_sources
 from resources.lib.ui_builder import set_view_mode
 from resources.lib.utils_settings import get_setting_int_with_bounds
 
@@ -394,13 +395,9 @@ def _search_providers_parallel(query, providers, apply_filters=False, sort_prior
 
 
     try:
-        if sort_priority == "WEBSHARE.CZ":
-            priority = lambda x: 0 if "webshare" in str(x.get("provider", "")).lower() else 1
-        else:
-            priority = lambda x: 0 if "prehraj" in str(x.get("provider", "")).lower() else 1
-        results.sort(key=priority)
+        results[:] = order_sources(results, sort_priority)
         if unfiltered_results is not None:
-            unfiltered_results.sort(key=priority)
+            unfiltered_results[:] = order_sources(unfiltered_results, sort_priority)
     except Exception: pass
 
     return results
@@ -1285,7 +1282,7 @@ def find_and_list_sources_multi(params, plugin_instance, tmdbh_search=False):
                 import time
                 cache_age = time.time() - cached_data.get("timestamp", 0)
                 if 0 <= cache_age < 1800 and isinstance(cached_data.get("results"), list):
-                    cached_results = cached_data.get("results",[])
+                    cached_results = order_sources(cached_data.get("results", []), sort_priority)
                     log(f"SOURCES - Načteno {len(cached_results)} zdrojů z pre-emptive cache", xbmc.LOGINFO)
         except Exception as e:
             log(f"SOURCES - Chyba při čtení pre-emptive cache: {e}", xbmc.LOGWARNING)
@@ -2534,7 +2531,8 @@ def _perform_pre_emptive_search(meta, plugin_instance):
             notify_info(f"ACTION NO PROVIDERS", category="EMPTIVE", time=5000)
             return
 
-        results = _search_providers_parallel(query, providers, apply_filters=False)
+        results = _search_providers_parallel(query, providers, apply_filters=False,
+                                             sort_priority=plugin_instance.addon.getSetting("multi_provider_sort"))
 
         if not results:
             log(f"PRE-EMPTIVE SEARCH - Žádné výsledky pro: {query}", xbmc.LOGWARNING)
