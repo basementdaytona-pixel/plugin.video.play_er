@@ -15,8 +15,8 @@ def source_scope(addon, provider_manager):
     providers = ('prehraj.to', 'webshare.cz') if multi else (active,)
     settings = {'providers': providers, 'enable_filtering': addon.getSetting('enable_filtering')}
     if 'prehraj.to' in providers:
-        # Older cached rows may have ignored API options or mislabeled languages.
-        settings['prehrajto_search_api_version'] = 3
+        # Older cached rows may be incomplete or use outdated normalization.
+        settings['prehrajto_search_api_version'] = 4
         for key in ('email', 'search_pages', 'search_ls', 'prehrajto_api_sort',
                     'prehrajto_api_quality', 'prehrajto_mark_multi_streams',
                     'prehrajto_long_videos'):

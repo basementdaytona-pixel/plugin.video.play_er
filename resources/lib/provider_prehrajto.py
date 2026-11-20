@@ -66,6 +66,28 @@ from resources.lib.utils import (
 
 
 
+def _page_fingerprint(items):
+    """Identify a repeated page without depending on ordering or mutable metadata."""
+    try:
+        rows = []
+        for item in items:
+            identity = []
+            if isinstance(item, dict):
+                for key in ('id', 'videoPage', 'pageUrl', 'link', 'url'):
+                    value = item.get(key)
+                    if isinstance(value, str):
+                        value = value.strip()
+                    if value and isinstance(value, (str, int)) and not isinstance(value, bool):
+                        identity.append((key, value))
+            rows.append(json.dumps(['identified', identity] if identity else ['raw', item],
+                                   sort_keys=True, ensure_ascii=True, separators=(',', ':')))
+        rows.sort()
+        return hashlib.sha256('\n'.join(rows).encode('ascii')).digest()
+    except (TypeError, ValueError, OverflowError, RecursionError, UnicodeError):
+        # Paging is still bounded when an unexpected response cannot be fingerprinted.
+        return None
+
+
 def _local_language(value):
     """Identify Czech/Slovak codes without matching unrelated languages."""
     if not isinstance(value, str):
@@ -1095,6 +1117,7 @@ class PrehrajTo(BaseProvider):
 
         all_videos = []
         seen_links = set()
+        seen_pages = set()
         for p in range(1, search_pages + 1):
             limit = 32
             offset = (p - 1) * limit
@@ -1130,7 +1153,12 @@ class PrehrajTo(BaseProvider):
                 if not items:
                     break
 
-            previous_count = len(all_videos)
+            if not used_suggest and len(items) >= limit:
+                fingerprint = _page_fingerprint(items)
+                if fingerprint is not None:
+                    if fingerprint in seen_pages:
+                        break
+                    seen_pages.add(fingerprint)
             if items:
                 for it in items:
                     if len(all_videos) >= search_ls:
@@ -1246,8 +1274,7 @@ class PrehrajTo(BaseProvider):
                             'dislikes': dislikes
                         })
 
-                if (len(all_videos) >= search_ls or used_suggest
-                        or len(items) < limit or len(all_videos) == previous_count):
+                if len(all_videos) >= search_ls or used_suggest or len(items) < limit:
                     break
             else:
                 break
@@ -1257,7 +1284,7 @@ class PrehrajTo(BaseProvider):
     def _get_video_pages(self, endpoint, require_auth=False, extra_params=None):
         """Fetch a bounded list; stop if a server ignores pagination."""
         max_pages = get_setting_int_with_bounds(self.addon, 'max_pages', default=5, min_val=1, max_val=10)
-        videos, seen = [], set()
+        videos, seen, seen_pages = [], set(), set()
         for page in range(max_pages):
             params = dict(extra_params or {}, limit=32, offset=page * 32)
             response = self._api_get(endpoint, params=params, require_auth=require_auth)
@@ -1271,7 +1298,12 @@ class PrehrajTo(BaseProvider):
                 items = items.get('items') or items.get('data') or []
             if not isinstance(items, list):
                 return None
-            added = 0
+            if len(items) >= 32:
+                fingerprint = _page_fingerprint(items)
+                if fingerprint is not None:
+                    if fingerprint in seen_pages:
+                        break
+                    seen_pages.add(fingerprint)
             for item in items:
                 if not isinstance(item, dict):
                     continue
@@ -1280,8 +1312,7 @@ class PrehrajTo(BaseProvider):
                     continue
                 seen.add(str(key))
                 videos.append(item)
-                added += 1
-            if len(items) < 32 or not added:
+            if len(items) < 32:
                 break
         return videos
 
@@ -1326,7 +1357,7 @@ class PrehrajTo(BaseProvider):
         use_cache = get_setting_bool(self.addon, "enable_most_watched_cache", True)
         max_pages = get_setting_int_with_bounds(self.addon, 'max_pages', default=5, min_val=1, max_val=10)
         mark_multi = get_setting_bool(self.addon, 'prehrajto_mark_multi_streams', True)
-        cache_key = f"prehrajto_most_watched_pages_{max_pages}_multi_{int(mark_multi)}"
+        cache_key = f"prehrajto_most_watched_v2_pages_{max_pages}_multi_{int(mark_multi)}"
         if use_cache:
             cached_videos = cache_manager.cache_get("MOST_WATCHED", cache_key)
             if cached_videos:
