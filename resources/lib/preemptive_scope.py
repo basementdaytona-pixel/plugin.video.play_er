@@ -13,7 +13,8 @@ def source_scope(addon, provider_manager):
     if active not in ('prehraj.to', 'webshare.cz'):
         active = 'prehraj.to'
     providers = ('prehraj.to', 'webshare.cz') if multi else (active,)
-    settings = {'providers': providers, 'enable_filtering': addon.getSetting('enable_filtering')}
+    settings = {'providers': providers, 'enable_filtering': addon.getSetting('enable_filtering'),
+                'provider_search_completion_version': 1}
     if 'prehraj.to' in providers:
         # Older cached rows may be incomplete or use outdated normalization.
         settings['prehrajto_search_api_version'] = 4

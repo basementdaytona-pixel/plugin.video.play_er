@@ -25,6 +25,7 @@ import xbmcvfs
 
 
 from resources.lib.provider_base import BaseProvider
+from resources.lib.search_results import SearchResults
 from resources.lib.utils_files import SafeVFSFile
 from resources.lib.utils_logging import log
 from resources.lib.md5crypt import md5crypt
@@ -282,7 +283,7 @@ class Webshare(BaseProvider):
 
         token = self._get_auth_token()
         if not token:
-            return []
+            return SearchResults(complete=False)
 
         raw_limit = get_setting_int_with_bounds(self.addon, "webshare_search_limit", 32, 32, 416)
         search_limit = max(1, min(int(raw_limit), 500))
@@ -344,6 +345,7 @@ class Webshare(BaseProvider):
 
         url = f"{self.base_url}search/"
         all_videos = []
+        complete = False
 
         try:
             response, xml_response = self._post_with_token_retry(url, payload)
@@ -372,6 +374,7 @@ class Webshare(BaseProvider):
                             "tags": [],
                             "extension": ext
                         })
+                    complete = True
                 else:
                     message = xml_response.findtext('message') or ''
                     log(f"WEBSHARE - Chyba při vyhledávání: {message}", xbmc.LOGERROR)
@@ -382,7 +385,7 @@ class Webshare(BaseProvider):
         except Exception as e:
             log(f"WEBSHARE - Výjimka při vyhledávání: {e}", xbmc.LOGERROR)
 
-        return self.normalize_and_filter(all_videos, apply_filters=apply_filters)
+        return SearchResults(self.normalize_and_filter(all_videos, apply_filters=apply_filters), complete)
 
     def find_and_list_sources(self, meta_json):
 

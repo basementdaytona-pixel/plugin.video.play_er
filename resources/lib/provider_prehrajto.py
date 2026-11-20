@@ -34,6 +34,7 @@ import xbmcvfs
 
 
 from resources.lib.provider_base import BaseProvider
+from resources.lib.search_results import SearchResults
 from resources.lib.stream_quality import stream_quality
 from resources.lib.utils_filter import FilterUtils
 from resources.lib.utils_theme import Colors
@@ -1118,6 +1119,7 @@ class PrehrajTo(BaseProvider):
         all_videos = []
         seen_links = set()
         seen_pages = set()
+        complete = True
         for p in range(1, search_pages + 1):
             limit = 32
             offset = (p - 1) * limit
@@ -1141,6 +1143,7 @@ class PrehrajTo(BaseProvider):
 
             items = self._search_response_items(api_resp, 'videos/search')
             if items is None:
+                complete = False
                 break
             used_suggest = False
             if not items:
@@ -1150,6 +1153,8 @@ class PrehrajTo(BaseProvider):
                 api_resp = self._api_get('videos/suggest', params={'phrase': smart_query}, require_auth=bool(self._access_token))
                 items = self._search_response_items(api_resp, 'videos/suggest')
                 used_suggest = True
+                if items is None:
+                    complete = False
                 if not items:
                     break
 
@@ -1279,7 +1284,7 @@ class PrehrajTo(BaseProvider):
             else:
                 break
 
-        return self.normalize_and_filter(all_videos, apply_filters=apply_filters)
+        return SearchResults(self.normalize_and_filter(all_videos, apply_filters=apply_filters), complete)
 
     def _get_video_pages(self, endpoint, require_auth=False, extra_params=None):
         """Fetch a bounded list; stop if a server ignores pagination."""

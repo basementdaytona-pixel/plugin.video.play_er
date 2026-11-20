@@ -52,6 +52,7 @@ from resources.lib.utils_logging import log
 from resources.lib.stream_state import get_streams, attach_subtitles, publish_active_streams
 from resources.lib.source_order import order_sources
 from resources.lib.preemptive_scope import source_scope
+from resources.lib.search_results import SearchResults
 from resources.lib.ui_builder import set_view_mode
 from resources.lib.utils_settings import get_setting_int_with_bounds
 
@@ -358,7 +359,7 @@ def _search_providers_parallel(query, providers, apply_filters=False, sort_prior
     -- Spustí vyhledávání u všech providerů paralelně.
     """
 
-    results =[]
+    results = SearchResults()
     if not providers: return results
 
 
@@ -373,6 +374,7 @@ def _search_providers_parallel(query, providers, apply_filters=False, sort_prior
             capture_raw = unfiltered_results is not None
             res = provider.search_sources(query, cookies=cookies,
                                           apply_filters=False if capture_raw else apply_filters)
+            complete = getattr(res, 'complete', True) is not False
             raw = [dict(r) for r in res] if capture_raw else []
             if capture_raw and apply_filters:
                 res = provider.normalize_and_filter(res, apply_filters=True)
@@ -382,17 +384,18 @@ def _search_providers_parallel(query, providers, apply_filters=False, sort_prior
                 r["provider"] = provider_name
             for r in raw:
                 r["provider"] = provider_name
-            return res, raw
+            return res, raw, complete
         except Exception as e:
             log(f"SEARCH - Chyba providera {provider} : {e}", xbmc.LOGERROR)
-            return [], []
+            return [], [], False
 
     max_workers = get_threadpool(len(providers) + 1)
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = [executor.submit(_search_worker, p) for p in providers]
         for future in as_completed(futures):
-            filtered, raw = future.result()
+            filtered, raw, complete = future.result()
             results.extend(filtered)
+            results.complete = results.complete and complete
             if unfiltered_results is not None:
                 unfiltered_results.extend(raw)
 
@@ -2402,6 +2405,10 @@ def _perform_pre_emptive_search(meta, plugin_instance):
 
         results = _search_providers_parallel(query, providers, apply_filters=False,
                                              sort_priority=plugin_instance.addon.getSetting("multi_provider_sort"))
+
+        if getattr(results, 'complete', True) is False:
+            log("PRE-EMPTIVE SEARCH - Neúplné výsledky; cache nebyla uložena", xbmc.LOGWARNING)
+            return
 
         if not results:
             log(f"PRE-EMPTIVE SEARCH - Žádné výsledky pro: {query}", xbmc.LOGWARNING)
