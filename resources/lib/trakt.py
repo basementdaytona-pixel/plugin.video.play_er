@@ -32,7 +32,9 @@ import xbmcvfs
 from resources.lib.monitor_orchestrator import get_orchestrator
 from resources.lib.utils_logging import log
 from resources.lib.stream_state import get_streams, attach_subtitles, publish_active_streams
-from resources.lib.playback_identity import EXPECTED_OWNER, EXPECTED_URL, expect_stream, stream_key
+from resources.lib.playback_identity import (EXPECTED_OWNER, EXPECTED_URL, EXPECTED_SOURCE, EXPECTED_PROVIDER,
+                                              EXPECTED_VIEW_ID, EXPECTED_VIEW_BINDING, VIEW_ID, VIEW_BINDING,
+                                              expect_stream, stream_key)
 from resources.lib import cache_manager
 from resources.lib.utils_files import SafeVFSFile
 from resources.lib.utils_notification import (
@@ -1904,6 +1906,7 @@ class KodiPlayerMonitor(xbmc.Player):
         self.save_playback_history_func = kwargs.get("save_playback_history_func")
         self.remove_from_watch_later_func = kwargs.get("remove_from_watch_later_func")
         self.mark_watched_func = kwargs.get("mark_watched_func")
+        self.track_prehraj_view_func = kwargs.get("track_prehraj_view_func")
         self.scrobbling_in_progress = False
         self.media_id = None
         self.media_type = None
@@ -1926,6 +1929,7 @@ class KodiPlayerMonitor(xbmc.Player):
         self.current_meta = None
         self._last_av_started_key = None
         self._last_av_started_at = 0.0
+        self._last_prehraj_view = None
         self.pre_emptive_triggered = False
         self.skip_credits_triggered = False
         self.play_key = None
@@ -1951,6 +1955,7 @@ class KodiPlayerMonitor(xbmc.Player):
         self._last_owned_meta = None
         self._last_av_started_key = None
         self._last_av_started_at = 0.0
+        self._last_prehraj_view = None
         xbmcgui.Window(10000).setProperty('play_er.monitor_owner', self._playback_owner)
 
     def owns_playback(self):
@@ -2046,6 +2051,52 @@ class KodiPlayerMonitor(xbmc.Player):
         if executor is not None:
             executor.shutdown(wait=False)
 
+    def _report_started_prehraj_view(self, playing_item, source_key, provider, video_id, binding):
+        """Submit a verified view asynchronously, once per active source."""
+        if not self.track_prehraj_view_func:
+            return
+        if not isinstance(provider, str) or not provider:
+            return
+        if provider.lower() != 'prehraj.to':
+            with self._playback_action_lock:
+                self._last_prehraj_view = None
+            return
+        if (not source_key or not isinstance(video_id, str) or not video_id.isascii() or not video_id.isdigit()
+                or not isinstance(binding, str) or not binding):
+            return
+        key = (video_id, source_key)
+        paths = []
+        for getter in (self.getPlayingFile, playing_item.getPath):
+            try:
+                path = getter()
+                if stream_key(path) and all(stream_key(path) != stream_key(p) for p in paths):
+                    paths.append(path)
+            except Exception:
+                pass
+        if not paths:
+            return
+        with self._playback_action_lock:
+            if not self.owns_playback() or not self.isPlayingVideo() or key == self._last_prehraj_view:
+                return
+            self._last_prehraj_view = key
+        callback = self.track_prehraj_view_func
+
+        def send():
+            try:
+                for path in paths:
+                    if callback(video_id, path, binding):
+                        break
+            except Exception as exc:
+                log(f'PREHRAJTO :: Nelze zaznamenat zhlédnutí: {type(exc).__name__}', xbmc.LOGWARNING)
+
+        try:
+            threading.Thread(target=send, daemon=True).start()
+        except Exception as exc:
+            with self._playback_action_lock:
+                if self._last_prehraj_view == key:
+                    self._last_prehraj_view = None
+            log(f'PREHRAJTO :: Nelze spustit záznam zhlédnutí: {type(exc).__name__}', xbmc.LOGWARNING)
+
     def release_playback(self, current_item_changed=False):
         try:
             with self._playback_action_lock:
@@ -2090,12 +2141,14 @@ class KodiPlayerMonitor(xbmc.Player):
             if current_item_changed and win.getProperty(EXPECTED_OWNER) == self._playback_owner:
                 for key in ('play_er.current_meta', 'play_er.current_meta_uuid',
                             'play_er.current_media_type', 'play_er.current_trakt_id',
-                            'play_er.current_stream_qualities', EXPECTED_URL, EXPECTED_OWNER):
+                            'play_er.current_stream_qualities', EXPECTED_URL, EXPECTED_OWNER,
+                            EXPECTED_SOURCE, EXPECTED_PROVIDER, EXPECTED_VIEW_ID, EXPECTED_VIEW_BINDING):
                     win.clearProperty(key)
             win.clearProperty('play_er.monitor_owner')
         self._playback_owner = None
         self._playback_confirmed = False
         self._last_owned_meta = None
+        self._last_prehraj_view = None
         self.play_key = None
         with self.progress_lock:
             for timer in (self.progress_update_timer, self.downgrade_timer):
@@ -2430,6 +2483,8 @@ class KodiPlayerMonitor(xbmc.Player):
                     li.setProperty('play_er.meta_id', playing_item.getProperty('play_er.meta_id'))
                     li.setProperty('play_er.link', playing_item.getProperty('play_er.link'))
                     li.setProperty('play_er.provider', playing_item.getProperty('play_er.provider'))
+                    li.setProperty(VIEW_ID, playing_item.getProperty(VIEW_ID))
+                    li.setProperty(VIEW_BINDING, playing_item.getProperty(VIEW_BINDING))
                     li.setProperty('play_er.media_type', playing_item.getProperty('play_er.media_type'))
                     li.setProperty('play_er.trakt_id', playing_item.getProperty('play_er.trakt_id'))
 
@@ -2694,6 +2749,18 @@ class KodiPlayerMonitor(xbmc.Player):
                     self.release_playback(current_item_changed=True)
                 return
             self._playback_confirmed = True
+            expected_source = ''
+            expected_provider = ''
+            if not queue_record and win.getProperty(EXPECTED_OWNER) == self._playback_owner:
+                paths = []
+                for getter in (self.getPlayingFile, playing_item.getPath):
+                    try:
+                        paths.append(getter())
+                    except Exception:
+                        pass
+                if win.getProperty(EXPECTED_URL) in {stream_key(path) for path in paths} - {''}:
+                    expected_source = win.getProperty(EXPECTED_SOURCE)
+                    expected_provider = win.getProperty(EXPECTED_PROVIDER)
             try:
                 expect_stream(win, self.getPlayingFile())
             except Exception:
@@ -2720,7 +2787,19 @@ class KodiPlayerMonitor(xbmc.Player):
                 metadata_source = "item-properties" if (item_meta_id or item_trakt_id) else "window-fallback"
             source_list = playing_item.getProperty('play_er.source_list')
             provider = playing_item.getProperty('play_er.provider') or (queue_record.get('provider', '') if queue_record else '')
+            if not provider and expected_provider and (not link_history or stream_key(link_history) == expected_source):
+                provider = expected_provider
             publish_active_streams(link_history or playing_item, provider=provider or None)
+            source_key = stream_key(link_history) if link_history else expected_source
+            if link_history:
+                win.setProperty(EXPECTED_SOURCE, source_key)
+                win.setProperty(EXPECTED_PROVIDER, provider or '')
+            view_id, view_binding = playing_item.getProperty(VIEW_ID), playing_item.getProperty(VIEW_BINDING)
+            if not view_id and not view_binding and queue_record:
+                view_id, view_binding = queue_record.get('view_id', ''), queue_record.get('view_binding', '')
+            if not view_id and not view_binding and expected_source and source_key == expected_source:
+                view_id, view_binding = win.getProperty(EXPECTED_VIEW_ID), win.getProperty(EXPECTED_VIEW_BINDING)
+            self._report_started_prehraj_view(playing_item, source_key, provider, view_id, view_binding)
 
             queued_meta = queue_record.get("meta") if queue_record else None
             if isinstance(queued_meta, dict) and queued_meta:
@@ -3130,6 +3209,7 @@ class KodiPlayerMonitor(xbmc.Player):
         self.current_meta = None
         self._last_av_started_key = None
         self._last_av_started_at = 0.0
+        self._last_prehraj_view = None
         self.pre_emptive_triggered = False
         self.skip_credits_triggered = False
 
@@ -3147,7 +3227,7 @@ class KodiPlayerMonitor(xbmc.Player):
         self.play_key = None
 
 
-def get_player_monitor(session=None, addon=None, tmdb_client=None, save_playback_history_func=None, remove_from_watch_later_func=None, mark_watched_func=None):
+def get_player_monitor(session=None, addon=None, tmdb_client=None, save_playback_history_func=None, remove_from_watch_later_func=None, mark_watched_func=None, track_prehraj_view_func=None):
     """
     SINGLETON :: KODI PLAYER MONITOR
     -- Jeden monitor v rámci invokeru; router musí udržovat smyčku Kodi callbacků.
@@ -3160,7 +3240,8 @@ def get_player_monitor(session=None, addon=None, tmdb_client=None, save_playback
             tmdb_client=tmdb_client,
             save_playback_history_func=save_playback_history_func,
             remove_from_watch_later_func=remove_from_watch_later_func,
-            mark_watched_func=mark_watched_func
+            mark_watched_func=mark_watched_func,
+            track_prehraj_view_func=track_prehraj_view_func
         )
     else:
         if session:
@@ -3175,6 +3256,8 @@ def get_player_monitor(session=None, addon=None, tmdb_client=None, save_playback
             _GLOBAL_PLAYER_MONITOR.remove_from_watch_later_func = remove_from_watch_later_func
         if mark_watched_func:
             _GLOBAL_PLAYER_MONITOR.mark_watched_func = mark_watched_func
+        if track_prehraj_view_func:
+            _GLOBAL_PLAYER_MONITOR.track_prehraj_view_func = track_prehraj_view_func
 
     return _GLOBAL_PLAYER_MONITOR
 

@@ -165,6 +165,8 @@ def show_stream_menu(plugin_instance):
                 li.setProperty('play_er.meta_id', str(current_meta_id))
                 li.setProperty('play_er.link', str(current_link))
                 li.setProperty('play_er.provider', playing_item.getProperty('play_er.provider'))
+                li.setProperty('play_er.view_video_id', playing_item.getProperty('play_er.view_video_id'))
+                li.setProperty('play_er.view_binding', playing_item.getProperty('play_er.view_binding'))
                 li.setProperty('play_er.media_type', meta.get('media_type', 'movie'))
                 if current_trakt_id:
                     li.setProperty('play_er.trakt_id', str(current_trakt_id))

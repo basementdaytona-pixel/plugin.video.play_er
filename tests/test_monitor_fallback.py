@@ -2,7 +2,10 @@
 import importlib.util
 import json
 import sys
+import threading
 import unittest
+from concurrent.futures import ThreadPoolExecutor
+from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
 from kodi_test_support import ROOT
@@ -167,6 +170,100 @@ class MonitorFallbackTests(unittest.TestCase):
         with patch.object(module, 'publish_active_streams') as publish:
             monitor.onAVStarted()
         publish.assert_called_once_with('123456', provider='webshare.cz')
+
+    def test_started_view_is_reported_once_across_duplicate_callbacks_and_quality_switch(self):
+        module, window, monitor, history, episode = self.make_active_episode()
+        monitor.track_prehraj_view_func = MagicMock()
+        source = 'https://prehraj.to/videos/123456'
+        url = monitor.getPlayingFile()
+        props = {'play_er.link': source, 'play_er.provider': 'prehraj.to',
+                 'play_er.view_video_id': '123456', 'play_er.view_binding': 'synthetic-binding'}
+        monitor.item.getProperty.side_effect = lambda key: props.get(key, '')
+        def thread(*, target, daemon):
+            return SimpleNamespace(start=target)
+        with patch.object(module.threading, 'Thread', side_effect=thread):
+            monitor.onAVStarted()
+            monitor.onAVStarted()
+            window.setProperty('play_er.seamless_switching', 'true')
+            self.set_playing_url(monitor, 'https://example.invalid/alternate-quality')
+            monitor.onAVStarted()
+            self.set_playing_url(monitor, url)
+            monitor.onAVStarted()
+        monitor.track_prehraj_view_func.assert_called_once_with('123456', url, 'synthetic-binding')
+
+    def test_stripped_queued_item_reports_only_its_owned_source(self):
+        module, window, monitor, history, episode = self.make_active_episode()
+        monitor.track_prehraj_view_func = MagicMock()
+        next_episode = dict(episode, episode=3)
+        url = 'https://example.invalid/next'
+        source = 'https://prehraj.to/videos/123457'
+        self.queue_record(module, window, monitor, url, next_episode)
+        records = json.loads(window.getProperty('play_er.episode_queue_metadata'))
+        records[module.stream_key(url)].update(link=source, provider='prehraj.to', view_id='123457', view_binding='binding')
+        window.setProperty('play_er.episode_queue_metadata', json.dumps(records))
+        self.set_playing_url(monitor, url)
+        with patch.object(module.threading, 'Thread', side_effect=lambda *, target, daemon: SimpleNamespace(start=target)):
+            monitor.onAVStarted()
+        monitor.track_prehraj_view_func.assert_called_once_with('123457', url, 'binding')
+
+    def test_foreign_provider_and_foreign_playback_do_not_report_views(self):
+        module, window, monitor, history, episode = self.make_active_episode()
+        monitor.track_prehraj_view_func = MagicMock()
+        url = monitor.getPlayingFile()
+        source = '123456'
+        props = {'play_er.link': source, 'play_er.provider': 'webshare.cz',
+                 'play_er.view_video_id': '123456', 'play_er.view_binding': 'binding'}
+        monitor.item.getProperty.side_effect = lambda key: props.get(key, '')
+        with patch.object(module.threading, 'Thread', side_effect=lambda *, target, daemon: SimpleNamespace(start=target)):
+            monitor.onAVStarted()
+            monitor.item.getProperty.side_effect = lambda key: ''
+            self.set_playing_url(monitor, 'https://foreign.invalid/video')
+            monitor.onAVStarted()
+        monitor.track_prehraj_view_func.assert_not_called()
+
+    def test_stripped_initial_item_uses_only_matching_owned_fallback_source(self):
+        from resources.lib.playback_identity import publish_fallback
+        module, window, monitor, history, episode = self.make_active_episode()
+        monitor.track_prehraj_view_func = MagicMock()
+        url = monitor.getPlayingFile()
+        source = 'https://prehraj.to/videos/123456'
+        publish_fallback(window, url, episode, 'episode-key', 'episode', '',
+                         source_link=source, provider='prehraj.to', view_identity=('123456', 'binding'))
+        with patch.object(module.threading, 'Thread', side_effect=lambda *, target, daemon: SimpleNamespace(start=target)):
+            monitor.onAVStarted()
+        monitor.track_prehraj_view_func.assert_called_once_with('123456', url, 'binding')
+
+    def test_fallback_view_with_mismatched_source_is_not_reported(self):
+        from resources.lib.playback_identity import publish_fallback
+        module, window, monitor, history, episode = self.make_active_episode()
+        monitor.track_prehraj_view_func = MagicMock()
+        url = monitor.getPlayingFile()
+        publish_fallback(window, url, episode, 'episode-key', 'episode', '', source_link='123456',
+                         provider='prehraj.to', view_identity=('123456', 'binding'))
+        monitor.item.getProperty.side_effect = lambda key: {'play_er.link': '123457', 'play_er.provider': 'prehraj.to'}.get(key, '')
+        with patch.object(module.threading, 'Thread', side_effect=lambda *, target, daemon: SimpleNamespace(start=target)):
+            monitor.onAVStarted()
+        monitor.track_prehraj_view_func.assert_not_called()
+
+    def test_concurrent_callbacks_send_one_view_without_blocking_playback(self):
+        module, window, monitor, history, episode = self.make_active_episode()
+        entered, release = threading.Event(), threading.Event()
+        def send(*args):
+            entered.set()
+            release.wait(3)
+            return True
+        monitor.track_prehraj_view_func = MagicMock(side_effect=send)
+        source = module.stream_key('123456')
+        try:
+            with ThreadPoolExecutor(max_workers=2) as executor:
+                futures = [executor.submit(monitor._report_started_prehraj_view, monitor.item, source,
+                                           'prehraj.to', '123456', 'binding') for _ in range(2)]
+                for future in futures:
+                    future.result(timeout=1)
+                self.assertTrue(entered.wait(1))
+                monitor.track_prehraj_view_func.assert_called_once()
+        finally:
+            release.set()
 
     def test_foreign_video_without_stop_releases_monitor_and_keeps_old_progress(self):
         module, window, monitor, history, episode = self.make_active_episode()

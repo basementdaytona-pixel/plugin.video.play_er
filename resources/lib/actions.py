@@ -596,7 +596,8 @@ def change_stream_quality(params, plugin_instance):
 
     # --- Continuity logika - zastavíme video a nepozorovaně načteme to samé jinde
 
-    for key in ('play_er.link', 'play_er.provider', 'play_er.meta_id', 'play_er.media_type', 'play_er.source_list', 'play_er.trakt_id'):
+    for key in ('play_er.link', 'play_er.provider', 'play_er.view_video_id', 'play_er.view_binding',
+                'play_er.meta_id', 'play_er.media_type', 'play_er.source_list', 'play_er.trakt_id'):
         li.setProperty(key, playing_item.getProperty(key))
     win.setProperty("play_er.seamless_switching", "true")
     player.stop()
@@ -614,7 +615,7 @@ def change_stream_quality(params, plugin_instance):
 
 
 
-def resolve_video(link, provider_name, meta_json, source_list=None, return_url_only=False, plugin_instance=None, direct_play=False, prediction_ref=None):
+def resolve_video(link, provider_name, meta_json, source_list=None, return_url_only=False, plugin_instance=None, direct_play=False, prediction_ref=None, return_view_identity=False):
 
     """
     KODI 22 & YATSE CLEAN RESOLVER - FIX ERROR 22 & TRAKT SCROBBLING
@@ -681,7 +682,7 @@ def resolve_video(link, provider_name, meta_json, source_list=None, return_url_o
         file_url, subtitle_url = None, None
 
     if not file_url:
-        if return_url_only: return None
+        if return_url_only: return (None, None) if return_view_identity else None
         notify_error("Nepodařilo se získat odkaz na video")
         if not direct_play:
             xbmcplugin.setResolvedUrl(plugin_instance.handle, False, xbmcgui.ListItem())
@@ -696,7 +697,16 @@ def resolve_video(link, provider_name, meta_json, source_list=None, return_url_o
     clean_url = file_url.split('|')[0]
     final_url = "{0}|User-Agent={1}&Referer={2}&Accept={3}".format(clean_url, quote(ua), quote(referer), quote(accept))
 
-    if return_url_only: return final_url
+    view_identity = None
+    if resolved_provider.lower() == 'prehraj.to':
+        try:
+            identity = provider.view_tracking_identity(link, final_url)
+            if isinstance(identity, tuple) and len(identity) == 2 and all(isinstance(v, str) and v for v in identity):
+                view_identity = identity
+        except Exception as exc:
+            log(f'PREHRAJTO :: Nelze připravit záznam zhlédnutí: {type(exc).__name__}', xbmc.LOGDEBUG)
+
+    if return_url_only: return (final_url, view_identity) if return_view_identity else final_url
 
     publish_active_streams(str(link), provider=resolved_provider)
 
@@ -791,8 +801,10 @@ def resolve_video(link, provider_name, meta_json, source_list=None, return_url_o
 
     # Keep the monitor's fallback identity aligned with the resolved item.
     # Kodi can omit the ListItem properties when reporting the active stream.
-    from resources.lib.playback_identity import publish_fallback
-    publish_fallback(xbmcgui.Window(10000), final_url, meta, meta_uuid, media_type, trakt_id)
+    from resources.lib.playback_identity import publish_fallback, set_view_identity
+    publish_fallback(xbmcgui.Window(10000), final_url, meta, meta_uuid, media_type, trakt_id,
+                     source_link=str(link), provider=resolved_provider, view_identity=view_identity)
+    set_view_identity(li, view_identity)
 
     li.setProperty('play_er.link', str(link))
     li.setProperty('play_er.provider', resolved_provider)

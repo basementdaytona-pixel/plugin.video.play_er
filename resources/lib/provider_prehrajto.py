@@ -549,33 +549,94 @@ class PrehrajTo(BaseProvider):
             log(f'PREHRAJTO - API GET ERROR {url} : {e}', xbmc.LOGWARNING)
         return None
 
-    def _api_post(self, path, json_payload=None, require_auth=False):
-        if require_auth and hasattr(self, '_auth_credentials') and self._sync_credentials():
-            return None
+    def _api_post(self, path, json_payload=None, require_auth=False, expected_credentials=None, expected_token=None):
+        if expected_credentials is not None:
+            with self._auth_lock:
+                if self._credentials() != expected_credentials or self._auth_credentials != expected_credentials:
+                    self._sync_credentials()
+                    return None
+            token = expected_token
+        else:
+            if require_auth and hasattr(self, '_auth_credentials') and self._sync_credentials():
+                return None
+            token = self._access_token
         url = f"{self.api_base.rstrip('/')}/{path.lstrip('/')}"
         headers = {'User-Agent': self.headers.get('user-agent'), 'Content-Type': 'application/json'}
-        if require_auth and self._access_token:
-            headers['Authorization'] = f'Bearer {self._access_token}'
+        if require_auth and token:
+            headers['Authorization'] = f'Bearer {token}'
+
+        def retry_token():
+            if expected_credentials is not None and (self._credentials() != expected_credentials or self._auth_credentials != expected_credentials):
+                self._sync_credentials()
+                return None
+            if expected_credentials is not None and self._access_token and self._access_token != expected_token:
+                return self._access_token
+            renewed = self._refresh_access_token() if self._refresh_token else False
+            if not renewed:
+                if expected_credentials is not None and (self._credentials() != expected_credentials or self._auth_credentials != expected_credentials):
+                    self._sync_credentials()
+                    return None
+                self.get_premium_cookies(force=True)
+                renewed = bool(self._access_token)
+            if expected_credentials is not None and (self._credentials() != expected_credentials or self._auth_credentials != expected_credentials):
+                self._sync_credentials()
+                return None
+            return self._access_token if renewed else None
+
         try:
             res = self.session.post(url, json=json_payload, headers=headers, timeout=10)
             if require_auth and getattr(res, 'status_code', None) == 401:
-                renewed = self._refresh_access_token() if self._refresh_token else False
-                if not renewed:
-                    self.get_premium_cookies(force=True)
-                    renewed = bool(self._access_token)
-                if renewed and self._access_token:
-                    headers['Authorization'] = f'Bearer {self._access_token}'
+                if expected_credentials is None:
+                    renewed_token = retry_token()
+                else:
+                    with self._auth_lock:
+                        renewed_token = retry_token()
+                if renewed_token:
+                    headers['Authorization'] = f'Bearer {renewed_token}'
                     res = self.session.post(url, json=json_payload, headers=headers, timeout=10)
             return res
         except Exception as e:
             log(f'PREHRAJTO - API POST ERROR {url} : {e}', xbmc.LOGWARNING)
         return None
 
-    def api_track_view(self, video_id):
+    @staticmethod
+    def _video_id(video_id):
+        value = str(video_id)
+        match = re.search(r'([0-9]{5,12})', value)
+        value = match.group(1) if match else value
+        return value if value and value.isdigit() else ''
+
+    def view_tracking_identity(self, video_id, stream_url):
+        """Bind a pending view to this account, source and resolved stream."""
+        from resources.lib.playback_identity import stream_key
+        with self._auth_lock:
+            video_id = self._video_id(video_id)
+            url_key = stream_key(stream_url)
+            credentials = self._credentials()
+            if not video_id or not url_key or not self._access_token or self._auth_credentials != credentials:
+                return None
+            message = json.dumps([credentials, video_id, url_key], ensure_ascii=False, separators=(',', ':')).encode('utf-8')
+            binding = hmac.new(self._access_token.encode('utf-8'), message, hashlib.sha256).hexdigest()
+            return video_id, binding
+
+    def api_track_view(self, video_id, stream_url=None, binding=None):
         try:
-            self._api_post(f'videos/{video_id}/view', json_payload={}, require_auth=True)
+            if binding is None:
+                return self._api_post(f'videos/{video_id}/add-view', require_auth=True)
+            with self._auth_lock:
+                self._load_auth_state()
+                current = self.view_tracking_identity(video_id, stream_url)
+                if not current or not isinstance(binding, str) or not hmac.compare_digest(current[1], binding):
+                    return False
+                credentials, token = self._auth_credentials, self._access_token
+            response = self._api_post(f'videos/{current[0]}/add-view', require_auth=True,
+                                      expected_credentials=credentials, expected_token=token)
+            status = getattr(response, 'status_code', None)
+            if not isinstance(status, int) or not 200 <= status < 300:
+                log(f'PREHRAJTO :: Záznam zhlédnutí selhal, HTTP {status or "bez odpovědi"}', xbmc.LOGWARNING)
+            return True
         except Exception:
-            pass
+            return False
 
     def _video_response_data(self, response):
         """Accept only successful object responses and decode JSON once."""
@@ -689,16 +750,13 @@ class PrehrajTo(BaseProvider):
     def get_video_link(self, video_id):
         self.get_premium_cookies()
 
-        vid_str = str(video_id)
-        m = re.search(r"([0-9]{5,12})", vid_str)
-        vid = m.group(1) if m else vid_str
+        vid = self._video_id(video_id)
 
-        if not vid or not vid.isdigit():
+        if not vid:
             log("PREHRAJTO - Neplatné ID videa pro získání streamu!", xbmc.LOGERROR)
             notify_error('PREHRAJ.TO CHYBNÉ ID STREAMU', category='PROVIDER')
             return None, []
 
-        self.api_track_view(vid)
         # A failed lookup is also reused for this resolution; no persistent cache.
         detail = self.api_get_video_detail(vid)
         available_links = self.api_get_download_link(vid, detail=detail)

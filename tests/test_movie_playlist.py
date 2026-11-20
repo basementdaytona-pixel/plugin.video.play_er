@@ -67,7 +67,9 @@ class MoviePlaylistTests(unittest.TestCase):
         self.actions._search_providers_parallel.side_effect = lambda query, *args, **kwargs: [
             {'link': 'start' if query.startswith('Start ') else query.split()[1],
              'provider': 'test', 'title': 'Source'}]
-        self.actions.resolve_video.side_effect = lambda link, *args, **kwargs: 'https://example.invalid/' + link + '|Header=value'
+        self.actions.resolve_video.side_effect = lambda link, *args, **kwargs: (
+            ('https://example.invalid/' + link + '|Header=value', None) if kwargs.get('return_view_identity')
+            else 'https://example.invalid/' + link + '|Header=value')
         self.plugin = MagicMock()
         self.plugin.get_entry_key.side_effect = lambda entry: '{}_{}'.format(
             entry['meta'].get('media_type', 'movie'), entry['meta'].get('tmdb_id'))
@@ -146,6 +148,19 @@ class MoviePlaylistTests(unittest.TestCase):
         first.setProperty.assert_any_call('play_er.provider', 'test')
         publish.assert_called_once_with('start', provider='test')
 
+    def test_movie_playlist_carries_each_resolved_view_identity(self):
+        self.tmdb.get_recommendations_raw.return_value = [{'id': 3}]
+        self.actions.resolve_video.side_effect = lambda link, *a, **kw: (
+            'https://example.invalid/' + link + '|Header=value', (link, 'binding-' + link))
+        self.run_playlist()
+        first = generator.xbmcplugin.setResolvedUrl.call_args.args[2]
+        first.setProperty.assert_any_call('play_er.view_video_id', 'start')
+        first.setProperty.assert_any_call('play_er.view_binding', 'binding-start')
+        queued = self.playlist.add.call_args.args[1]
+        queued.setProperty.assert_any_call('play_er.view_video_id', '3')
+        queued.setProperty.assert_any_call('play_er.view_binding', 'binding-3')
+        self.assertEqual(self.window.getProperty('play_er.expected_view_binding'), 'binding-start')
+
     def test_movie_start_and_queued_recommendation_publish_owned_identity(self):
         import json
         from resources.lib.playback_identity import EXPECTED_OWNER, EXPECTED_URL, stream_key
@@ -162,7 +177,7 @@ class MoviePlaylistTests(unittest.TestCase):
         self.assertEqual(queued['provider'], 'test')
 
     def test_failed_direct_start_does_not_clear_existing_queue(self):
-        self.actions.resolve_video.side_effect = lambda *a, **kw: None
+        self.actions.resolve_video.side_effect = lambda *a, **kw: (None, None) if kw.get('return_view_identity') else None
         self.run_playlist(handle=0)
         self.playlist.clear.assert_not_called()
         self.playlist.add.assert_not_called()
@@ -238,7 +253,8 @@ class MoviePlaylistTests(unittest.TestCase):
         def resolve(link, *args, **kwargs):
             if link == '3':
                 self.player.path = 'https://other.invalid/video'
-            return 'https://example.invalid/' + link + '|Header=value'
+            url = 'https://example.invalid/' + link + '|Header=value'
+            return (url, None) if kwargs.get('return_view_identity') else url
         self.actions.resolve_video.side_effect = resolve
         self.run_playlist()
         self.playlist.add.assert_not_called()

@@ -35,12 +35,12 @@ from resources.lib import cache_manager
 from resources.lib.utils_notification import notify_info, notify_error
 from resources.lib.utils_theme import Colors
 from resources.lib.stream_state import attach_subtitles, publish_active_streams
-from resources.lib.playback_identity import publish_fallback
+from resources.lib.playback_identity import publish_fallback, set_view_identity
 from resources.lib.source_order import order_sources
 from resources.lib.preemptive_scope import source_scope
 
 
-def _remember_playlist_item(url, meta, meta_id, trakt_id, source_link, provider=None):
+def _remember_playlist_item(url, meta, meta_id, trakt_id, source_link, provider=None, view_identity=None):
     """Retain per-URL metadata if Kodi omits custom properties on direct playlist URLs."""
     try:
         url_key = hashlib.sha256(str(url).split("|", 1)[0].encode("utf-8")).hexdigest()
@@ -59,6 +59,8 @@ def _remember_playlist_item(url, meta, meta_id, trakt_id, source_link, provider=
             "media_type": str((meta or {}).get("media_type") or "episode"),
             "link": str(source_link or ""),
             "provider": str(provider or ""),
+            "view_id": view_identity[0] if view_identity else "",
+            "view_binding": view_identity[1] if view_identity else "",
             "owner": win.getProperty("play_er.monitor_owner")
         }
         while len(records) > 25:
@@ -462,13 +464,14 @@ def create_movie_playlist(start_meta, addon, active_provider, tmdb_client, handl
             if selected_source:
                 start_meta['source_title'] = selected_source['title']
 
-            playable_url = actions.resolve_video(
+            playable_url, view_identity = actions.resolve_video(
                 selected_source["link"],
                 selected_source.get("provider"),
                 json.dumps(start_meta),
                 return_url_only=True,
+                return_view_identity=True,
                 plugin_instance=plugin_instance
-            ) if selected_source else None
+            ) if selected_source else (None, None)
 
             if playable_url and selected_source:
                 li = xbmcgui.ListItem(label=start_meta.get("title"))
@@ -476,6 +479,7 @@ def create_movie_playlist(start_meta, addon, active_provider, tmdb_client, handl
                 tmdb_client.fill_list_item(li, start_meta, 'movie')
                 li.setProperty("IsPlayable", "true")
                 li.setPath(playable_url)
+                set_view_identity(li, view_identity)
                 attach_subtitles(li, selected_source["link"], provider=selected_source.get("provider"))
 
                 trakt_id_movie = ""
@@ -505,7 +509,9 @@ def create_movie_playlist(start_meta, addon, active_provider, tmdb_client, handl
                 progress_dialog = None
 
                 publish_active_streams(selected_source["link"], provider=selected_source.get("provider"))
-                publish_fallback(win, playable_url, start_meta, meta_uuid, 'movie', trakt_id_movie)
+                publish_fallback(win, playable_url, start_meta, meta_uuid, 'movie', trakt_id_movie,
+                                 source_link=str(selected_source['link']), provider=selected_source.get('provider'),
+                                 view_identity=view_identity)
                 if handle and handle > 0:
                     xbmcplugin.setResolvedUrl(handle, True, li)
                 else:
@@ -580,11 +586,12 @@ def create_movie_playlist(start_meta, addon, active_provider, tmdb_client, handl
                                     selected_rec = results_rec[0]
                                 rec_meta_full['source_title'] = selected_rec['title']
 
-                                playable_url_rec = actions.resolve_video(
+                                playable_url_rec, rec_view_identity = actions.resolve_video(
                                     selected_rec["link"],
                                     selected_rec.get("provider"),
                                     json.dumps(rec_meta_full),
                                     return_url_only=True,
+                                    return_view_identity=True,
                                     plugin_instance=plugin_instance
                                 )
 
@@ -594,6 +601,7 @@ def create_movie_playlist(start_meta, addon, active_provider, tmdb_client, handl
                                     tmdb_client.fill_list_item(li_rec, rec_meta_full, 'movie')
                                     li_rec.setProperty("IsPlayable", "true")
                                     li_rec.setPath(playable_url_rec)
+                                    set_view_identity(li_rec, rec_view_identity)
                                     attach_subtitles(li_rec, selected_rec["link"], provider=selected_rec.get("provider"))
 
                                     rec_meta_uuid = ''
@@ -621,7 +629,7 @@ def create_movie_playlist(start_meta, addon, active_provider, tmdb_client, handl
                                         allowed_sources.add((str(rec_meta_uuid), str(selected_rec['link'])))
                                     _remember_playlist_item(
                                         playable_url_rec, rec_meta_full, rec_meta_uuid,
-                                        rec_trakt_id, selected_rec.get('link'), selected_rec.get('provider'))
+                                        rec_trakt_id, selected_rec.get('link'), selected_rec.get('provider'), rec_view_identity)
                                     playlist.add(playable_url_rec, li_rec)
                                     history_keys.add(rec_key)
                                     bg_added += 1
@@ -872,11 +880,12 @@ def create_series_playlist(
         if not current_episode_meta_dict.get('fanart'):
             current_episode_meta_dict['fanart'] = ep_props.get('fanart') or show_props.get('fanart')
 
-        final_url = actions.resolve_video(
+        final_url, view_identity = actions.resolve_video(
             selected["link"],
             selected.get("provider"),
             json.dumps(current_episode_meta_dict),
             return_url_only=True,
+            return_view_identity=True,
             plugin_instance=plugin_instance,
         )
 
@@ -892,6 +901,7 @@ def create_series_playlist(
         tmdb_client.fill_list_item(li, current_episode_meta_dict, "episode")
         li.setProperty("IsPlayable", "true")
         li.setPath(final_url)
+        set_view_identity(li, view_identity)
         attach_subtitles(li, selected["link"], provider=selected.get("provider"))
 
         meta_uuid = store_meta_in_cache(current_episode_meta_dict)
@@ -916,7 +926,8 @@ def create_series_playlist(
 
         if use_resolve and handle and handle > 0:
             publish_active_streams(selected["link"], provider=selected.get("provider"))
-            publish_fallback(win, final_url, current_episode_meta_dict, meta_uuid, 'episode', trakt_id)
+            publish_fallback(win, final_url, current_episode_meta_dict, meta_uuid, 'episode', trakt_id,
+                             source_link=str(selected['link']), provider=selected.get('provider'), view_identity=view_identity)
             xbmcplugin.setResolvedUrl(handle, True, li)
         else:
             pl = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
@@ -931,7 +942,8 @@ def create_series_playlist(
             if start_guard is not None and not start_guard():
                 return
             publish_active_streams(selected["link"], provider=selected.get("provider"))
-            publish_fallback(win, final_url, current_episode_meta_dict, meta_uuid, 'episode', trakt_id)
+            publish_fallback(win, final_url, current_episode_meta_dict, meta_uuid, 'episode', trakt_id,
+                             source_link=str(selected['link']), provider=selected.get('provider'), view_identity=view_identity)
             xbmc.Player().play(pl)
             if on_started is not None:
                 on_started()
@@ -1041,13 +1053,14 @@ def create_series_playlist(
                         if bg_ep_props.get("fanart"): ep_meta["fanart"] = bg_ep_props.get("fanart")
                         elif show_props.get("fanart"): ep_meta["fanart"] = show_props.get("fanart")
 
-                        url = actions.resolve_video(sel["link"], sel.get("provider"), json.dumps(ep_meta), return_url_only=True, plugin_instance=plugin_instance)
+                        url, ep_view_identity = actions.resolve_video(sel["link"], sel.get("provider"), json.dumps(ep_meta), return_url_only=True, return_view_identity=True, plugin_instance=plugin_instance)
                         if url:
                             ep_li = xbmcgui.ListItem(f"S{c_season:02d}E{c_ep:02d} - {ep_meta['title']}")
                             ep_li.setContentLookup(False)
                             tmdb_client.fill_list_item(ep_li, ep_meta, "episode")
                             ep_li.setProperty("IsPlayable", "true")
                             ep_li.setPath(url)
+                            set_view_identity(ep_li, ep_view_identity)
                             attach_subtitles(ep_li, sel["link"], provider=sel.get("provider"))
 
                             try:
@@ -1081,7 +1094,7 @@ def create_series_playlist(
                                 url, ep_meta,
                                 ep_li.getProperty("play_er.meta_id"),
                                 ep_li.getProperty("play_er.trakt_id"),
-                                sel.get("link"), sel.get("provider")
+                                sel.get("link"), sel.get("provider"), ep_view_identity
                             )
                             added += 1
                         else:
@@ -1246,9 +1259,9 @@ def _queue_following_episodes_from_tmdbh_legacy(meta, addon, plugin_instance):
                     "cast_full": episode_props.get("cast_full", []) + show_cast
                 })
                 episode_meta.pop("_play_er_tmdbh_source_search", None)
-                final_url = actions.resolve_video(
+                final_url, view_identity = actions.resolve_video(
                     selected["link"], selected.get("provider"), json.dumps(episode_meta),
-                    return_url_only=True, plugin_instance=plugin_instance
+                    return_url_only=True, return_view_identity=True, plugin_instance=plugin_instance
                 )
                 if not final_url:
                     break
@@ -1260,6 +1273,7 @@ def _queue_following_episodes_from_tmdbh_legacy(meta, addon, plugin_instance):
                 tmdb_client.fill_list_item(list_item, episode_meta, "episode")
                 list_item.setProperty("IsPlayable", "true")
                 list_item.setPath(final_url)
+                set_view_identity(list_item, view_identity)
                 attach_subtitles(list_item, selected["link"], provider=selected.get("provider"))
                 list_item.setProperty("play_er.media_type", "episode")
                 list_item.setProperty("play_er.tmdb_id", str(tmdb_id))
@@ -1380,9 +1394,9 @@ def _build_managed_episode_item(meta, addon, plugin_instance, show_props, show_c
     })
     episode_meta.pop("_play_er_tmdbh_source_search", None)
 
-    final_url = actions.resolve_video(
+    final_url, view_identity = actions.resolve_video(
         selected["link"], selected.get("provider"), json.dumps(episode_meta),
-        return_url_only=True, plugin_instance=plugin_instance
+        return_url_only=True, return_view_identity=True, plugin_instance=plugin_instance
     )
     if not final_url:
         return None
@@ -1392,6 +1406,7 @@ def _build_managed_episode_item(meta, addon, plugin_instance, show_props, show_c
     tmdb_client.fill_list_item(list_item, episode_meta, "episode")
     list_item.setProperty("IsPlayable", "true")
     list_item.setPath(final_url)
+    set_view_identity(list_item, view_identity)
     attach_subtitles(list_item, selected["link"], provider=selected.get("provider"))
     list_item.setProperty("play_er.media_type", "episode")
     list_item.setProperty("play_er.tmdb_id", str(tmdb_id))
@@ -1413,7 +1428,7 @@ def _build_managed_episode_item(meta, addon, plugin_instance, show_props, show_c
     except Exception:
         pass
     list_item.setProperty("play_er.trakt_id", str(trakt_id))
-    _remember_playlist_item(final_url, episode_meta, meta_id, trakt_id, selected.get("link"), selected.get("provider"))
+    _remember_playlist_item(final_url, episode_meta, meta_id, trakt_id, selected.get("link"), selected.get("provider"), view_identity)
     return final_url, list_item
 
 

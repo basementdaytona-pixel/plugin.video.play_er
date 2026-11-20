@@ -2310,6 +2310,15 @@ def _monitor_remove_watch_later(params):
         log(f"WATCH LATER - Playback cleanup could not update storage: {e}", xbmc.LOGWARNING)
 
 
+def _monitor_track_prehraj_view(video_id, stream_url, binding):
+    manager = getattr(plugin_instance, 'provider_manager', None)
+    if manager:
+        provider = manager.get_provider('prehraj.to')
+        if provider:
+            return provider.api_track_view(video_id, stream_url=stream_url, binding=binding)
+    return False
+
+
 def find_similar(params, plugin_instance):
     actions.find_similar(params, plugin_instance)
 
@@ -2651,7 +2660,8 @@ def router(paramstring):
                 tmdb_client=plugin_instance.tmdb_client,
                 save_playback_history_func=save_playback_history,
                 remove_from_watch_later_func=_monitor_remove_watch_later,
-                mark_watched_func=mark_watched_callback
+                mark_watched_func=mark_watched_callback,
+                track_prehraj_view_func=_monitor_track_prehraj_view
             )
             if guard and not guard.valid():
                 return

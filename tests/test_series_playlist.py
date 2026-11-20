@@ -44,7 +44,9 @@ class SeriesPlaylistTests(unittest.TestCase):
         self.actions = MagicMock()
         self.actions._search_providers_parallel.side_effect = lambda query, *a, **kw: [
             {'link': query.split()[-1], 'provider': 'test', 'title': query}]
-        self.actions.resolve_video.side_effect = lambda link, *a, **kw: 'https://example.invalid/' + link + '|Header=value'
+        self.actions.resolve_video.side_effect = lambda link, *a, **kw: (
+            ('https://example.invalid/' + link + '|Header=value', None) if kw.get('return_view_identity')
+            else 'https://example.invalid/' + link + '|Header=value')
         self.plugin = MagicMock()
         self.utils = MagicMock()
         self.saved_meta = []
@@ -131,6 +133,17 @@ class SeriesPlaylistTests(unittest.TestCase):
         self.assertEqual(item.getProperty('play_er.provider'), 'prehraj.to')
         record = json.loads(self.window.getProperty('play_er.episode_queue_metadata'))
         self.assertEqual(next(iter(record.values()))['provider'], 'prehraj.to')
+
+    def test_series_queue_carries_each_resolved_view_identity(self):
+        self.actions.resolve_video.side_effect = lambda link, *a, **kw: (
+            'https://example.invalid/' + link + '|Header=value', (link, 'binding-' + link))
+        self.run_playlist()
+        first = generator.xbmcplugin.setResolvedUrl.call_args.args[2]
+        self.assertEqual(first.getProperty('play_er.view_binding'), 'binding-S01E01')
+        next_item = self.playlist.add.call_args_list[0].args[1]
+        self.assertEqual(next_item.getProperty('play_er.view_binding'), 'binding-S01E02')
+        records = json.loads(self.window.getProperty('play_er.episode_queue_metadata'))
+        self.assertIn('binding-S01E02', {record['view_binding'] for record in records.values()})
 
     def test_verified_refill_rejects_unidentified_future_items(self):
         meta = {'tmdb_id': 42, 'media_type': 'episode', 'season': 1, 'episode': 1,
@@ -284,7 +297,9 @@ class SeriesPlaylistTests(unittest.TestCase):
 
     def test_unresolvable_episode_does_not_skip_to_later_episode(self):
         original = self.actions.resolve_video.side_effect
-        self.actions.resolve_video.side_effect = lambda link, *a, **kw: None if link == 'S01E02' else original(link, *a, **kw)
+        self.actions.resolve_video.side_effect = lambda link, *a, **kw: (
+            (None, None) if link == 'S01E02' and kw.get('return_view_identity')
+            else None if link == 'S01E02' else original(link, *a, **kw))
         self.run_playlist()
         self.assertEqual([call.args[0] for call in self.actions.resolve_video.call_args_list], ['S01E01', 'S01E02'])
         self.playlist.add.assert_not_called()
