@@ -1929,11 +1929,11 @@ def playback_show_history(params, plugin_instance):
         s = meta.get("season")
         e = meta.get("episode")
         if tmdb_id and s is not None and e is not None and str(s) and str(e):
-            cache_key = f"tv_{tmdb_id}_s{s}_e{e}"
             try:
+                # Use the same parameter-sensitive cache as TMDBHelper and playlists.
                 return plugin_instance.tmdb_client._fetch(
                     f"tv/{tmdb_id}/season/{s}/episode/{e}", params={'append_to_response': 'credits'},
-                    cache_key=cache_key, _cache_validator=_history_tmdb_details)
+                    _cache_validator=_history_tmdb_details)
             except Exception:
                 return None
 

@@ -72,6 +72,25 @@ class HistoryTMDBCacheTests(unittest.TestCase):
     def show_episode_history(self):
         actions.playback_show_history({'show_title': 'Saved show', 'tmdb_id': '42'}, self.instance)
 
+    def test_history_reuses_episode_details_requested_by_tmdbhelper(self):
+        endpoint = 'tv/42/season/0/episode/1'
+        data = self.client._fetch(endpoint, params={'append_to_response': 'credits'})
+        self.assertEqual(data['name'], 'Special cs-CZ')
+        cache.clear_ram_cache()
+        self.show_episode_history()
+        self.assertEqual([item.label for item in self.created], ['S00E01 - Special cs-CZ'] * 2)
+        self.assertEqual(self.requests.call_count, 1)
+
+    def test_tmdbhelper_reuses_episode_details_requested_by_history(self):
+        self.show_episode_history()
+        cache.clear_ram_cache()
+        endpoint = 'tv/42/season/0/episode/1'
+        data = self.client._fetch(endpoint, params={'append_to_response': 'credits'})
+        self.assertEqual(data['name'], 'Special cs-CZ')
+        self.assertEqual(self.requests.call_count, 1)
+        self.client._fetch(endpoint)
+        self.assertEqual(self.requests.call_count, 2)
+
     def test_fresh_and_persisted_metadata_and_episode_identity(self):
         actions.playback_history(self.instance)
         self.assertEqual([item.label for item in self.created], ['Show cs-CZ', 'Film cs-CZ', 'Film cs-CZ'])

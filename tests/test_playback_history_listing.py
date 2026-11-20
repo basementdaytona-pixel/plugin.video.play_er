@@ -60,7 +60,7 @@ class PlaybackHistoryListingTests(unittest.TestCase):
         self.history.insert(1, {'meta': dict(self.show), 'link': 'episode-b'})
         actions.playback_show_history({'show_title': 'Show', 'tmdb_id': '42'}, self.instance)
         self.client._fetch.assert_called_once_with('tv/42/season/0/episode/1',
-                                                   params={'append_to_response': 'credits'}, cache_key='tv_42_s0_e1',
+                                                   params={'append_to_response': 'credits'},
                                                    _cache_validator=actions._history_tmdb_details)
         self.assertEqual(self.add.call_count, 2)
 
