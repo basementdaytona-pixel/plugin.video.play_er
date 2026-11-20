@@ -628,22 +628,44 @@ class PrehrajTo(BaseProvider):
         return False
 
     def _api_get(self, path, params=None, require_auth=False):
-        if require_auth and hasattr(self, '_auth_credentials') and self._sync_credentials():
-            return None
+        credentials = None
+        if require_auth and hasattr(self, '_auth_credentials'):
+            with self._auth_lock:
+                if self._sync_credentials():
+                    return None
+                credentials = self._auth_credentials
+
+        def same_account():
+            if credentials is None:
+                return True
+            with self._auth_lock:
+                if self._credentials() != credentials or self._auth_credentials != credentials:
+                    self._sync_credentials()
+                    return False
+                return True
+
         url = f"{self.api_base.rstrip('/')}/{path.lstrip('/')}"
         headers = {'User-Agent': self.headers.get('user-agent')}
         if require_auth and self._access_token:
             headers['Authorization'] = f'Bearer {self._access_token}'
         try:
             res = self.session.get(url, params=params, headers=headers, timeout=10)
+            if not same_account():
+                return None
             if require_auth and getattr(res, 'status_code', None) == 401:
                 renewed = self._refresh_access_token() if self._refresh_token else False
+                if not same_account():
+                    return None
                 if not renewed and path.strip('/') != 'profile':
                     self.get_premium_cookies(force=True)
+                    if not same_account():
+                        return None
                     renewed = bool(self._access_token)
                 if renewed and self._access_token:
                     headers['Authorization'] = f'Bearer {self._access_token}'
                     res = self.session.get(url, params=params, headers=headers, timeout=10)
+                    if not same_account():
+                        return None
             return res
         except Exception as e:
             log(f'PREHRAJTO - API GET ERROR {url} : {e}', xbmc.LOGWARNING)

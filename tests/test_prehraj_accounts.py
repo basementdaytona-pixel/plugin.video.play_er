@@ -1,7 +1,9 @@
 """Prehraj.to authentication ownership with isolated synthetic accounts."""
 import json
 import tempfile
+import threading
 import unittest
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
@@ -241,6 +243,91 @@ class PrehrajAccountTests(unittest.TestCase):
         self.assertIsNone(client.session.cookies.get('provider', domain='prehrajto.cz'))
         self.assertIsNone(client.session.cookies.get('account_cookie'))
         self.assertIsNone(client._access_token)
+
+    def test_get_discards_success_after_account_change(self):
+        client = self.provider()
+        client.get_premium_cookies()
+        def response(*args, **kwargs):
+            self.settings['email'] = 'second@example.invalid'
+            return SimpleNamespace(status_code=200, json=lambda: {'data': {'link': 'stale'}})
+        client.session.get.side_effect = response
+        self.assertIsNone(client.api_get_download_link('123456', detail={}).get('ORIGINAL (MKV)'))
+        self.assertIsNone(client._access_token)
+        client.session.get.assert_called_once()
+
+    def test_get_does_not_retry_unauthorized_response_after_account_change(self):
+        client = self.provider()
+        client.get_premium_cookies()
+        def response(*args, **kwargs):
+            self.settings['email'] = 'second@example.invalid'
+            return SimpleNamespace(status_code=401)
+        client.session.get.side_effect = response
+        self.assertIsNone(client._api_get('videos/123456', require_auth=True))
+        client.session.get.assert_called_once()
+        client.session.post.assert_not_called()
+        self.assertIsNone(client._access_token)
+
+    def test_get_discards_retried_response_after_account_change(self):
+        client = self.provider()
+        client.get_premium_cookies()
+        def response(*args, **kwargs):
+            if client.session.get.call_count == 1:
+                return SimpleNamespace(status_code=401)
+            self.settings['password'] = 'new-pass'
+            return SimpleNamespace(status_code=200)
+        client.session.get.side_effect = response
+        self.assertIsNone(client._api_get('videos/123456', require_auth=True))
+        self.assertEqual(client.session.get.call_count, 2)
+        self.assertEqual(client.session.post.call_count, 1)
+        self.assertIsNone(client._access_token)
+
+    def test_get_retries_same_account_and_accepts_refreshed_token(self):
+        client = self.provider()
+        client.get_premium_cookies()
+        success = SimpleNamespace(status_code=200)
+        client.session.get.side_effect = [SimpleNamespace(status_code=401), success]
+        self.assertIs(client._api_get('videos/123456', require_auth=True), success)
+        self.assertEqual(client.session.get.call_count, 2)
+        self.assertEqual(client._access_token, 'second-token')
+
+    def test_public_get_does_not_depend_on_account_changes(self):
+        client = self.provider()
+        client.get_premium_cookies()
+        success = SimpleNamespace(status_code=200)
+        def response(*args, **kwargs):
+            self.settings['email'] = 'second@example.invalid'
+            return success
+        client.session.get.side_effect = response
+        self.assertIs(client._api_get('videos/suggest', require_auth=False), success)
+
+    def test_slow_get_allows_account_change_without_returning_stale_data(self):
+        client = self.provider()
+        client.get_premium_cookies()
+        started, release = threading.Event(), threading.Event()
+        def response(*args, **kwargs):
+            started.set()
+            release.wait(3)
+            return SimpleNamespace(status_code=200)
+        client.session.get.side_effect = response
+        try:
+            with ThreadPoolExecutor(max_workers=2) as pool:
+                pending = pool.submit(client._api_get, 'videos/123456', require_auth=True)
+                self.assertTrue(started.wait(1))
+                self.settings['email'] = 'second@example.invalid'
+                self.assertTrue(pool.submit(client._sync_credentials).result(timeout=1))
+                release.set()
+                self.assertIsNone(pending.result(timeout=1))
+        finally:
+            release.set()
+
+    def test_unauthorized_profile_does_not_start_recursive_login(self):
+        client = self.provider()
+        client.get_premium_cookies()
+        client._set_tokens('first-token', None)
+        unauthorized = SimpleNamespace(status_code=401)
+        client.session.get.return_value = unauthorized
+        self.assertIs(client._api_get('profile', require_auth=True), unauthorized)
+        client.session.post.assert_not_called()
 
 
 if __name__ == '__main__':
