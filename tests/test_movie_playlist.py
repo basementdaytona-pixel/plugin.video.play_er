@@ -137,6 +137,15 @@ class MoviePlaylistTests(unittest.TestCase):
         self.player.play.assert_called_once_with(self.playlist)
         generator.xbmcplugin.setResolvedUrl.assert_not_called()
 
+    def test_initial_movie_attaches_selected_source_subtitles(self):
+        with patch.object(generator, 'attach_subtitles') as attach, \
+             patch.object(generator, 'publish_active_streams') as publish:
+            self.run_playlist()
+        first = generator.xbmcplugin.setResolvedUrl.call_args.args[2]
+        attach.assert_any_call(first, 'start', provider='test')
+        first.setProperty.assert_any_call('play_er.provider', 'test')
+        publish.assert_called_once_with('start', provider='test')
+
     def test_movie_start_and_queued_recommendation_publish_owned_identity(self):
         import json
         from resources.lib.playback_identity import EXPECTED_OWNER, EXPECTED_URL, stream_key
@@ -150,6 +159,7 @@ class MoviePlaylistTests(unittest.TestCase):
         queued = records[stream_key('https://example.invalid/3')]
         self.assertEqual((queued['owner'], queued['media_type'], queued['meta']['tmdb_id']),
                          ('movie-owner', 'movie', 3))
+        self.assertEqual(queued['provider'], 'test')
 
     def test_failed_direct_start_does_not_clear_existing_queue(self):
         self.actions.resolve_video.side_effect = lambda *a, **kw: None

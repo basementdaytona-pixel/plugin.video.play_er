@@ -155,6 +155,19 @@ class MonitorFallbackTests(unittest.TestCase):
                   'owner': monitor._playback_owner if owner is None else owner}
         window.setProperty('play_er.episode_queue_metadata', json.dumps({module.stream_key(url): record}))
 
+    def test_stripped_queue_item_uses_its_provider_for_stream_assets(self):
+        module, window, monitor, history, episode = self.make_active_episode()
+        next_episode = dict(episode, episode=3)
+        url = 'https://example.invalid/next'
+        self.queue_record(module, window, monitor, url, next_episode)
+        records = json.loads(window.getProperty('play_er.episode_queue_metadata'))
+        records[module.stream_key(url)].update(link='123456', provider='webshare.cz')
+        window.setProperty('play_er.episode_queue_metadata', json.dumps(records))
+        self.set_playing_url(monitor, url)
+        with patch.object(module, 'publish_active_streams') as publish:
+            monitor.onAVStarted()
+        publish.assert_called_once_with('123456', provider='webshare.cz')
+
     def test_foreign_video_without_stop_releases_monitor_and_keeps_old_progress(self):
         module, window, monitor, history, episode = self.make_active_episode()
         monitor.scrobbling_in_progress = True

@@ -249,6 +249,17 @@ class ConsumerBehaviorTests(unittest.TestCase):
         self.assertTrue(result.startswith('https://example.invalid/video|'))
         window.setProperty.assert_not_called()
 
+    def test_resolver_publishes_and_retains_actual_provider(self):
+        meta = {'tmdb_id': 7, 'media_type': 'movie', 'title': 'Film',
+                'cast_full': ['Actor'], 'poster': 'poster', 'plot': 'Plot'}
+        instance = self._resolver_instance('500')
+        item = MagicMock()
+        with patch.object(actions, 'publish_active_streams') as publish, \
+             patch.object(actions.xbmcgui, 'ListItem', return_value=item):
+            self._resolve_history(instance, '123456', 'webshare.cz', meta)
+        publish.assert_called_once_with('123456', provider='webshare.cz')
+        item.setProperty.assert_any_call('play_er.provider', 'webshare.cz')
+
     def test_resolver_keeps_existing_history_format_and_kodi_resolution(self):
         import resources.lib
         from types import SimpleNamespace

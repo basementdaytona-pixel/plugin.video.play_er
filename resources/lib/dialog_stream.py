@@ -164,11 +164,12 @@ def show_stream_menu(plugin_instance):
                 plugin_instance.tmdb_client.fill_list_item(li, meta, meta.get('media_type', 'movie'))
                 li.setProperty('play_er.meta_id', str(current_meta_id))
                 li.setProperty('play_er.link', str(current_link))
+                li.setProperty('play_er.provider', playing_item.getProperty('play_er.provider'))
                 li.setProperty('play_er.media_type', meta.get('media_type', 'movie'))
                 if current_trakt_id:
                     li.setProperty('play_er.trakt_id', str(current_trakt_id))
 
-                attach_subtitles(li, current_link)
+                attach_subtitles(li, playing_item)
             except Exception as e: 
                 log(f"STREAM SWITCH - Chyba metadat : {e}", xbmc.LOGWARNING)
 

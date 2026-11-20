@@ -2429,10 +2429,11 @@ class KodiPlayerMonitor(xbmc.Player):
 
                     li.setProperty('play_er.meta_id', playing_item.getProperty('play_er.meta_id'))
                     li.setProperty('play_er.link', playing_item.getProperty('play_er.link'))
+                    li.setProperty('play_er.provider', playing_item.getProperty('play_er.provider'))
                     li.setProperty('play_er.media_type', playing_item.getProperty('play_er.media_type'))
                     li.setProperty('play_er.trakt_id', playing_item.getProperty('play_er.trakt_id'))
 
-                    attach_subtitles(li, current_link)
+                    attach_subtitles(li, playing_item)
 
                     with self._playback_action_lock:
                         if generation != self._downgrade_generation or not self.owns_playback() or not self.isPlayingVideo():
@@ -2718,7 +2719,8 @@ class KodiPlayerMonitor(xbmc.Player):
                 link_history = playing_item.getProperty('play_er.link')
                 metadata_source = "item-properties" if (item_meta_id or item_trakt_id) else "window-fallback"
             source_list = playing_item.getProperty('play_er.source_list')
-            publish_active_streams(link_history or playing_item)
+            provider = playing_item.getProperty('play_er.provider') or (queue_record.get('provider', '') if queue_record else '')
+            publish_active_streams(link_history or playing_item, provider=provider or None)
 
             queued_meta = queue_record.get("meta") if queue_record else None
             if isinstance(queued_meta, dict) and queued_meta:

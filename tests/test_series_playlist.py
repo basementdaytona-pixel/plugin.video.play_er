@@ -108,6 +108,30 @@ class SeriesPlaylistTests(unittest.TestCase):
         self.assertEqual(len(records), 2)
         self.assertEqual(self.window.getProperty('play_er.bg_series_playlist_building'), '')
 
+    def test_initial_and_following_episodes_attach_selected_source_subtitles(self):
+        with patch.object(generator, 'attach_subtitles') as attach, \
+             patch.object(generator, 'publish_active_streams') as publish:
+            self.run_playlist()
+        first = generator.xbmcplugin.setResolvedUrl.call_args.args[2]
+        attach.assert_any_call(first, 'S01E01', provider='test')
+        self.assertEqual(first.getProperty('play_er.provider'), 'test')
+        publish.assert_called_once_with('S01E01', provider='test')
+        second = self.playlist.add.call_args_list[0].args[1]
+        attach.assert_any_call(second, 'S01E02', provider='test')
+        self.assertEqual(second.getProperty('play_er.provider'), 'test')
+
+    def test_managed_episode_carries_provider_and_subtitles(self):
+        meta = {'tmdb_id': 42, 'media_type': 'episode', 'tv_show_title': 'Show', 'season': 1, 'episode': 1}
+        with patch.object(generator, '_search_continue_sources', return_value=[
+                {'link': '123456', 'provider': 'prehraj.to', 'title': 'Show'}]), \
+             patch.object(generator, 'attach_subtitles') as attach:
+            result = generator._build_managed_episode_item(meta, self.addon, self.instance, {}, [], 1, 2)
+        url, item = result
+        attach.assert_called_once_with(item, '123456', provider='prehraj.to')
+        self.assertEqual(item.getProperty('play_er.provider'), 'prehraj.to')
+        record = json.loads(self.window.getProperty('play_er.episode_queue_metadata'))
+        self.assertEqual(next(iter(record.values()))['provider'], 'prehraj.to')
+
     def test_verified_refill_rejects_unidentified_future_items(self):
         meta = {'tmdb_id': 42, 'media_type': 'episode', 'season': 1, 'episode': 1,
                 '_play_er_queue_remaining': 2}
@@ -158,6 +182,7 @@ class SeriesPlaylistTests(unittest.TestCase):
         self.assertEqual(json.loads(self.window.getProperty('play_er.current_meta'))['episode'], 1)
         records = json.loads(self.window.getProperty('play_er.episode_queue_metadata'))
         self.assertEqual(records[stream_key('https://example.invalid/S01E02')]['owner'], 'series-owner')
+        self.assertEqual(records[stream_key('https://example.invalid/S01E02')]['provider'], 'test')
 
     def test_cancelled_guard_does_not_replace_active_fallback_identity(self):
         from resources.lib.playback_identity import EXPECTED_OWNER, EXPECTED_URL

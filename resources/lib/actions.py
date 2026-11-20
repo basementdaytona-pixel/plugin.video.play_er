@@ -589,12 +589,12 @@ def change_stream_quality(params, plugin_instance):
 
             # --- Obnovíme uložené čisté titulky ze speciální složky
 
-            attach_subtitles(li, playing_item.getProperty('play_er.link'))
+            attach_subtitles(li, playing_item)
         except: pass
 
     # --- Continuity logika - zastavíme video a nepozorovaně načteme to samé jinde
 
-    for key in ('play_er.link', 'play_er.meta_id', 'play_er.media_type', 'play_er.source_list', 'play_er.trakt_id'):
+    for key in ('play_er.link', 'play_er.provider', 'play_er.meta_id', 'play_er.media_type', 'play_er.source_list', 'play_er.trakt_id'):
         li.setProperty(key, playing_item.getProperty(key))
     win.setProperty("play_er.seamless_switching", "true")
     player.stop()
@@ -669,6 +669,9 @@ def resolve_video(link, provider_name, meta_json, source_list=None, return_url_o
     history_provider = provider_name if provider else None
     if not provider:
         provider = plugin_instance.provider_manager.get_active_provider()
+    resolved_provider = history_provider or getattr(plugin_instance.provider_manager, '_active_provider_name', '')
+    if not isinstance(resolved_provider, str):
+        resolved_provider = ''
 
     try:
         file_url, subtitle_url = provider.get_video_link(link)
@@ -693,7 +696,7 @@ def resolve_video(link, provider_name, meta_json, source_list=None, return_url_o
 
     if return_url_only: return final_url
 
-    publish_active_streams(str(link))
+    publish_active_streams(str(link), provider=resolved_provider)
 
     # FIX PRE-EMPTIVE AND FILTERS [NEW SOURCE SELECTION STARTS A FINITE SESSION]
     # Persist the budget BEFORE storing metadata for the active item/monitor.
@@ -790,6 +793,7 @@ def resolve_video(link, provider_name, meta_json, source_list=None, return_url_o
     publish_fallback(xbmcgui.Window(10000), final_url, meta, meta_uuid, media_type, trakt_id)
 
     li.setProperty('play_er.link', str(link))
+    li.setProperty('play_er.provider', resolved_provider)
     li.setProperty('play_er.meta_id', str(meta_uuid))
     li.setProperty('play_er.media_type', str(media_type))
     li.setProperty('play_er.source_list', str(source_list))
