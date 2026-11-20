@@ -53,6 +53,38 @@ class FetchTests(unittest.TestCase):
             client._fetch('movie/popular', cache_key='popular_page_1', skip_filter=True)
             self.assertEqual(fetch.call_count, 4)
 
+    def test_filter_change_during_fetch_does_not_mix_cache_variants(self):
+        client = object.__new__(tmdb.TMDB)
+        client.api_key, client.language = 'synthetic-key', 'cs-CZ'
+        client.base_url, client.session = 'https://example.invalid/3', MagicMock()
+        client.addon = MagicMock()
+        settings = {'mode': 'SOFT'}
+        client.addon.getSetting.side_effect = lambda key: settings['mode']
+        storage, store = {}, MagicMock()
+        store.window_cache_get.return_value = None
+        store.cache_get.side_effect = lambda folder, key: storage.get(key)
+        store.cache_set.side_effect = lambda folder, key, data: storage.update({key: data})
+
+        def request(*args, **kwargs):
+            settings['mode'] = 'HARD'
+            response = MagicMock()
+            response.json.return_value = {'results': [
+                {'id': 1, 'title': 'Example', 'original_language': 'en'},
+                {'id': 2, 'title': 'Translated', 'original_title': 'Original',
+                 'original_language': 'ja', 'genre_ids': [16]}]}
+            return response
+
+        with patch.object(tmdb, 'cache_manager', store), \
+             patch.object(tmdb, 'safe_get', side_effect=request) as fetch:
+            soft = client._fetch('movie/popular', cache_key='popular_page_1')
+            self.assertEqual([row['id'] for row in soft['results']], [1, 2])
+            hard = client._fetch('movie/popular', cache_key='popular_page_1')
+            self.assertEqual([row['id'] for row in hard['results']], [1])
+            self.assertEqual(client._fetch('movie/popular', cache_key='popular_page_1'), hard)
+            settings['mode'] = 'SOFT'
+            self.assertEqual(client._fetch('movie/popular', cache_key='popular_page_1'), soft)
+            self.assertEqual(fetch.call_count, 2)
+
     def test_invalid_filter_mode_uses_soft_default_for_results_and_cache(self):
         client = object.__new__(tmdb.TMDB)
         client.api_key, client.language = 'synthetic-key', 'cs-CZ'

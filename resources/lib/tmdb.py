@@ -116,9 +116,9 @@ class TMDB:
             return "SOFT"
         return mode if mode in ("OFF", "SOFT", "HARD") else "SOFT"
 
-    def _cache_variant(self, key, language=None, skip_filter=False):
+    def _cache_variant(self, key, language=None, skip_filter=False, filter_mode=None):
         """Keep cached translations and filter preferences independent."""
-        mode = self._get_language_filter_mode()
+        mode = self._get_language_filter_mode() if filter_mode is None else filter_mode
         return f"{key}_{language or self.language}_{'OFF' if skip_filter else mode}"
 
 
@@ -142,6 +142,7 @@ class TMDB:
         # Reuse season/episode details across Continue, credits and queue checks.
         # Keep credits and language variants separate; honour the configured TMDB TTL.
         params = dict(params or {})
+        mode = self._get_language_filter_mode()
         lang_to_use = language_override if language_override else self.language
         if lang_to_use:
             params["language"] = lang_to_use
@@ -154,7 +155,7 @@ class TMDB:
             cache_key = "tv_detail_" + digest
 
         if cache_key:
-            cache_key = self._cache_variant(cache_key, lang_to_use, skip_filter)
+            cache_key = self._cache_variant(cache_key, lang_to_use, skip_filter, filter_mode=mode)
 
         if cache_key and "page" in cache_key:
             w_data = cache_manager.window_cache_get(cache_key)
@@ -186,7 +187,6 @@ class TMDB:
             data = response.json()
 
 
-            mode = self._get_language_filter_mode()
             if not skip_filter and mode != "OFF":
                 if isinstance(data, dict) and "results" in data:
                     asian_pattern = re.compile(r"[\u3040-\u30ff\u4e00-\u9fff\uac00-\ud7af]")
