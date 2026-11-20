@@ -219,6 +219,26 @@ def create_seasons_menu(series_name, plugin_instance):
     xbmcplugin.endOfDirectory(plugin_instance.handle)
 
 
+def _usable_cached_tmdb(data):
+    return isinstance(data, dict) and bool(data) and 'status_code' not in data and data.get('success') is not False
+
+
+def _cached_tmdb(client, endpoint, params=None, cache_key=None):
+    try:
+        return client._fetch(endpoint, params=params, cache_key=cache_key,
+                             _cache_validator=_usable_cached_tmdb, _cache_only=True)
+    except Exception:
+        return None
+
+
+def _legacy_cached_tmdb(key):
+    try:
+        data = cache_manager.cache_get('TMDB', key)
+        return data if _usable_cached_tmdb(data) else None
+    except Exception:
+        return None
+
+
 def create_episodes_menu(series_name, season_num, plugin_instance):
 
     """
@@ -241,7 +261,11 @@ def create_episodes_menu(series_name, season_num, plugin_instance):
 
     if tmdb_id and plugin_instance.tmdb_client:
         try:
-            show_details = cache_manager.cache_get("TMDB", f"tv_{tmdb_id}")
+            client = plugin_instance.tmdb_client
+            endpoint = f"tv/{tmdb_id}"
+            show_details = (_cached_tmdb(client, endpoint, cache_key=f"tv_detail_{tmdb_id}")
+                            or _cached_tmdb(client, endpoint, cache_key=f"tv_{tmdb_id}")
+                            or _legacy_cached_tmdb(f"tv_{tmdb_id}"))
             if show_details:
                 if show_details.get("poster_path"):
                     poster_url = f"https://image.tmdb.org/t/p/w500{show_details['poster_path']}"
@@ -250,6 +274,7 @@ def create_episodes_menu(series_name, season_num, plugin_instance):
         except Exception:
             pass
 
+    cached_genres = None
     for episode_num in sorted(season.keys(), key=int):
         episode = season[episode_num]
         is_watched = plugin_instance.series_manager.is_episode_watched(series_name, season_num, episode_num)
@@ -291,21 +316,41 @@ def create_episodes_menu(series_name, season_num, plugin_instance):
 
         episode_props = {}
         if tmdb_id and plugin_instance.tmdb_client:
+            client = plugin_instance.tmdb_client
             cache_key = f"tv_{tmdb_id}_s{season_num}_e{episode_num}"
-            cached_ep = cache_manager.cache_get("TMDB", cache_key)
+            endpoint = f"tv/{tmdb_id}/season/{season_num}/episode/{episode_num}"
+            cached_ep = (_cached_tmdb(client, endpoint, params={'append_to_response': 'credits'})
+                         or _cached_tmdb(client, endpoint)
+                         or _cached_tmdb(client, endpoint, cache_key=cache_key)
+                         or _legacy_cached_tmdb(cache_key))
             if cached_ep:
-                episode_props = plugin_instance.tmdb_client._build_metadata_props(cached_ep, 'episode')
+                try:
+                    if cached_genres is None and (cached_ep.get('genre_ids') or cached_ep.get('genres')):
+                        cached_genres = {}
+                        known = getattr(client, 'genres_cache', {}).get('tv', {})
+                        if isinstance(known, dict):
+                            cached_genres.update(known)
+                        if not cached_genres:
+                            genre_data = _cached_tmdb(client, 'genre/tv/list', cache_key='genres_tv') or {}
+                            for genre in genre_data.get('genres') or []:
+                                if isinstance(genre, dict) and genre.get('id') is not None and genre.get('name'):
+                                    cached_genres[genre['id']] = genre['name']
+                    genre_names = dict(cached_genres or {})
+                    for genre in cached_ep.get('genres') or []:
+                        if isinstance(genre, dict) and genre.get('id') is not None and genre.get('name'):
+                            genre_names[genre['id']] = genre['name']
+                    episode_props = client._build_metadata_props(cached_ep, 'episode', genre_names=genre_names)
+                except Exception as exc:
+                    log(f"EPISODE MENU - Nelze načíst metadata: {type(exc).__name__}", xbmc.LOGWARNING)
 
         if not episode_props.get('title'):
             episode_props['title'] = clean_name
-        if not episode_props.get('tmdb_id'):
-            episode_props['tmdb_id'] = tmdb_id
+        # The episode response has its own ID; PLAY.ER identifies it by show and coordinates.
+        episode_props['tmdb_id'] = tmdb_id
         if not episode_props.get('tv_show_title'):
             episode_props['tv_show_title'] = series_name
-        if not episode_props.get('season'):
-            episode_props['season'] = season_num
-        if not episode_props.get('episode'):
-            episode_props['episode'] = episode_num
+        episode_props['season'] = season_num
+        episode_props['episode'] = episode_num
         if not episode_props.get('poster') and poster_url:
             episode_props['poster'] = poster_url
         if not episode_props.get('fanart') and fanart_url:

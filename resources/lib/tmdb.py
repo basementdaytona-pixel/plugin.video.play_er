@@ -119,10 +119,10 @@ class TMDB:
 
 
     def _fetch(self, endpoint, params=None, cache_key=None, skip_filter=False, language_override=None,
-               _cache_validator=None):
+               _cache_validator=None, _cache_only=False):
 
 
-        if not self.api_key:
+        if not self.api_key and not _cache_only:
             log("TMDB FETCH - CACHE : Chybí TMDB API klíč v nastavení !", xbmc.LOGERROR)
 
 
@@ -162,6 +162,8 @@ class TMDB:
                     cache_manager.window_cache_set(cache_key, cached_data)
                 return cached_data
 
+        if _cache_only:
+            return None
 
         params["api_key"] = self.api_key
         url = f"{self.base_url}/{endpoint}"
