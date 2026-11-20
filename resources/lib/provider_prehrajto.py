@@ -64,6 +64,18 @@ from resources.lib.utils import (
 
 
 
+def _local_language(value):
+    """Identify Czech/Slovak codes without matching unrelated languages."""
+    if not isinstance(value, str):
+        return None
+    language = value.strip().casefold().replace('_', '-').split('-', 1)[0]
+    if language in ('cz', 'cs', 'cze', 'ces', 'czech', 'cesky', 'česky', 'čeština'):
+        return 'cz'
+    if language in ('sk', 'slo', 'slk', 'slovak', 'slovensky', 'slovenský', 'slovenčina', 'slovencina'):
+        return 'sk'
+    return None
+
+
 class PrehrajTo(BaseProvider):
 
     """
@@ -783,7 +795,7 @@ class PrehrajTo(BaseProvider):
                 if not url or s.get('isBroken'):
                     continue
 
-                lang_code = str(s.get('language') or '').lower()
+                language = _local_language(s.get('language'))
                 lang_name = str(s.get('name') or '').upper()
 
                 if not lang_name or lang_name == 'NONE':
@@ -802,7 +814,7 @@ class PrehrajTo(BaseProvider):
                             f.write(resp.content)
 
                     if os.path.exists(local_file):
-                        if any(l in lang_code for l in ('cze', 'ces', 'cs', 'slo', 'slv', 'sk')):
+                        if language:
                             cz_sk_subs.append(local_file)
                         else:
                             other_subs.append(local_file)
@@ -1080,45 +1092,44 @@ class PrehrajTo(BaseProvider):
                         except Exception:
                             pass
 
-                    has_cz_subs_api = False
+                    has_cz_sk_subs_api = False
                     has_cz_audio_api = False
                     has_sk_audio_api = False
 
                     subs = it.get('subtitles', [])
                     if subs and isinstance(subs, list):
                         for s in subs:
-                            lang = str(s.get('language') or '' if isinstance(s, dict)
-                                       else s if isinstance(s, str) else '').lower()
-                            if any(l in lang for l in ('cze', 'ces', 'cs', 'sk', 'slo', 'slv')):
+                            lang = _local_language(s.get('language') if isinstance(s, dict) else s)
+                            if lang:
                                 api_tags.add('TIT')
-                                has_cz_subs_api = True
+                                has_cz_sk_subs_api = True
                                 break
 
                     audio_tracks = it.get('audio') or it.get('audios') or it.get('languages') or []
                     if isinstance(audio_tracks, list):
                         for a in audio_tracks:
-                            lang = str(a.get('language', a) if isinstance(a, dict) else a).lower()
-                            if any(l in lang for l in ('cze', 'ces', 'cs')):
+                            lang = _local_language(a.get('language') if isinstance(a, dict) else a)
+                            if lang == 'cz':
                                 api_tags.add('DAB')
                                 has_cz_audio_api = True
-                                break
-                            elif any(l in lang for l in ('sk', 'slo', 'slv')):
+                            elif lang == 'sk':
                                 api_tags.add('SK')
                                 has_sk_audio_api = True
+                            if has_cz_audio_api and has_sk_audio_api:
                                 break
 
                     has_cz_word = re.search(r'\b(cz|sk)\b', tl)
                     is_explicit_dub = re.search(r'\b(dabing|dab|czdab|czdabing|skdab|skdabing)\b', tl)
                     has_sub_keywords = re.search(r'\b(titulky|tit|cztit|cztitulky|sub|subs)\b', tl)
 
-                    if has_sub_keywords and not has_cz_subs_api:
+                    if has_sub_keywords and not has_cz_sk_subs_api:
                         api_tags.add('TIT')
 
                     if not has_cz_audio_api and not has_sk_audio_api:
                         if is_explicit_dub:
                             api_tags.add('DAB')
                         elif has_cz_word:
-                            if has_cz_subs_api or has_sub_keywords:
+                            if has_cz_sk_subs_api or has_sub_keywords:
                                 api_tags.add('TIT')
                             else:
                                 api_tags.add('DAB')
