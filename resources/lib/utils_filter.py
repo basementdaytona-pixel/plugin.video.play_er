@@ -268,9 +268,13 @@ def clean_display_title(title, explicit_tags=None, extension=None, likes=0):
             formatted_tags.append(f"[COLOR {Colors.YELLOW}]{ext_clean}[/COLOR]")
 
     tags_to_show = []
-    if 'DAB' in explicit_tags or 'DAB' in collected_tags['lang']:
+    if 'DAB' in explicit_tags:
         tags_to_show.append('DAB')
-    elif 'SK' in explicit_tags or 'SK' in collected_tags['lang']:
+    elif 'SK' in explicit_tags:
+        tags_to_show.append('SK')
+    elif 'DAB' in collected_tags['lang']:
+        tags_to_show.append('DAB')
+    elif 'SK' in collected_tags['lang']:
         tags_to_show.append('SK')
 
     if 'TIT' in explicit_tags or 'TIT' in collected_tags['sub']:

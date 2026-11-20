@@ -1295,7 +1295,8 @@ class PrehrajTo(BaseProvider):
                             if has_cz_audio_api and has_sk_audio_api:
                                 break
 
-                    has_cz_word = re.search(r'\b(cz|sk)\b', tl)
+                    has_cz_word = re.search(r'\bcz\b', tl)
+                    has_sk_word = re.search(r'\bsk\b', tl)
                     is_explicit_dub = re.search(r'\b(dabing|dab|czdab|czdabing|skdab|skdabing)\b', tl)
                     has_sub_keywords = re.search(r'\b(titulky|tit|cztit|cztitulky|sub|subs)\b', tl)
 
@@ -1304,12 +1305,20 @@ class PrehrajTo(BaseProvider):
 
                     if not has_cz_audio_api and not has_sk_audio_api:
                         if is_explicit_dub:
-                            api_tags.add('DAB')
-                        elif has_cz_word:
+                            explicit_sk = re.search(r'\bskdab(?:ing)?\b', tl)
+                            explicit_cz = re.search(r'\bczdab(?:ing)?\b', tl)
+                            if explicit_sk or (has_sk_word and not has_cz_word and not explicit_cz):
+                                api_tags.add('SK')
+                            if explicit_cz or (not explicit_sk and (has_cz_word or not has_sk_word)):
+                                api_tags.add('DAB')
+                        elif has_cz_word or has_sk_word:
                             if has_cz_sk_subs_api or has_sub_keywords:
                                 api_tags.add('TIT')
                             else:
-                                api_tags.add('DAB')
+                                if has_cz_word:
+                                    api_tags.add('DAB')
+                                if has_sk_word:
+                                    api_tags.add('SK')
 
                     likes = 0
                     dislikes = 0

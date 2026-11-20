@@ -1,4 +1,6 @@
 """Czech and Slovak audio/subtitle tags use verified language codes."""
+import hashlib
+import json
 import os
 import sys
 import tempfile
@@ -67,6 +69,26 @@ class PrehrajLanguageTests(unittest.TestCase):
                             {'id': 4, 'title': 'Video CZ', 'audio': []}])
         self.assertEqual([set(row['tags']) for row in rows], [{'TIT'}, {'TIT'}, {'TIT'}, {'DAB'}])
 
+    def test_slovak_filename_hints_use_slovak_tag(self):
+        examples = [('Video SK', {'SK'}), ('Video SKDAB', {'SK'}),
+                    ('Video SKDABING CZ titulky', {'SK', 'TIT'}),
+                    ('Video SK DABING', {'SK'}), ('Video CZ dabing', {'DAB'}),
+                    ('Video SK titulky', {'TIT'}), ('Video CZ SK', {'DAB', 'SK'})]
+        rows = self.search([{'id': i + 1, 'title': title} for i, (title, _) in enumerate(examples)])
+        for row, (title, expected) in zip(rows, examples):
+            with self.subTest(title=title):
+                self.assertEqual(set(row['tags']), expected)
+
+    def test_audio_metadata_remains_authoritative_over_filename_hint(self):
+        rows = self.search([{'id': 1, 'title': 'Video SKDAB', 'audio': ['cz']},
+                            {'id': 2, 'title': 'Video CZ dabing', 'audio': ['sk']}])
+        self.assertEqual([set(row['tags']) for row in rows], [{'DAB'}, {'SK'}])
+
+    def test_slovak_tag_controls_display_with_generic_dubbing_word(self):
+        label, _, _, _ = filters.clean_display_title('Video SK DABING', explicit_tags=['SK'])
+        self.assertIn('[ SK ]', label)
+        self.assertNotIn('[ DAB ]', label)
+
     def test_corrected_tags_are_used_by_existing_expression_filter(self):
         rows = self.search([{'id': 1, 'title': 'First', 'audio': ['sk', 'cz']},
                             {'id': 2, 'title': 'Second', 'audio': ['slv']}])
@@ -84,6 +106,17 @@ class PrehrajLanguageTests(unittest.TestCase):
         self.addon.getSettingBool.return_value = False
         before = '6dba9ec312a5635e40e4a5a77df823d6d15e74f93c8cf9181d26146d93b299a4'
         self.assertNotEqual(source_scope(self.addon, SimpleNamespace(_active_provider_name='prehraj.to')), before)
+
+    def test_pre_change_language_cache_is_invalidated(self):
+        old_settings = {'providers': ('prehraj.to',), 'enable_filtering': 'false',
+                        'provider_search_completion_version': 1, 'prehrajto_search_api_version': 4}
+        for key in ('email', 'password', 'search_pages', 'search_ls', 'prehrajto_api_sort',
+                    'prehrajto_api_quality', 'prehrajto_mark_multi_streams', 'prehrajto_long_videos'):
+            old_settings[key] = self.settings.get(key, '')
+        old = hashlib.sha256(json.dumps(old_settings, sort_keys=True, ensure_ascii=False,
+                                        separators=(',', ':')).encode('utf-8')).hexdigest()
+        self.addon.getSettingBool.return_value = False
+        self.assertNotEqual(source_scope(self.addon, SimpleNamespace(_active_provider_name='prehraj.to')), old)
 
     def test_playback_prioritizes_czech_slovak_subtitles_without_losing_others(self):
         client = self.provider

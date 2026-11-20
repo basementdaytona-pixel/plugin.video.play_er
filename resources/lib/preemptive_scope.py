@@ -17,7 +17,7 @@ def source_scope(addon, provider_manager):
                 'provider_search_completion_version': 1}
     if 'prehraj.to' in providers:
         # Older cached rows may be incomplete or use outdated normalization.
-        settings['prehrajto_search_api_version'] = 4
+        settings['prehrajto_search_api_version'] = 5
         for key in ('email', 'password', 'search_pages', 'search_ls', 'prehrajto_api_sort',
                     'prehrajto_api_quality', 'prehrajto_mark_multi_streams',
                     'prehrajto_long_videos'):
