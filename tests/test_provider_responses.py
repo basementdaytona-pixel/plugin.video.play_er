@@ -146,9 +146,10 @@ class WebshareResponsesTests(unittest.TestCase):
         self.assertIsNone(self.client._auth_token)
 
     def test_expired_token_runs_real_login_flow_before_retried_playback(self):
-        settings = {'webshare_token': 'old'}
+        settings = {'webshare_token': 'old', 'webshare_username': 'synthetic-user', 'webshare_password': 'synthetic-password'}
         self.client.username, self.client.password = 'synthetic-user', 'synthetic-password'
         self.client._auth_token = 'old'
+        self.client._save_token_binding = MagicMock(return_value=True)
         self.client._get_auth_token = webshare.Webshare._get_auth_token.__get__(self.client)
         self.client.addon.getSetting.side_effect = lambda key: settings.get(key, '')
         self.client.addon.setSetting.side_effect = lambda key, value: settings.__setitem__(key, value)
@@ -166,7 +167,7 @@ class WebshareResponsesTests(unittest.TestCase):
     def test_parallel_invalid_responses_share_one_reauthentication(self):
         invalid = SimpleNamespace(status_code=200, content=b'<response><status>FAIL</status><message>Invalid token</message></response>')
         valid = SimpleNamespace(status_code=200, content=b'<response><status>OK</status><link>https://example.invalid/video</link></response>')
-        settings = {'webshare_token': 'old'}
+        settings = {'webshare_token': 'old', 'webshare_username': 'synthetic-user', 'webshare_password': 'synthetic-password'}
         self.client.username, self.client.password = 'synthetic-user', 'synthetic-password'
         self.client._auth_token = 'old'
         self.client._get_auth_token = webshare.Webshare._get_auth_token.__get__(self.client)

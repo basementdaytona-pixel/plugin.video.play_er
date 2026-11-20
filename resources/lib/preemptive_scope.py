@@ -1,5 +1,6 @@
 """Identify the provider configuration used for a preemptive search."""
 import hashlib
+import hmac
 import json
 
 
@@ -20,5 +21,9 @@ def source_scope(addon, provider_manager):
     if 'webshare.cz' in providers:
         for key in ('webshare_username', 'webshare_search_limit', 'webshare_category', 'webshare_sort'):
             settings[key] = addon.getSetting(key)
+        token = addon.getSetting('webshare_token')
+        if token:
+            password = addon.getSetting('webshare_password') or ''
+            settings['webshare_auth'] = hmac.new(token.encode('utf-8'), password.encode('utf-8'), hashlib.sha256).hexdigest()
     encoded = json.dumps(settings, sort_keys=True, ensure_ascii=False, separators=(',', ':')).encode('utf-8')
     return hashlib.sha256(encoded).hexdigest()

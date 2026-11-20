@@ -12,6 +12,8 @@
 ##############################################################################
 
 import hashlib
+import hmac
+import json
 import threading
 import xml.etree.ElementTree as ET
 
@@ -19,9 +21,11 @@ import xml.etree.ElementTree as ET
 import xbmc
 import xbmcgui
 import xbmcplugin
+import xbmcvfs
 
 
 from resources.lib.provider_base import BaseProvider
+from resources.lib.utils_files import SafeVFSFile
 from resources.lib.utils_logging import log
 from resources.lib.md5crypt import md5crypt
 from resources.lib.utils_theme import Colors
@@ -72,6 +76,7 @@ class Webshare(BaseProvider):
         self._auth_token = get_setting_str(self.addon, "webshare_token", "")
         self._login_failed = False
         self._auth_lock = threading.RLock()
+        self._binding_cache = None
 
         if not self.username or not self.password:
             log("WEBSHARE - Chybí uživatelské jméno nebo heslo v nastavení.", xbmc.LOGERROR)
@@ -80,6 +85,8 @@ class Webshare(BaseProvider):
             self._login_failed = True
             return
 
+        if self._auth_token and not self._accept_stored_token(self._auth_token):
+            self._auth_token = None
         if not self._auth_token:
             try:
                 self._login()
@@ -89,8 +96,62 @@ class Webshare(BaseProvider):
                 self._auth_token = None
                 self._login_failed = True
 
+    def _binding_path(self):
+        return xbmcvfs.translatePath('special://profile/addon_data/plugin.video.play_er/WEBSHARE_TOKEN_BINDING.JSON')
+
+    def _token_binding(self, token):
+        identity = json.dumps([self.username, self.password], ensure_ascii=False, separators=(',', ':')).encode('utf-8')
+        return {
+            'token_hash': hashlib.sha256(token.encode('utf-8')).hexdigest(),
+            'credentials': hmac.new(token.encode('utf-8'), identity, hashlib.sha256).hexdigest(),
+        }
+
+    def _save_token_binding(self, token):
+        binding = self._token_binding(token)
+        self._binding_cache = binding
+        try:
+            folder = xbmcvfs.translatePath('special://profile/addon_data/plugin.video.play_er/')
+            if not xbmcvfs.exists(folder):
+                xbmcvfs.mkdirs(folder)
+            with SafeVFSFile(self._binding_path(), 'w') as handle:
+                if handle.write(json.dumps(binding)) is False:
+                    raise OSError('binding write failed')
+            return True
+        except Exception as exc:
+            log(f'WEBSHARE - Nelze uložit vazbu účtu: {type(exc).__name__}', xbmc.LOGWARNING)
+            return False
+
+    def _accept_stored_token(self, token):
+        try:
+            current = self._token_binding(token)
+            cached = getattr(self, '_binding_cache', None)
+            if (cached and hmac.compare_digest(cached['token_hash'], current['token_hash'])
+                    and not hmac.compare_digest(cached['credentials'], current['credentials'])):
+                return False
+            path = self._binding_path()
+            if not xbmcvfs.exists(path):
+                # Existing installations can keep their saved or manually entered token.
+                self._save_token_binding(token)
+                return True
+            with SafeVFSFile(path, 'r') as handle:
+                previous = json.loads(handle.read() or '{}')
+            if not isinstance(previous, dict) or not isinstance(previous.get('token_hash'), str) or not isinstance(previous.get('credentials'), str):
+                return False
+            if not hmac.compare_digest(previous['token_hash'], current['token_hash']):
+                # The token is an editable setting and may have been replaced manually.
+                self._save_token_binding(token)
+                return True
+            matches = hmac.compare_digest(previous['credentials'], current['credentials'])
+            if matches:
+                self._binding_cache = current
+            return matches
+        except Exception as exc:
+            log(f'WEBSHARE - Nelze ověřit vazbu účtu: {type(exc).__name__}', xbmc.LOGWARNING)
+            return False
+
     def _login(self):
         try:
+            previous_token = get_setting_str(self.addon, 'webshare_token', '')
             salt_response = safe_post(
                 self.session,
                 f"{self.base_url}salt/",
@@ -134,9 +195,15 @@ class Webshare(BaseProvider):
             login_xml = ET.fromstring(login_response.content)
 
             if login_xml.find('status').text == 'OK':
-                self._auth_token = login_xml.find('token').text
-                if self._auth_token:
+                token = login_xml.findtext('token')
+                if token:
+                    if (get_setting_str(self.addon, 'webshare_username', '') != self.username
+                            or get_setting_str(self.addon, 'webshare_password', '') != self.password
+                            or get_setting_str(self.addon, 'webshare_token', '') != previous_token):
+                        return False
+                    self._auth_token = token
                     self.addon.setSetting("webshare_token", self._auth_token)
+                    self._save_token_binding(self._auth_token)
                     log("PROVIDER :: WEBSHARE.CZ - TOKEN & LOGIN OK", xbmc.LOGINFO)
                     notify_acc("WEBSHARE.CZ AKTIVNÍ", category="SOURCE")
                     return True
@@ -155,11 +222,18 @@ class Webshare(BaseProvider):
 
     def _get_auth_token(self):
         with self._auth_lock:
-            if self._auth_token:
-                return self._auth_token
-
+            username = get_setting_str(self.addon, 'webshare_username', '')
+            password = get_setting_str(self.addon, 'webshare_password', '')
+            if (username, password) != (self.username, self.password):
+                self.username, self.password = username, password
+                self._auth_token = None
+            if not self.username or not self.password:
+                return None
             token = get_setting_str(self.addon, "webshare_token", "")
-            if token:
+            if self._auth_token and self._auth_token == token:
+                return self._auth_token
+            self._auth_token = None
+            if token and self._accept_stored_token(token):
                 self._auth_token = token
                 return self._auth_token
 

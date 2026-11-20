@@ -77,6 +77,16 @@ class PreemptiveScopeTests(unittest.TestCase):
                 self.assertNotEqual(source_scope(self.addon, manager), baseline)
                 del self.settings[key]
 
+    def test_webshare_password_or_token_change_invalidates_scope(self):
+        manager = self.instance.provider_manager
+        self.settings.update(webshare_token='synthetic-token', webshare_password='first-password')
+        baseline = source_scope(self.addon, manager)
+        self.settings['webshare_password'] = 'second-password'
+        self.assertNotEqual(source_scope(self.addon, manager), baseline)
+        self.settings['webshare_password'] = 'first-password'
+        self.settings['webshare_token'] = 'new-synthetic-token'
+        self.assertNotEqual(source_scope(self.addon, manager), baseline)
+
     def test_search_setting_change_invalidates_matching_cache(self):
         self.cache.cache_get.return_value['source_scope'] = source_scope(self.addon, self.instance.provider_manager)
         self.settings['webshare_category'] = 'AUDIO'
@@ -125,7 +135,8 @@ class PreemptiveScopeTests(unittest.TestCase):
         self.cache.cache_set.assert_not_called()
 
     def test_writer_records_only_configuration_digest(self):
-        self.settings['webshare_username'] = 'synthetic-account'
+        self.settings.update(webshare_username='synthetic-account', webshare_password='synthetic-password',
+                             webshare_token='synthetic-token')
         with patch.object(actions, '_search_providers_parallel', return_value=self.fresh), \
              patch.object(resources.lib, 'cache_manager', self.cache, create=True), \
              patch.dict(sys.modules, {'xbmc': actions.xbmc, 'resources.lib.cache_manager': self.cache,
@@ -133,7 +144,8 @@ class PreemptiveScopeTests(unittest.TestCase):
             actions._perform_pre_emptive_search({'tmdb_id': 42, 'season': 1, 'episode': 2, 'tv_show_title': 'Show'}, self.instance)
         payload = self.cache.cache_set.call_args.args[2]
         self.assertEqual(payload['source_scope'], source_scope(self.addon, self.instance.provider_manager))
-        self.assertNotIn('synthetic-account', str(payload))
+        for value in ('synthetic-account', 'synthetic-password', 'synthetic-token'):
+            self.assertNotIn(value, str(payload))
 
     def test_real_sqlite_cache_reuses_matching_scope_then_researches_after_change(self):
         cache = atomic_support.cache
