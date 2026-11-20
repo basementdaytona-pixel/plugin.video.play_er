@@ -132,7 +132,7 @@ class PreemptiveScopeTests(unittest.TestCase):
              patch.dict(sys.modules, {'xbmc': actions.xbmc, 'resources.lib.cache_manager': self.cache,
                                       'resources.lib.utils_logging': MagicMock()}):
             actions._perform_pre_emptive_search({'tmdb_id': 42, 'season': 1, 'episode': 2, 'tv_show_title': 'Show'}, self.instance)
-        self.cache.cache_set.assert_not_called()
+        self.cache.cache_set_preemptive_if_newer.assert_not_called()
 
     def test_writer_records_only_configuration_digest(self):
         self.settings.update(webshare_username='synthetic-account', webshare_password='synthetic-password',
@@ -142,7 +142,7 @@ class PreemptiveScopeTests(unittest.TestCase):
              patch.dict(sys.modules, {'xbmc': actions.xbmc, 'resources.lib.cache_manager': self.cache,
                                       'resources.lib.utils_logging': MagicMock()}):
             actions._perform_pre_emptive_search({'tmdb_id': 42, 'season': 1, 'episode': 2, 'tv_show_title': 'Show'}, self.instance)
-        payload = self.cache.cache_set.call_args.args[2]
+        payload = self.cache.cache_set_preemptive_if_newer.call_args.args[1]
         self.assertEqual(payload['source_scope'], source_scope(self.addon, self.instance.provider_manager))
         for value in ('synthetic-account', 'synthetic-password', 'synthetic-token'):
             self.assertNotIn(value, str(payload))

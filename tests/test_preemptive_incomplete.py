@@ -57,17 +57,17 @@ class IncompletePreemptiveTests(unittest.TestCase):
         self.p._api_get.side_effect = [response(videos(1, 32)), response([], 503)]
         self.providers = [self.p]
         self.write()
-        self.cache.cache_set.assert_not_called()
+        self.cache.cache_set_preemptive_if_newer.assert_not_called()
         self.p._api_get.side_effect = [response(videos(1, 1))]
         self.write()
-        self.assertEqual(self.cache.cache_set.call_count, 1)
-        self.assertEqual(self.cache.cache_set.call_args.args[2]['results'][0]['id'], 1)
+        self.assertEqual(self.cache.cache_set_preemptive_if_newer.call_count, 1)
+        self.assertEqual(self.cache.cache_set_preemptive_if_newer.call_args.args[1]['results'][0]['id'], 1)
 
     def test_interrupted_preemptive_search_does_not_write_cache(self):
         self.p._api_get.side_effect = [response(videos(1, 32)), response([], 503)]
         self.providers = [self.p]
         self.write()
-        self.cache.cache_set.assert_not_called()
+        self.cache.cache_set_preemptive_if_newer.assert_not_called()
 
     def test_webshare_xml_failure_is_incomplete(self):
         import xml.etree.ElementTree as ET
@@ -121,7 +121,7 @@ class IncompletePreemptiveTests(unittest.TestCase):
         self.assertEqual([row['id'] for row in rows], [1])
         self.assertIs(rows.complete, False)
         self.write()
-        self.cache.cache_set.assert_not_called()
+        self.cache.cache_set_preemptive_if_newer.assert_not_called()
 
     def test_valid_empty_webshare_results_can_be_cached_with_prehraj(self):
         self.p._api_get.return_value = response(videos(1, 1))
@@ -134,7 +134,7 @@ class IncompletePreemptiveTests(unittest.TestCase):
         w.normalize_and_filter = lambda rows, **kwargs: rows
         self.providers = [self.p, w]
         self.write()
-        self.cache.cache_set.assert_called_once()
+        self.cache.cache_set_preemptive_if_newer.assert_called_once()
 
     def test_raised_provider_exception_marks_combined_results_incomplete(self):
         self.p._api_get.return_value = response(videos(1, 1))

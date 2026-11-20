@@ -14,6 +14,7 @@
 import os
 import sys
 import json
+import math
 import time
 import copy
 import sqlite3
@@ -801,7 +802,8 @@ def cache_get(folder, key, max_age=None):
 def _cache_get_locked(folder, key, key_hash, max_age):
     global IN_MEMORY_CACHE_STATS
     ram_key = f"{folder}:{key_hash}"
-    use_ram = not (folder == "USER_DATA" and isinstance(key, str) and key in SHARED_LIST_KEYS)
+    use_ram = (folder != "PREEMPTIVE_SOURCES" and
+               not (folder == "USER_DATA" and isinstance(key, str) and key in SHARED_LIST_KEYS))
     with CACHE_LOCK:
         generation = _ram_generation
         if use_ram and ram_key in CACHE_RAM:
@@ -927,7 +929,8 @@ def cache_set(folder, key, data):
 def _cache_set_locked(folder, key, key_hash, data):
     global IN_MEMORY_CACHE_STATS
     ram_key = f"{folder}:{key_hash}"
-    use_ram = not (folder == "USER_DATA" and isinstance(key, str) and key in SHARED_LIST_KEYS)
+    use_ram = (folder != "PREEMPTIVE_SOURCES" and
+               not (folder == "USER_DATA" and isinstance(key, str) and key in SHARED_LIST_KEYS))
     with CACHE_LOCK:
         generation = _ram_generation
         if not use_ram:
@@ -991,6 +994,92 @@ def _cache_set_locked(folder, key, key_hash, data):
                 conn.close()
         except Exception:
             pass
+
+
+def cache_set_preemptive_if_newer(key, data, started_at):
+    """Store a completed search only if it started after the stored search.
+
+    Conditional SQL updates coordinate independent Kodi interpreters and MySQL
+    clients. Future timestamps are stale after a local wall-clock rollback.
+    """
+    try:
+        started_at = float(started_at)
+        if not math.isfinite(started_at):
+            return False
+        data_json = json.dumps(data, ensure_ascii=False)
+    except (TypeError, ValueError, OverflowError):
+        return False
+
+    folder = 'PREEMPTIVE_SOURCES'
+    key_hash = _hash_key((folder, key))
+    with _KEY_LOCKS[int(key_hash[:8], 16) % len(_KEY_LOCKS)]:
+        conn, is_mysql = _get_db_connection()
+        if not conn:
+            return False
+        cursor = None
+        transaction_started = False
+        discard_connection = False
+        try:
+            with (threading.RLock() if is_mysql else DB_LOCK):
+                cursor = conn.cursor()
+                if is_mysql:
+                    cursor.execute("SELECT ENGINE FROM information_schema.TABLES "
+                                   "WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='cache_store'")
+                    engine = cursor.fetchone()
+                    if not engine or str(engine[0]).lower() != 'innodb':
+                        raise CacheStorageError('Preemptive cache ordering requires InnoDB')
+                    conn.start_transaction(isolation_level='READ COMMITTED')
+                else:
+                    conn.execute('BEGIN IMMEDIATE')
+                transaction_started = True
+                placeholder = '%s' if is_mysql else '?'
+                insert = 'INSERT IGNORE' if is_mysql else 'INSERT OR IGNORE'
+                values = (key_hash, folder, data_json, started_at, started_at + _folder_ttl(folder))
+                cursor.execute(f'{insert} INTO cache_store (key_hash, section, data, created_at, expires_at) '
+                               f'VALUES ({", ".join([placeholder] * 5)})', values)
+                inserted = cursor.rowcount > 0
+                suffix = ' FOR UPDATE' if is_mysql else ''
+                cursor.execute(f'SELECT created_at FROM cache_store WHERE key_hash={placeholder} '
+                               f'AND section={placeholder}{suffix}', (key_hash, folder))
+                row = cursor.fetchone()
+                now = time.time()
+                if not row or started_at > now:
+                    conn.rollback()
+                    transaction_started = False
+                    return False
+                stored_at = row[0]
+                updated = not inserted and (stored_at < started_at or stored_at > now)
+                if updated:
+                    cursor.execute(f'UPDATE cache_store SET data={placeholder}, created_at={placeholder}, '
+                                   f'expires_at={placeholder} WHERE key_hash={placeholder} AND section={placeholder}',
+                                   (data_json, started_at, started_at + _folder_ttl(folder), key_hash, folder))
+                conn.commit()
+                transaction_started = False
+                if inserted or updated:
+                    with CACHE_LOCK:
+                        IN_MEMORY_CACHE_STATS['sets'] += 1
+                return inserted or updated
+        except Exception as exc:
+            if transaction_started or is_mysql:
+                try:
+                    conn.rollback()
+                except Exception:
+                    discard_connection = is_mysql
+            log(f'CACHE - PREEMPTIVE WRITE ERROR: {type(exc).__name__}', xbmc.LOGWARNING)
+            return False
+        finally:
+            if cursor is not None:
+                try:
+                    cursor.close()
+                except Exception:
+                    pass
+            try:
+                if discard_connection:
+                    conn.close(discard=True)
+                else:
+                    conn.close()
+            except Exception:
+                pass
 
 
 def _invalidate_ram(folders=()):

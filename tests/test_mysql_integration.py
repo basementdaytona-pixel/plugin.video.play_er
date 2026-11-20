@@ -2,6 +2,7 @@
 import os
 import sys
 import threading
+import time
 import unittest
 import uuid
 from concurrent.futures import ThreadPoolExecutor
@@ -100,6 +101,38 @@ class MySQLIntegrationTests(unittest.TestCase):
             self.assertEqual(self.cache.MYSQL_CHECKOUT_COUNT, 0)
             self.assertEqual(len(self.pool._available), 3)
             self.assertEqual(self.pool._in_use, set())
+
+    def test_preemptive_searches_are_ordered_across_interpreters(self):
+        second = load_module('resources.lib.cache_manager')
+        key = 'preemptive-race-' + uuid.uuid4().hex
+        now = time.time()
+        barrier = threading.Barrier(8)
+        with patch.object(self.cache, '_get_mysql_pool', return_value=self.pool), \
+             patch.object(self.cache, 'DB_TYPE', 'MySQL (MariaDB)'), \
+             patch.object(second, '_get_mysql_pool', return_value=self.pool), \
+             patch.object(second, 'DB_TYPE', 'MySQL (MariaDB)'):
+            def write(index):
+                barrier.wait(timeout=5)
+                cache = self.cache if index % 2 else second
+                return cache.cache_set_preemptive_if_newer(key, {'results': [index]}, now - 10 + index)
+            with ThreadPoolExecutor(max_workers=8) as executor:
+                list(executor.map(write, range(8)))
+            self.assertEqual(self.cache.cache_get('PREEMPTIVE_SOURCES', key)['results'], [7])
+            self.assertEqual(second.cache_get('PREEMPTIVE_SOURCES', key)['results'], [7])
+            self.assertFalse(second.cache_set_preemptive_if_newer(key, {'results': ['old']}, now - 20))
+            self.assertEqual(self.cache.cache_get('PREEMPTIVE_SOURCES', key)['results'], [7])
+
+    def test_preemptive_write_failure_rolls_back_and_reuses_connection(self):
+        key = 'preemptive-rollback-' + uuid.uuid4().hex
+        now = time.time() - 1
+        with patch.object(self.cache, '_get_mysql_pool', return_value=self.pool), \
+             patch.object(self.cache, 'DB_TYPE', 'MySQL (MariaDB)'):
+            with patch.object(self.cache, '_folder_ttl', side_effect=RuntimeError('synthetic failure')):
+                self.assertFalse(self.cache.cache_set_preemptive_if_newer(key, {'value': 'bad'}, now))
+            self.assertIsNone(self.cache.cache_get('PREEMPTIVE_SOURCES', key))
+            self.assertTrue(self.cache.cache_set_preemptive_if_newer(key, {'value': 'good'}, now))
+            self.assertEqual(self.cache.cache_get('PREEMPTIVE_SOURCES', key)['value'], 'good')
+            self.assertEqual(self.cache.MYSQL_CHECKOUT_COUNT, 0)
 
     def test_resolver_fallback_key_reads_new_episode_from_mariadb(self):
         import resources.lib
@@ -526,6 +559,8 @@ class MySQLIntegrationTests(unittest.TestCase):
                         patch.object(self.cache, '_get_mysql_pool', return_value=pool):
                     with self.assertRaises(self.cache.CacheStorageError):
                         self.cache.user_data_update('watch_later', lambda current: ['must-not-write'])
+                    self.assertFalse(self.cache.cache_set_preemptive_if_newer(
+                        'must-not-write', {'value': 'unsafe'}, time.time() - 1))
                 conn = pool.get_connection()
                 cur = conn.cursor()
                 cur.execute('SELECT COUNT(*) FROM cache_store')

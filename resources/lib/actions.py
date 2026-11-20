@@ -2359,7 +2359,8 @@ def pre_emptive_search(params, plugin_instance):
             return
 
         import threading
-        thread = threading.Thread(target=_perform_pre_emptive_search, args=(meta, plugin_instance))
+        import time
+        thread = threading.Thread(target=_perform_pre_emptive_search, args=(meta, plugin_instance, time.time()))
         thread.start()
 
         log("PRE-EMPTIVE SEARCH - VLÁKNO SPUŠTĚNO", xbmc.LOGINFO)
@@ -2371,7 +2372,7 @@ def pre_emptive_search(params, plugin_instance):
 
 
 
-def _perform_pre_emptive_search(meta, plugin_instance):
+def _perform_pre_emptive_search(meta, plugin_instance, started_at=None):
 
     """
     PRE-EMPTIVE :: PERFORM SEARCH
@@ -2384,6 +2385,8 @@ def _perform_pre_emptive_search(meta, plugin_instance):
     from resources.lib import cache_manager
 
     try:
+        if started_at is None:
+            started_at = time.time()
         next_ep_meta = meta
 
         tv_show_title = next_ep_meta.get("tv_show_title", "")
@@ -2421,13 +2424,20 @@ def _perform_pre_emptive_search(meta, plugin_instance):
 
         cache_key = f"preemptive_{meta['tmdb_id']}_S{season:02d}E{episode:02d}"
 
-        cache_manager.cache_set("PREEMPTIVE_SOURCES", cache_key, {
+        age = time.time() - started_at
+        if not 0 <= age < 1800:
+            log("PRE-EMPTIVE SEARCH - Výsledek je zastaralý; cache nebyla uložena", xbmc.LOGINFO)
+            return
+        saved = cache_manager.cache_set_preemptive_if_newer(cache_key, {
             "query": query,
             "results": results,
-            "timestamp": int(time.time()),
+            "timestamp": started_at,
             "meta": next_ep_meta,
             "source_scope": scope
-        })
+        }, started_at)
+        if not saved:
+            log("PRE-EMPTIVE SEARCH - Novější cache nebo chyba zápisu; výsledek nebyl uložen", xbmc.LOGINFO)
+            return
 
         log(f"PRE-EMPTIVE SEARCH - DOKONČENO : {len(results)} zdrojů uloženo do cache klíče: {cache_key}", xbmc.LOGINFO)
         notify_info(f"ACTION COMPLETED - {len(results)}", category="EMPTIVE", time=5000)
