@@ -201,20 +201,26 @@ class TMDB:
                     # --- 1. KONTROLA PRO HERCE (OSOBY)
 
                     for item in data["results"]:
+                        if not isinstance(item, dict):
+                            continue
                         if "known_for_department" in item:
                             name = item.get("name", "")
-                            if asian_pattern.search(name):
+                            if not isinstance(name, str) or asian_pattern.search(name):
                                 continue
                             filtered.append(item)
                             continue
 
                         # --- 2. KONTROLA PRO FILMY A SERIÁLY
 
-                        title = (item.get("title") or item.get("name") or "").strip()
-
-                        orig_title = (item.get("original_title") or item.get("original_name") or title).strip()
-                        lang = (item.get("original_language") or "").lower()
-                        genre_ids = item.get("genre_ids",[])
+                        title = item.get("title") or item.get("name") or ""
+                        orig_title = item.get("original_title") or item.get("original_name") or title
+                        lang = item.get("original_language") or ""
+                        if not all(isinstance(value, str) for value in (title, orig_title, lang)):
+                            continue
+                        title, orig_title, lang = title.strip(), orig_title.strip(), lang.lower()
+                        genre_ids = item.get("genre_ids")
+                        if not isinstance(genre_ids, list):
+                            genre_ids = []
 
                         if asian_pattern.search(title):
                             continue

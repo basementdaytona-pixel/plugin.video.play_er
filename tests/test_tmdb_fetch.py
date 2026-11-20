@@ -53,6 +53,30 @@ class FetchTests(unittest.TestCase):
             client._fetch('movie/popular', cache_key='popular_page_1', skip_filter=True)
             self.assertEqual(fetch.call_count, 4)
 
+    def test_bad_catalogue_row_does_not_hide_valid_neighbors(self):
+        client = object.__new__(tmdb.TMDB)
+        client.api_key, client.language = 'synthetic-key', 'cs-CZ'
+        client.base_url, client.session = 'https://example.invalid/3', MagicMock()
+        client.addon = MagicMock()
+        malformed = [None, 123, 'invalid', {'id': 3, 'title': 123},
+                     {'id': 3, 'title': 'Bad', 'original_title': 123},
+                     {'id': 3, 'title': 'Bad', 'original_language': 123},
+                     {'id': 3, 'known_for_department': 'Acting', 'name': None}]
+        for mode in ('SOFT', 'HARD'):
+            client.addon.getSetting.return_value = mode
+            for bad in malformed:
+                with self.subTest(mode=mode, bad=bad):
+                    response = MagicMock()
+                    response.json.return_value = {'results': [
+                        {'id': 1, 'title': 'First', 'original_language': 'en'}, bad,
+                        {'id': 2, 'name': 'Second', 'original_language': 'cs', 'genre_ids': None}],
+                        'page': 2, 'total_pages': 4}
+                    with patch.object(tmdb, 'safe_get', return_value=response):
+                        result = client._fetch('movie/popular')
+                    self.assertIsNotNone(result)
+                    self.assertEqual([row['id'] for row in result['results']], [1, 2])
+                    self.assertEqual((result['page'], result['total_pages']), (2, 4))
+
     def test_filter_change_during_fetch_does_not_mix_cache_variants(self):
         client = object.__new__(tmdb.TMDB)
         client.api_key, client.language = 'synthetic-key', 'cs-CZ'
