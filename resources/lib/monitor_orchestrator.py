@@ -72,12 +72,13 @@ class MonitorOrchestrator:
         try:
             if not self.win or not tmdb_id:
                 return True
-            key = f"plugin.video.play_er.preemptive_last:{tmdb_id}:{season}"
+            key = f"plugin.video.play_er.preemptive_last:{tmdb_id}"
             last = self.win.getProperty(key)
             if last:
                 try:
                     last_ts = int(last)
-                    if int(time.time()) - last_ts < int(throttle_seconds):
+                    elapsed = int(time.time()) - last_ts
+                    if 0 <= elapsed < int(throttle_seconds):
                         try:
                             self._inc_metric('preemptive_throttle_hits')
                         except Exception:
@@ -94,7 +95,7 @@ class MonitorOrchestrator:
         try:
             if not self.win or not tmdb_id:
                 return
-            key = f"plugin.video.play_er.preemptive_last:{tmdb_id}:{season}"
+            key = f"plugin.video.play_er.preemptive_last:{tmdb_id}"
             self.win.setProperty(key, str(int(time.time())))
         except Exception as e:
             log(f"ORCHESTRATOR - FUNCTION  ( record_preemptive )  ERROR : {e}", xbmc.LOGWARNING)

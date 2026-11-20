@@ -7,6 +7,7 @@ from unittest.mock import MagicMock, patch
 
 import test_monitor_fallback as fallback
 from test_skip_credits_handoff import orchestrator as orchestrator_module
+from test_movie_playlist import generator as real_generator
 
 
 class ProgressActionSeekTests(unittest.TestCase):
@@ -59,6 +60,55 @@ class ProgressActionSeekTests(unittest.TestCase):
             self.monitor._update_progress(self.monitor._playback_item_generation)
         self.module.xbmc.executebuiltin.assert_not_called()
         self.orchestrator.record_preemptive.assert_not_called()
+        self.assertFalse(self.orchestrator.has_triggered('episode', 'preemptive'))
+
+    def test_throttled_preemptive_retries_on_next_progress_check(self):
+        self.monitor.addon.getSettingBool.side_effect = lambda key: key == 'enable_pre_emptive_scrape'
+        self.orchestrator.should_trigger_preemptive = MagicMock(side_effect=[(False, 'throttled'), (True, 'ok')])
+        self.orchestrator.record_preemptive = MagicMock()
+        generator = SimpleNamespace(get_preemptive_episode_target=lambda *args: (1, 3))
+        self.module.get_url.return_value = 'plugin://plugin.video.play_er/?action=pre_emptive_search'
+        self.module.xbmc.executebuiltin.reset_mock()
+        with patch.dict(sys.modules, {'resources.lib.generator': generator}):
+            self.monitor._update_progress(self.monitor._playback_item_generation)
+            self.assertFalse(self.orchestrator.has_triggered('episode', 'preemptive'))
+            self.module.xbmc.executebuiltin.assert_not_called()
+            self.monitor._update_progress(self.monitor._playback_item_generation)
+            self.assertTrue(self.orchestrator.has_triggered('episode', 'preemptive'))
+            self.monitor._update_progress(self.monitor._playback_item_generation)
+        self.assertEqual(self.orchestrator.should_trigger_preemptive.call_count, 2)
+        self.module.xbmc.executebuiltin.assert_called_once()
+        self.orchestrator.record_preemptive.assert_called_once()
+
+    def test_preemptive_runs_once_after_real_throttle_expires(self):
+        self.monitor.addon.getSettingBool.side_effect = lambda key: key == 'enable_pre_emptive_scrape'
+        self.monitor.tmdb_client = None
+        self.module.get_url.return_value = 'plugin://plugin.video.play_er/?action=pre_emptive_search'
+        self.module.xbmc.executebuiltin.reset_mock()
+        with patch.dict(sys.modules, {'resources.lib.generator': real_generator}), \
+             patch.object(real_generator, 'get_preemptive_episode_target', return_value=(1, 3)), \
+             patch.object(orchestrator_module, 'get_setting_int_with_bounds', return_value=600), \
+             patch.object(orchestrator_module.time, 'time', return_value=1000) as clock:
+            self.orchestrator.record_preemptive(42, 1)
+            clock.return_value = 1200
+            self.monitor._update_progress(self.monitor._playback_item_generation)
+            self.assertFalse(self.orchestrator.has_triggered('episode', 'preemptive'))
+            self.module.xbmc.executebuiltin.assert_not_called()
+            clock.return_value = 1600
+            self.monitor._update_progress(self.monitor._playback_item_generation)
+            self.monitor._update_progress(self.monitor._playback_item_generation)
+        self.module.xbmc.executebuiltin.assert_called_once()
+        self.assertTrue(self.orchestrator.has_triggered('episode', 'preemptive'))
+
+    def test_seek_at_throttle_retry_boundary_rearms_current_episode(self):
+        self.monitor.addon.getSettingBool.side_effect = lambda key: key == 'enable_pre_emptive_scrape'
+        test = self
+        class RetryAfterSeek(str):
+            def __eq__(self, other):
+                test.seek_back()
+                return super().__eq__(other)
+        self.monitor._trigger_pre_emptive_scrape = MagicMock(return_value=RetryAfterSeek('retry'))
+        self.monitor._update_progress(self.monitor._playback_item_generation)
         self.assertFalse(self.orchestrator.has_triggered('episode', 'preemptive'))
 
     def test_seek_during_skip_dialog_invalidates_decision_and_rearms(self):

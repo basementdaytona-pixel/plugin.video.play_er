@@ -2369,6 +2369,13 @@ class KodiPlayerMonitor(xbmc.Player):
                 completed = action(is_current)
                 if completed is False:
                     rearm_after_seek([(action, play_key, trigger)])
+                elif completed == 'retry' and trigger == 'preemptive':
+                    # Keep the in-flight flag until the throttle check finishes.
+                    # The normal progress timer will retry without overlapping ticks.
+                    with self.progress_lock:
+                        if is_current():
+                            self.orchestrator.clear_trigger(play_key, trigger)
+                    rearm_after_seek([(action, play_key, trigger)])
             except Exception as e:
                 log(f"PLAYBACK - Progress action failed: {e}", xbmc.LOGWARNING)
                 if not is_current():
@@ -2554,11 +2561,11 @@ class KodiPlayerMonitor(xbmc.Player):
             current_episode = int(meta.get("episode", 0))
 
             if self.orchestrator:
-                should, _ = self.orchestrator.should_trigger_preemptive(meta, self.tmdb_client, self.addon)
+                should, reason = self.orchestrator.should_trigger_preemptive(meta, self.tmdb_client, self.addon)
                 if not is_current():
                     return False
                 if not should:
-                    return True
+                    return 'retry' if reason == 'throttled' else True
 
             # FIX PRE-EMPTIVE AND FILTERS [SEARCH BEYOND QUEUED EPISODES]
             # Původní cíl current_episode + 1 znovu hledal zdroj, který už mohl být ve frontě:
