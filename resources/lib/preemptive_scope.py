@@ -18,12 +18,12 @@ def source_scope(addon, provider_manager):
     if 'prehraj.to' in providers:
         # Older cached rows may be incomplete or use outdated normalization.
         settings['prehrajto_search_api_version'] = 4
-        for key in ('email', 'search_pages', 'search_ls', 'prehrajto_api_sort',
+        for key in ('email', 'password', 'search_pages', 'search_ls', 'prehrajto_api_sort',
                     'prehrajto_api_quality', 'prehrajto_mark_multi_streams',
                     'prehrajto_long_videos'):
             settings[key] = addon.getSetting(key)
     if 'webshare.cz' in providers:
-        for key in ('webshare_username', 'webshare_search_limit', 'webshare_category', 'webshare_sort'):
+        for key in ('webshare_username', 'webshare_password', 'webshare_search_limit', 'webshare_category', 'webshare_sort'):
             settings[key] = addon.getSetting(key)
         token = addon.getSetting('webshare_token')
         if token:

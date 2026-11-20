@@ -77,6 +77,20 @@ class PreemptiveScopeTests(unittest.TestCase):
                 self.assertNotEqual(source_scope(self.addon, manager), baseline)
                 del self.settings[key]
 
+    def test_password_changes_invalidate_scope_without_a_saved_token(self):
+        for provider, key in (('prehraj.to', 'password'), ('webshare.cz', 'webshare_password')):
+            with self.subTest(provider=provider):
+                self.instance.provider_manager._active_provider_name = provider
+                self.settings[key] = 'first-synthetic-password'
+                before = source_scope(self.addon, self.instance.provider_manager)
+                self.settings[key] = 'second-synthetic-password'
+                self.assertNotEqual(before, source_scope(self.addon, self.instance.provider_manager))
+
+    def test_inactive_provider_password_does_not_invalidate_scope(self):
+        before = source_scope(self.addon, self.instance.provider_manager)
+        self.settings['password'] = 'inactive-synthetic-password'
+        self.assertEqual(before, source_scope(self.addon, self.instance.provider_manager))
+
     def test_webshare_password_or_token_change_invalidates_scope(self):
         manager = self.instance.provider_manager
         self.settings.update(webshare_token='synthetic-token', webshare_password='first-password')
