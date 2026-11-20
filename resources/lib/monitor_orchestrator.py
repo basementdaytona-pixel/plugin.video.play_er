@@ -349,7 +349,7 @@ class MonitorOrchestrator:
             if not meta or meta.get("media_type") != "episode":
                 return False, "not_episode"
 
-            from resources.lib.generator import get_episode_queue_remaining, _next_episode_coordinates
+            from resources.lib.generator import get_episode_queue_remaining, _next_episode_coordinates, _season_last_episode
             if get_episode_queue_remaining(meta) == 0:
                 return False, "episode_limit"
 
@@ -377,8 +377,8 @@ class MonitorOrchestrator:
                     season_info = tmdb_client._fetch(f"tv/{tmdb_id}/season/{season}")
                     if not season_info or not season_info.get("episodes"):
                         return False, "no_episodes"
-                    episode_count = len(season_info["episodes"])
-                    if episode_count and episode >= episode_count:
+                    last_episode = _season_last_episode(season_info)
+                    if last_episode is not None and episode >= last_episode:
                         if _next_episode_coordinates(tmdb_id, season, episode, tmdb_client) is None:
                             return False, "last_episode"
                 except Exception as e:

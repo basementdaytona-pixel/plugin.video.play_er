@@ -186,6 +186,40 @@ class SeriesPlaylistTests(unittest.TestCase):
         generator.xbmcplugin.setResolvedUrl.assert_not_called()
         self.player.play.assert_called_once()
 
+    def test_continue_does_not_roll_over_before_highest_numbered_episode(self):
+        def fetch(path, **kwargs):
+            if path == 'tv/42/season/1':
+                return {'episodes': [{'episode_number': 1}, {'episode_number': 3}, {'episode_number': 4}]}
+            if path == 'tv/42/season/2':
+                return {'episodes': [{'episode_number': 1}]}
+            match = re.fullmatch(r'tv/42/season/(\d+)/episode/(\d+)', path)
+            return {'season': int(match.group(1)), 'episode': int(match.group(2))} if match else None
+        self.tmdb._fetch.side_effect = fetch
+        self.player.path = 'https://example.invalid/S01E04'
+        meta = {'tmdb_id': 42, 'media_type': 'episode', 'tv_show_title': 'Show',
+                'season': 1, 'episode': 3, 'title': 'Episode 3'}
+        generator.create_series_playlist(meta, self.addon, None, self.tmdb, 7, self.instance,
+                                         start_from_next=True, use_resolve=False, max_items=1)
+        self.assertEqual([(m['season'], m['episode']) for m in self.saved_meta], [(1, 4)])
+        self.assertEqual(self.playlist.add.call_args.args[0], 'https://example.invalid/S01E04|Header=value')
+
+    def test_missing_numbered_episode_does_not_skip_to_next_season_in_background(self):
+        def fetch(path, **kwargs):
+            if path == 'tv/42/season/1':
+                return {'episodes': [{'episode_number': 1}, {'episode_number': 3}, {'episode_number': 4}]}
+            if path == 'tv/42/season/1/episode/4':
+                return None
+            match = re.fullmatch(r'tv/42/season/(\d+)/episode/(\d+)', path)
+            return {'season': int(match.group(1)), 'episode': int(match.group(2))} if match else None
+        self.tmdb._fetch.side_effect = fetch
+        self.player.path = 'https://example.invalid/S01E03'
+        meta = {'tmdb_id': 42, 'media_type': 'episode', 'tv_show_title': 'Show',
+                'season': 1, 'episode': 3, 'title': 'Episode 3'}
+        generator.create_series_playlist(meta, self.addon, None, self.tmdb, 7, self.instance, max_items=2)
+        self.assertEqual([(m['season'], m['episode']) for m in self.saved_meta], [(1, 3)])
+        self.playlist.add.assert_not_called()
+        self.assertNotIn('tv/42/season/2/episode/1', [call.args[0] for call in self.tmdb._fetch.call_args_list])
+
     def test_missing_show_details_preserve_supplied_tmdb_id(self):
         self.tmdb.get_full_details.return_value = None
         self.tmdb.search_raw.return_value = {'results': [{'id': 99, 'name': 'Show'}]}

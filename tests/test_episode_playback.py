@@ -31,6 +31,19 @@ class EpisodeSequenceTests(unittest.TestCase):
         client._fetch.side_effect = [{'episodes': [1, 2]}, None]
         self.assertIsNone(generator._next_episode_coordinates(42, 1, 2, client))
 
+    def test_numbered_season_uses_last_episode_number_not_row_count(self):
+        client = MagicMock()
+        season = {'episodes': [{'episode_number': 1}, {'episode_number': 3}, {'episode_number': 4}]}
+        client._fetch.side_effect = lambda path: season if path.endswith('/season/1') else {'episodes': [{'episode_number': 1}]}
+        self.assertEqual(generator._next_episode_coordinates(42, 1, 3, client), (1, 4))
+        self.assertEqual(generator._next_episode_coordinates(42, 1, 4, client), (2, 1))
+
+    def test_partially_numbered_season_falls_back_to_next_episode(self):
+        client = MagicMock()
+        client._fetch.side_effect = lambda path: {'episodes': [{'episode_number': 1}, {}, {'episode_number': 3}]} if path.endswith('/season/1') else None
+        self.assertEqual(generator._next_episode_coordinates(42, 1, 3, client), (1, 4))
+        client._fetch.assert_called_once()
+
     def test_smart_play_uses_existing_history_contract(self):
         show = {'seasons': [{'season_number': 1, 'episode_count': 2},
                             {'season_number': 2, 'episode_count': 1}]}

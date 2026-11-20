@@ -6,7 +6,7 @@ from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
 from kodi_test_support import ROOT, load_module
-from test_movie_playlist import FakeWindow
+from test_movie_playlist import FakeWindow, generator as real_generator
 
 orchestrator = load_module('resources.lib.monitor_orchestrator', (
     'resources.lib.utils_theme', 'resources.lib.utils',
@@ -162,6 +162,17 @@ class SkipCreditsHandoffTests(unittest.TestCase):
         self.assertEqual(self.run_handoff(), ('none', 'last_episode'))
         orchestrator.xbmc.executebuiltin.assert_not_called()
         self.show_dialog.assert_not_called()
+
+    def test_numbered_season_keeps_skip_and_preemptive_on_same_season(self):
+        self.meta['episode'] = 3
+        self.owner.allow_preemptive = MagicMock(return_value=True)
+        rows = [{'episode_number': 1}, {'episode_number': 3}, {'episode_number': 4}]
+        self.tmdb._fetch.side_effect = lambda path: {'episodes': rows} if path.endswith('/season/1') else None
+        with patch.dict(sys.modules, {'resources.lib.generator': real_generator}):
+            self.assertEqual(self.owner.should_trigger_preemptive(self.meta, self.tmdb, self.addon), (True, 'ok'))
+            self.tmdb._fetch.assert_called_once()
+            self.tmdb._fetch.reset_mock()
+            self.assertEqual(self.run_handoff(), ('runplugin', 'skip_action'))
 
     def test_strict_prediction_refuses_unverified_fallback(self):
         self.addon.getSetting.side_effect = lambda key: 'true' if key in (

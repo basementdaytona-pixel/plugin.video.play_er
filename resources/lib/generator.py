@@ -281,6 +281,32 @@ def _managed_future_episode_items(meta, items, position):
     return managed
 
 
+def _season_last_episode(season_data):
+    """Return the last numbered episode, or None when the boundary is unknown."""
+    if not isinstance(season_data, dict) or season_data.get('success') is False or 'status_code' in season_data:
+        return None
+    episodes = season_data.get('episodes')
+    if not isinstance(episodes, list) or not episodes:
+        return None
+    if not any(isinstance(row, dict) and 'episode_number' in row for row in episodes):
+        return len(episodes)  # Legacy responses without episode numbers.
+    numbers = []
+    for row in episodes:
+        number = row.get('episode_number') if isinstance(row, dict) else None
+        if isinstance(number, bool) or not isinstance(number, (int, str)):
+            return None
+        try:
+            if isinstance(number, str) and (not number.isascii() or not number.isdecimal()):
+                return None
+            number = int(number)
+        except ValueError:
+            return None
+        if number < 0:
+            return None
+        numbers.append(number)
+    return max(numbers)
+
+
 def _next_episode_coordinates(tmdb_id, season, episode, tmdb_client):
     season = int(season)
     episode = int(episode)
@@ -288,8 +314,8 @@ def _next_episode_coordinates(tmdb_id, season, episode, tmdb_client):
         return 1, 1
     try:
         season_data = tmdb_client._fetch(f"tv/{tmdb_id}/season/{season}")
-        episode_count = len(season_data.get("episodes", [])) if season_data else 0
-        if episode_count and episode >= episode_count:
+        last_episode = _season_last_episode(season_data)
+        if last_episode is not None and episode >= last_episode:
             next_season = season + 1
             next_season_data = tmdb_client._fetch(f"tv/{tmdb_id}/season/{next_season}")
             if not next_season_data or not next_season_data.get("episodes"):
@@ -760,9 +786,9 @@ def create_series_playlist(
         if start_from_next:
             try:
                 s_details = tmdb_client._fetch(f"tv/{tmdb_id}/season/{season_num}")
-                if s_details and "episodes" in s_details:
-                    ep_count = len(s_details["episodes"])
-                    if episode_num >= ep_count:
+                last_episode = _season_last_episode(s_details)
+                if last_episode is not None:
+                    if episode_num >= last_episode:
                         season_num += 1
                         episode_num = 1
                         next_s_details = tmdb_client._fetch(f"tv/{tmdb_id}/season/{season_num}")
@@ -986,8 +1012,9 @@ def create_series_playlist(
                             bg_data = tmdb_client._fetch(f"tv/{tmdb_id}/season/{c_season}/episode/{c_ep}", params={"append_to_response": "credits"})
                             if not _valid_episode_details(bg_data):
                                 season_data = tmdb_client._fetch(f"tv/{tmdb_id}/season/{c_season}")
-                                if season_data and "episodes" in season_data:
-                                    if c_ep > len(season_data["episodes"]):
+                                last_episode = _season_last_episode(season_data)
+                                if last_episode is not None:
+                                    if c_ep > last_episode:
                                         c_season += 1
                                         c_ep = 1
                                         bg_data = tmdb_client._fetch(f"tv/{tmdb_id}/season/{c_season}/episode/{c_ep}", params={"append_to_response": "credits"})
@@ -1227,8 +1254,8 @@ def _queue_following_episodes_from_tmdbh_legacy(meta, addon, plugin_instance):
 
                 if not _valid_episode_details(episode_data):
                     season_details = tmdb_client._fetch(f"tv/{tmdb_id}/season/{season_num}")
-                    season_count = len(season_details.get("episodes", [])) if season_details else 0
-                    if season_count and episode_num >= season_count:
+                    last_episode = _season_last_episode(season_details)
+                    if last_episode is not None and episode_num >= last_episode:
                         candidate_season = season_num + 1
                         candidate_episode = 1
                         episode_data = tmdb_client._fetch(
