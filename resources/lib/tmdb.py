@@ -130,6 +130,11 @@ class TMDB:
             return None
 
 
+        def usable_cache_response(data):
+            if isinstance(data, dict) and ('status_code' in data or data.get('success') is False):
+                return False
+            return _cache_validator is None or _cache_validator(data)
+
         # Reuse season/episode details across Continue, credits and queue checks.
         # Keep credits and language variants separate; honour the configured TMDB TTL.
         params = dict(params or {})
@@ -149,14 +154,14 @@ class TMDB:
 
         if cache_key and "page" in cache_key:
             w_data = cache_manager.window_cache_get(cache_key)
-            if w_data and (_cache_validator is None or _cache_validator(w_data)):
+            if w_data and usable_cache_response(w_data):
                 log(f"TMDB - CACHE HIT | WIDGET : {cache_key}", xbmc.LOGDEBUG)
                 return w_data
 
 
         if cache_key:
             cached_data = cache_manager.cache_get("TMDB", cache_key)
-            if cached_data is not None and (_cache_validator is None or _cache_validator(cached_data)):
+            if cached_data is not None and usable_cache_response(cached_data):
                 log(f"TMDB - CACHE HIT | SSD : {cache_key}", xbmc.LOGDEBUG)
                 if "page" in cache_key:
                     cache_manager.window_cache_set(cache_key, cached_data)
@@ -235,7 +240,7 @@ class TMDB:
             cacheable_detail = (isinstance(data, dict) and "status_code" not in data
                                 and data.get("success") is not False)
             if (cache_key and (not automatic_detail_cache or cacheable_detail)
-                    and (_cache_validator is None or _cache_validator(data))):
+                    and usable_cache_response(data)):
                 cache_manager.cache_set("TMDB", cache_key, data)
                 if "page" in cache_key:
                     cache_manager.window_cache_set(cache_key, data)

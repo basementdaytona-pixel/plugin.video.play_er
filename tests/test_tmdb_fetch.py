@@ -53,6 +53,35 @@ class FetchTests(unittest.TestCase):
             client._fetch('movie/popular', cache_key='popular_page_1', skip_filter=True)
             self.assertEqual(fetch.call_count, 4)
 
+    def test_catalogue_errors_are_not_reused_or_cached(self):
+        for error in ({'status_code': 34}, {'success': False}):
+            for layer in ('response', 'disk', 'window'):
+                with self.subTest(error=error, layer=layer):
+                    client = object.__new__(tmdb.TMDB)
+                    client.api_key, client.language = 'synthetic-key', 'cs-CZ'
+                    client.base_url, client.session = 'https://example.invalid/3', MagicMock()
+                    client.addon = MagicMock()
+                    client.addon.getSetting.return_value = 'OFF'
+                    store = MagicMock()
+                    store.window_cache_get.return_value = error if layer == 'window' else None
+                    store.cache_get.return_value = error if layer == 'disk' else None
+                    valid = {'results': [], 'page': 1}
+                    response = MagicMock()
+                    response.json.return_value = error if layer == 'response' else valid
+                    with patch.object(tmdb, 'cache_manager', store), \
+                         patch.object(tmdb, 'safe_get', return_value=response) as request:
+                        result = client._fetch('movie/popular', cache_key='popular_page_1')
+                    request.assert_called_once()
+                    if layer == 'response':
+                        self.assertEqual(result, error)
+                        store.cache_set.assert_not_called()
+                        store.window_cache_set.assert_not_called()
+                    else:
+                        self.assertEqual(result, valid)
+                        store.cache_set.assert_called_once()
+                        self.assertEqual(store.cache_set.call_args.args[-1], valid)
+                        store.window_cache_set.assert_called_once()
+
     def test_detail_cache_uses_same_variant_as_fetch(self):
         client = object.__new__(tmdb.TMDB)
         client.api_key, client.language = 'synthetic-key', 'cs-CZ'
