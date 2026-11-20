@@ -87,7 +87,9 @@ class SeriesManager:
 
         for provider in providers:
             provider_name = provider.__class__.__name__
-            cookies = provider.get_premium_cookies() if hasattr(provider, 'get_premium_cookies') else None
+            cookies = None
+            if getattr(provider, 'search_handles_auth', False) is not True and hasattr(provider, 'get_premium_cookies'):
+                cookies = provider.get_premium_cookies()
 
             for query in search_queries:
                 if search_delay > 0:

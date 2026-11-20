@@ -71,6 +71,8 @@ class PrehrajTo(BaseProvider):
     -- Třída providera Prehraj.to pro REST API v2.
     """
 
+    search_handles_auth = True
+
     def __init__(self, addon, handle, session, tmdb_client):
         super(PrehrajTo, self).__init__(addon, handle, session, tmdb_client)
 

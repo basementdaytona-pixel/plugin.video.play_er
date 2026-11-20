@@ -29,6 +29,9 @@ class BaseProvider(ABC):
     -- Tím je zajištěna konzistence a snadná rozšiřitelnost o nové providery.
     """
 
+    # Providers opting in authenticate inside each search_sources call.
+    search_handles_auth = False
+
 
     def __init__(self, addon, handle, session, tmdb_client):
 

@@ -364,7 +364,9 @@ def _search_providers_parallel(query, providers, apply_filters=False, sort_prior
 
     def _search_worker(provider):
         try:
-            cookies = provider.get_premium_cookies() if hasattr(provider, 'get_premium_cookies') else None
+            cookies = None
+            if getattr(provider, 'search_handles_auth', False) is not True and hasattr(provider, 'get_premium_cookies'):
+                cookies = provider.get_premium_cookies()
             # Only TMDBH source selection captures raw rows. Provider-side API
             # parameters remain unchanged; normalize_and_filter applies the same
             # local filters without repeating the network search.
