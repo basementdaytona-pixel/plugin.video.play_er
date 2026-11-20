@@ -708,22 +708,13 @@ def create_series_playlist(
         if tmdb_id:
             with tmdb_error_handler("načítání show details"):
                 show_details = tmdb_client.get_full_details("tv", tmdb_id)
+                if (not isinstance(show_details, dict) or not show_details
+                        or 'status_code' in show_details or show_details.get('success') is False):
+                    show_details = None
                 if show_details:
                     show_props = tmdb_client._build_metadata_props(show_details, "tv")
 
-        if not show_details and tv_show_title:
-            try:
-                search_data = tmdb_client.search_raw(tv_show_title, media_type="tv")
-                if search_data and search_data.get("results"):
-                    fallback_id = search_data["results"][0].get("id")
-                    if fallback_id:
-                        tmdb_id = fallback_id
-                        show_details = tmdb_client.get_full_details("tv", tmdb_id)
-                        if show_details:
-                            show_props = tmdb_client._build_metadata_props(show_details, "tv")
-            except Exception:
-                pass
-
+        # A title search may return another show. Keep the supplied episode identity.
         if not show_details:
             show_props = start_meta.copy()
             show_props['cast_full'] = show_props.get('cast_full', [])

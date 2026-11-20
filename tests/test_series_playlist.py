@@ -186,6 +186,31 @@ class SeriesPlaylistTests(unittest.TestCase):
         generator.xbmcplugin.setResolvedUrl.assert_not_called()
         self.player.play.assert_called_once()
 
+    def test_missing_show_details_preserve_supplied_tmdb_id(self):
+        self.tmdb.get_full_details.return_value = None
+        self.tmdb.search_raw.return_value = {'results': [{'id': 99, 'name': 'Show'}]}
+        self.run_playlist()
+        self.assertTrue(generator.xbmcplugin.setResolvedUrl.call_args.args[1])
+        self.assertEqual([m['tmdb_id'] for m in self.saved_meta], [42, 42, 42])
+        self.assertTrue(all(call.args[0].startswith('tv/42/') for call in self.tmdb._fetch.call_args_list))
+        self.tmdb.search_raw.assert_not_called()
+
+    def test_continue_keeps_tmdb_id_when_show_details_unavailable(self):
+        self.tmdb.get_full_details.return_value = None
+        self.tmdb.search_raw.return_value = {'results': [{'id': 99, 'name': 'Show'}]}
+        self.player.path = 'https://example.invalid/S01E02'
+        self.run_playlist(start_from_next=True, use_resolve=False, remaining=1)
+        self.assertEqual([(m['tmdb_id'], m['season'], m['episode']) for m in self.saved_meta], [(42, 1, 2)])
+        self.tmdb.search_raw.assert_not_called()
+
+    def test_error_response_is_not_used_as_show_metadata(self):
+        self.tmdb.get_full_details.return_value = {'status_code': 7, 'success': False}
+        self.run_playlist()
+        self.assertTrue(generator.xbmcplugin.setResolvedUrl.call_args.args[1])
+        self.assertEqual([m['tmdb_id'] for m in self.saved_meta], [42, 42, 42])
+        self.assertFalse(any(call.args[1] == 'tv' for call in self.tmdb._build_metadata_props.call_args_list))
+        self.tmdb.search_raw.assert_not_called()
+
     def test_series_start_publishes_metadata_and_owner_for_stripped_item(self):
         from resources.lib.playback_identity import EXPECTED_OWNER, EXPECTED_URL, stream_key
         self.window.setProperty('play_er.monitor_owner', 'series-owner')
