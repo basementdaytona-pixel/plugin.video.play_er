@@ -21,7 +21,7 @@ class PreemptiveOrderTests(unittest.TestCase):
                      {'provider': 'prehraj.to', 'link': 'p2', 'title': 'P2'},
                      {'provider': 'webshare.cz', 'link': 'w2', 'title': 'W2'}]
         self.cache = MagicMock()
-        self.cache.cache_get.return_value = {'timestamp': time.time(), 'results': self.rows}
+        self.cache.cache_get.return_value = {'timestamp': time.time(), 'results': self.rows, 'query': 'Show S01E02'}
         self.addon = MagicMock()
         self.addon.getSetting.side_effect = lambda key: 'WEBSHARE.CZ' if key == 'multi_provider_sort' else ''
         self.addon.getSettingBool.return_value = False

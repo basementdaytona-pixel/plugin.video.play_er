@@ -192,6 +192,7 @@ def _search_continue_sources(query, addon, plugin_instance, tmdb_id, season, epi
         if (isinstance(cached, dict)
                 and 0 <= time.time() - cached.get("timestamp", 0) < 1800
                 and cached.get("source_scope") == source_scope(addon, plugin_instance.provider_manager)
+                and cached.get("query") == query
                 and isinstance(cached.get("results"), list)):
             sources = order_sources(cached.get("results") or [], str(addon.getSetting("multi_provider_sort")))
             log(f"CONTINUE - Používám pre-emptive cache: {len(sources)} zdrojů", xbmc.LOGINFO)

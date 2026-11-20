@@ -21,7 +21,7 @@ class PreemptiveScopeTests(unittest.TestCase):
         self.cached = [{'provider': 'prehraj.to', 'link': 'old', 'title': 'Old'}]
         self.fresh = [{'provider': 'webshare.cz', 'link': 'new', 'title': 'New'}]
         self.cache = MagicMock()
-        self.cache.cache_get.return_value = {'timestamp': time.time(), 'results': self.cached}
+        self.cache.cache_get.return_value = {'timestamp': time.time(), 'results': self.cached, 'query': 'Show S01E02'}
         self.addon = MagicMock()
         self.settings = {'active_provider': 'webshare.cz', 'multi_provider_sort': 'WEBSHARE.CZ'}
         self.addon.getSetting.side_effect = lambda key: self.settings.get(key, '')
@@ -160,6 +160,7 @@ class PreemptiveScopeTests(unittest.TestCase):
             cache.clear_ram_cache()
             key = 'preemptive_42_S01E02'
             cache.cache_set('PREEMPTIVE_SOURCES', key, {'timestamp': time.time(), 'results': self.cached,
+                            'query': 'Show S01E02',
                             'source_scope': source_scope(self.addon, self.instance.provider_manager)})
             cache.clear_ram_cache()
             result = generator._search_continue_sources('Show S01E02', self.addon, self.instance, 42, 1, 2)
@@ -186,6 +187,71 @@ class PreemptiveScopeTests(unittest.TestCase):
             actions.find_and_list_sources_multi({'meta': 'key'}, self.instance, tmdbh_search=True)
         search.assert_called_once()
         self.assertEqual([call.kwargs['label'] for call in item.call_args_list], ['New'])
+
+    def test_continue_researches_when_cached_query_has_another_title(self):
+        self.cache.cache_get.return_value.update(
+            source_scope=source_scope(self.addon, self.instance.provider_manager),
+            query='Other Show S01E02')
+        fake_actions = SimpleNamespace(_search_providers_parallel=MagicMock(return_value=self.fresh))
+        with patch.object(generator, 'cache_manager', self.cache), \
+             patch.object(generator, '_apply_continue_filters', side_effect=lambda rows, addon: rows), \
+             patch.object(generator, '_apply_continue_source_filters', side_effect=lambda rows, addon: rows), \
+             patch.dict(sys.modules, {'resources.lib.actions': fake_actions}), \
+             patch.object(resources.lib, 'actions', fake_actions, create=True):
+            result = generator._search_continue_sources('Show S01E02', self.addon, self.instance, 42, 1, 2)
+        self.assertEqual(result, self.fresh)
+        self.assertEqual(fake_actions._search_providers_parallel.call_args.args[0], 'Show S01E02')
+
+    def test_continue_researches_legacy_cache_without_query(self):
+        self.cache.cache_get.return_value['source_scope'] = source_scope(self.addon, self.instance.provider_manager)
+        del self.cache.cache_get.return_value['query']
+        fake_actions = SimpleNamespace(_search_providers_parallel=MagicMock(return_value=self.fresh))
+        with patch.object(generator, 'cache_manager', self.cache), \
+             patch.object(generator, '_apply_continue_filters', side_effect=lambda rows, addon: rows), \
+             patch.dict(sys.modules, {'resources.lib.actions': fake_actions}), \
+             patch.object(resources.lib, 'actions', fake_actions, create=True):
+            result = generator._search_continue_sources('Show S01E02', self.addon, self.instance, 42, 1, 2)
+        self.assertEqual(result, self.fresh)
+        fake_actions._search_providers_parallel.assert_called_once()
+
+    def test_sqlite_cached_query_must_match_requested_title(self):
+        cache = atomic_support.cache
+        fake_actions = SimpleNamespace(_search_providers_parallel=MagicMock(return_value=self.fresh))
+        with tempfile.TemporaryDirectory() as directory, \
+             patch.multiple(cache, CACHE_DB_PATH=str(Path(directory) / 'cache.db'), DB_TYPE='SQLite', SQLITE_INITIALIZED=False), \
+             patch.object(generator, 'cache_manager', cache), \
+             patch.object(generator, '_apply_continue_filters', side_effect=lambda rows, addon: rows), \
+             patch.dict(sys.modules, {'resources.lib.actions': fake_actions}), \
+             patch.object(resources.lib, 'actions', fake_actions, create=True):
+            cache.clear_ram_cache()
+            cache.cache_set('PREEMPTIVE_SOURCES', 'preemptive_42_S01E02',
+                            {'timestamp': time.time(), 'results': self.cached, 'query': 'Other Show S01E02',
+                             'source_scope': source_scope(self.addon, self.instance.provider_manager)})
+            cache.clear_ram_cache()
+            result = generator._search_continue_sources('Show S01E02', self.addon, self.instance, 42, 1, 2)
+            self.assertEqual(result, self.fresh)
+            self.assertEqual(fake_actions._search_providers_parallel.call_args.args[0], 'Show S01E02')
+            cache.clear_ram_cache()
+
+    def test_tmdbhelper_researches_when_localized_title_differs_from_cached_query(self):
+        self.cache.cache_get.return_value.update(
+            source_scope=source_scope(self.addon, self.instance.provider_manager),
+            query='Original Show S01E02')
+        meta = {'tmdb_id': 42, 'media_type': 'episode', 'season': 1, 'episode': 2, 'tv_show_title': 'Original Show'}
+        self.settings['trakt_prefer_czech_search'] = True
+        self.instance.tmdb_client = MagicMock()
+        self.instance.tmdb_client.get_localized_title.return_value = 'Místní seriál'
+        filters = MagicMock()
+        filters.apply_filters.side_effect = lambda rows, **kwargs: rows
+        with patch.object(actions, 'cache_manager', self.cache), \
+             patch.object(actions, 'get_meta_from_cache', return_value=meta), \
+             patch.object(actions, 'FilterUtils', return_value=filters), \
+             patch.object(actions, '_search_providers_parallel', return_value=self.fresh) as search, \
+             patch.object(actions, '_get_context_menu', return_value=[]), \
+             patch.object(actions.xbmcgui, 'ListItem'), \
+             patch.dict(sys.modules, {'resources.lib.generator': SimpleNamespace(_apply_continue_filters=lambda rows, addon: rows)}):
+            actions.find_and_list_sources_multi({'meta': 'key'}, self.instance, tmdbh_search=True)
+        self.assertEqual(search.call_args.args[0], 'Místní seriál S01E02')
 
 
 if __name__ == '__main__':

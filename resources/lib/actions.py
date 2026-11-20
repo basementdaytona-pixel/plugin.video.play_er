@@ -1283,6 +1283,7 @@ def find_and_list_sources_multi(params, plugin_instance, tmdbh_search=False):
                 import time
                 cache_age = time.time() - cached_data.get("timestamp", 0)
                 if (0 <= cache_age < 1800 and isinstance(cached_data.get("results"), list)
+                        and cached_data.get("query") == query
                         and cached_data.get("source_scope") == source_scope(plugin_instance.addon, plugin_instance.provider_manager)):
                     cached_results = order_sources(cached_data.get("results", []), sort_priority)
                     log(f"SOURCES - Načteno {len(cached_results)} zdrojů z pre-emptive cache", xbmc.LOGINFO)
