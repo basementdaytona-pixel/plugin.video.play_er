@@ -1012,11 +1012,12 @@ class PrehrajTo(BaseProvider):
             selected_url = list(available_links.values())[0]
 
         elif stream_mode == "ask":
-            if saved_choice and any(saved_choice in k for k in available_links.keys()):
-                for k, v in available_links.items():
-                    if saved_choice in k:
-                        selected_url = v
-                        break
+            # ORIGINAL identifies a stream role; its container can vary by episode.
+            if saved_choice.startswith('ORIGINAL ('):
+                saved_choice = next((key for key in available_links
+                                     if key.startswith('ORIGINAL (')), saved_choice)
+            if saved_choice in available_links:
+                selected_url = available_links[saved_choice]
             elif is_bg_playlist or is_tmdbh_autoplay or (is_playing and win.getProperty("play_er.series_playlist_active") == "true"):
                 stream_mode = "auto"
             else:

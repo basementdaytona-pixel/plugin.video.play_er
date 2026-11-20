@@ -152,6 +152,38 @@ class PrehrajStreamLinksTests(unittest.TestCase):
         self.assertEqual(url, 'https://example.invalid/second')
         self.assertEqual(len(ui.pop_dialog_select.call_args.args[1]), 2)
 
+    def test_saved_original_survives_container_change_without_dialog(self):
+        self.settings['prehrajto_stream_mode'] = 'ask'
+        self.window.setProperty('play_er.playlist_quality_choice', 'ORIGINAL (MKV)')
+        detail = {'extension': 'mp4', 'links': {'1080': 'https://example.invalid/1080'}}
+        for background in ('', 'true'):
+            with self.subTest(background=background):
+                self.window.setProperty('play_er.bg_playlist_active', background)
+                ui = SimpleNamespace(pop_dialog_select=MagicMock(return_value=-1))
+                with patch.dict(sys.modules, {'resources.lib.utils': ui}):
+                    url, _ = self.resolve(detail, {'download_link': 'https://example.invalid/original'})
+                self.assertEqual(url, 'https://example.invalid/original')
+                ui.pop_dialog_select.assert_not_called()
+
+    def test_unavailable_saved_original_retains_existing_fallbacks(self):
+        self.settings['prehrajto_stream_mode'] = 'ask'
+        self.window.setProperty('play_er.playlist_quality_choice', 'ORIGINAL (MKV)')
+        detail = {'links': {'1080': 'https://example.invalid/1080', '720': 'https://example.invalid/720'}}
+        self.window.setProperty('play_er.bg_playlist_active', 'true')
+        ui = SimpleNamespace(pop_dialog_select=MagicMock(return_value=-1))
+        with patch.dict(sys.modules, {'resources.lib.utils': ui}):
+            self.assertEqual(self.resolve(detail)[0], 'https://example.invalid/1080')
+            ui.pop_dialog_select.assert_not_called()
+            self.window.setProperty('play_er.bg_playlist_active', '')
+            self.assertEqual(self.resolve(detail), (None, []))
+            ui.pop_dialog_select.assert_called_once()
+
+    def test_saved_alternative_is_reused_exactly(self):
+        self.settings['prehrajto_stream_mode'] = 'ask'
+        self.window.setProperty('play_er.playlist_quality_choice', 'ALTERNATIVA A Stream')
+        detail = {'links': ['https://example.invalid/first', 'https://example.invalid/second']}
+        self.assertEqual(self.resolve(detail)[0], 'https://example.invalid/second')
+
     def test_all_blank_urls_fail_without_publishing_invalid_streams(self):
         self.window.setProperty('play_er.qualities.123456', '{"old":"old"}')
         url, subtitles = self.resolve({'links': {'1080': '  ', '720': None}}, {'download_link': ' '})
