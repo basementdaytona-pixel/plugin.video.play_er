@@ -50,6 +50,10 @@ JUNK_WORDS = {
 }
 
 
+_DUBBING_HINT = re.compile(r'\b(?:dab(?:ing)?|(?:cz|sk)dab(?:ing)?)\b', re.IGNORECASE)
+_LOCAL_LANGUAGE_HINT = re.compile(r'\b(?:cz|sk)\b', re.IGNORECASE)
+_SUBTITLE_HINT = re.compile(r'\b(?:(?:cz|sk)?tit(?:ulky)?|subs?|subtitles)\b', re.IGNORECASE)
+
 
 
 
@@ -146,8 +150,11 @@ class FilterUtils:
             is_dubbed = 0
             if prioritize_dubbing:
                 tags = video.get('tags', [])
-                title_up = video.get('title', '').upper()
-                if 'DAB' in tags or 'SK' in tags or 'DAB' in title_up or 'SK ' in title_up or 'CZ ' in title_up:
+                title = video.get('title', '').replace('_', ' ')
+                # Bare CZ/SK is only a fallback when subtitles do not explain it.
+                if ('DAB' in tags or 'SK' in tags or _DUBBING_HINT.search(title)
+                        or ('TIT' not in tags and not _SUBTITLE_HINT.search(title)
+                            and _LOCAL_LANGUAGE_HINT.search(title))):
                     is_dubbed = 1
 
             size_str = video.get('size_str', '0')
