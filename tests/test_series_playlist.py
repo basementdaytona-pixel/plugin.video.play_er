@@ -110,6 +110,35 @@ class SeriesPlaylistTests(unittest.TestCase):
         self.assertEqual(len(records), 2)
         self.assertEqual(self.window.getProperty('play_er.bg_series_playlist_building'), '')
 
+    def test_background_episode_is_identifiable_during_playlist_add(self):
+        from test_monitor_fallback import load_monitor
+        monitor_module = load_monitor()
+        self.window.setProperty('play_er.monitor_owner', 'series-owner')
+        seen = []
+
+        def on_add(url, item):
+            stripped = MagicMock()
+            stripped.getProperty.return_value = ''
+            stripped.getPath.return_value = url
+            monitor = SimpleNamespace(getPlayingFile=lambda: url,
+                                      _playback_owner='series-owner', _playback_confirmed=True)
+            owned, record, identifiable = monitor_module.KodiPlayerMonitor._identify_playback(
+                monitor, stripped, self.window)
+            seen.append((owned, record, identifiable))
+
+        self.playlist.add.side_effect = on_add
+        self.run_playlist()
+        self.assertEqual(len(seen), 2)
+        for number, (owned, record, identifiable) in enumerate(seen):
+            self.assertTrue(identifiable)
+            self.assertTrue(owned)
+            self.assertIsNotNone(record)
+            self.assertEqual(record['owner'], 'series-owner')
+            self.assertEqual(record['meta']['season'], 1 if number == 0 else 2)
+            self.assertEqual(record['meta']['episode'], 2 if number == 0 else 1)
+            self.assertEqual(record['meta']['_play_er_queue_remaining'], 1 - number)
+            self.assertEqual(record['provider'], 'test')
+
     def test_initial_and_following_episodes_attach_selected_source_subtitles(self):
         with patch.object(generator, 'attach_subtitles') as attach, \
              patch.object(generator, 'publish_active_streams') as publish:

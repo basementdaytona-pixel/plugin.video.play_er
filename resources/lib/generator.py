@@ -1127,13 +1127,15 @@ def create_series_playlist(
                             allowed_urls.add(str(url).split('|', 1)[0])
                             if ep_meta_uuid and sel.get('link'):
                                 allowed_sources.add((str(ep_meta_uuid), str(sel['link'])))
-                            pl.add(url, ep_li)
+                            # Kodi can start the item as soon as it is appended.
+                            # Publish fallback metadata before any playback callback.
                             _remember_playlist_item(
                                 url, ep_meta,
                                 ep_li.getProperty("play_er.meta_id"),
                                 ep_li.getProperty("play_er.trakt_id"),
                                 sel.get("link"), sel.get("provider"), ep_view_identity
                             )
+                            pl.add(url, ep_li)
                             added += 1
                         else:
                             break
