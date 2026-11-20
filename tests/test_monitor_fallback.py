@@ -171,6 +171,207 @@ class MonitorFallbackTests(unittest.TestCase):
         self.assertEqual(window.getProperty(module.EXPECTED_OWNER), '')
         monitor._queue_scrobble.assert_called_once_with('stop', '77', 'episode', 0.0, episode)
 
+    def test_paused_backward_seek_then_stop_does_not_mark_episode_watched_without_trakt(self):
+        module, window, monitor, history, episode = self.make_active_episode()
+        monitor.mark_watched_func = MagicMock()
+        monitor.last_known_progress = 95.0
+        module.xbmc.getCondVisibility.return_value = True
+        monitor.onPlayBackSeek(10000, -85000)
+        monitor.onPlayBackStopped()
+        monitor.mark_watched_func.assert_not_called()
+
+    def test_paused_forward_seek_then_stop_marks_episode_watched_without_trakt(self):
+        module, window, monitor, history, episode = self.make_active_episode()
+        monitor.mark_watched_func = MagicMock()
+        monitor.last_known_progress = 10.0
+        module.xbmc.getCondVisibility.return_value = True
+        monitor.onPlayBackSeek(95000, 85000)
+        monitor.onPlayBackStopped()
+        monitor.mark_watched_func.assert_called_once_with(episode)
+
+    def test_seek_to_zero_then_stop_does_not_use_an_old_player_time(self):
+        module, window, monitor, history, episode = self.make_active_episode()
+        monitor.mark_watched_func = MagicMock()
+        monitor.last_known_progress = 95.0
+        monitor.getTime = lambda: 95.0
+        module.xbmc.getCondVisibility.return_value = True
+        monitor.onPlayBackSeek(0, -95000)
+        monitor.onPlayBackStopped()
+        monitor.mark_watched_func.assert_not_called()
+
+    def test_pause_samples_progress_without_trakt_before_stop(self):
+        module, window, monitor, history, episode = self.make_active_episode()
+        monitor.mark_watched_func = MagicMock()
+        monitor.last_known_progress = 20.0
+        monitor.getTime = lambda: 95.0
+        monitor.onPlayBackPaused()
+        monitor.onPlayBackStopped()
+        monitor.mark_watched_func.assert_called_once_with(episode)
+
+    def test_pause_does_not_overwrite_seek_target_with_stale_player_time(self):
+        module, window, monitor, history, episode = self.make_active_episode()
+        monitor.mark_watched_func = MagicMock()
+        monitor.getTime = lambda: 10.0
+        module.xbmc.getCondVisibility.return_value = True
+        monitor.onPlayBackSeek(95000, 85000)
+        monitor.onPlayBackPaused()
+        monitor.onPlayBackStopped()
+        monitor.mark_watched_func.assert_called_once_with(episode)
+
+    def test_progress_tick_does_not_replace_backward_seek_with_stale_player_time(self):
+        module, window, monitor, history, episode = self.make_active_episode()
+        monitor.mark_watched_func = MagicMock()
+        monitor.getTime = lambda: 95.0
+        module.xbmc.getCondVisibility.return_value = False
+        monitor.onPlayBackSeek(10000, -85000)
+        monitor._update_progress(monitor._playback_item_generation)
+        monitor.onPlayBackStopped()
+        monitor.mark_watched_func.assert_not_called()
+
+    def test_progress_tick_accepts_clock_after_seek_settles(self):
+        module, window, monitor, history, episode = self.make_active_episode()
+        monitor.getTime = lambda: 11.0
+        module.xbmc.getCondVisibility.return_value = False
+        monitor.onPlayBackSeek(10000, -85000)
+        monitor._update_progress(monitor._playback_item_generation)
+        self.assertEqual(monitor.last_known_progress, 11.0)
+        self.assertIsNone(monitor._pending_seek)
+
+    def test_progress_tick_eventually_accepts_clock_if_seek_cannot_settle(self):
+        module, window, monitor, history, episode = self.make_active_episode()
+        monitor.getTime = lambda: 95.0
+        module.xbmc.getCondVisibility.return_value = False
+        with patch.object(module.time, 'monotonic', side_effect=[100.0, 104.0]):
+            monitor.onPlayBackSeek(10000, -85000)
+            monitor._update_progress(monitor._playback_item_generation)
+        self.assertEqual(monitor.last_known_progress, 95.0)
+        self.assertIsNone(monitor._pending_seek)
+
+    def test_resuming_after_long_pause_keeps_seek_target_until_clock_settles(self):
+        module, window, monitor, history, episode = self.make_active_episode()
+        monitor.getTime = lambda: 95.0
+        module.xbmc.getCondVisibility.return_value = True
+        with patch.object(module.time, 'monotonic', side_effect=[100.0, 110.0, 111.0]):
+            monitor.onPlayBackSeek(10000, -85000)
+            monitor.onPlayBackResumed()
+            module.xbmc.getCondVisibility.return_value = False
+            monitor._update_progress(monitor._playback_item_generation)
+        self.assertEqual(monitor.last_known_progress, 10.0)
+
+    def test_buffering_keeps_seek_target_even_after_settle_timeout(self):
+        module, window, monitor, history, episode = self.make_active_episode()
+        monitor.getTime = lambda: 95.0
+        module.xbmc.getCondVisibility.side_effect = lambda condition: condition == 'Player.Caching'
+        with patch.object(module.time, 'monotonic', side_effect=[100.0, 110.0]):
+            monitor.onPlayBackSeek(10000, -85000)
+            monitor._update_progress(monitor._playback_item_generation)
+        self.assertEqual(monitor.last_known_progress, 10.0)
+        self.assertIsNotNone(monitor._pending_seek)
+
+    def test_progress_actions_wait_for_seek_to_settle(self):
+        module, window, monitor, history, episode = self.make_active_episode()
+        monitor.orchestrator = MagicMock()
+        monitor.orchestrator.has_triggered.return_value = False
+        monitor.play_key = 'episode'
+        monitor._trigger_skip_credits = MagicMock()
+        monitor._trigger_pre_emptive_scrape = MagicMock()
+        monitor.addon.getSettingBool.side_effect = lambda key: key in ('enable_skip_credits', 'enable_pre_emptive_scrape')
+        monitor.getTotalTime = lambda: 1000.0
+        monitor.getTime = lambda: 100.0
+        module.xbmc.getCondVisibility.return_value = False
+        module.get_setting_int_with_bounds.return_value = 120
+        monitor.onPlayBackSeek(950000, 850000)
+        monitor._update_progress(monitor._playback_item_generation)
+        monitor.orchestrator.set_triggered.assert_not_called()
+        monitor._trigger_skip_credits.assert_not_called()
+        monitor._trigger_pre_emptive_scrape.assert_not_called()
+        monitor.getTime = lambda: 950.0
+        monitor._update_progress(monitor._playback_item_generation)
+        monitor._trigger_skip_credits.assert_called_once()
+        monitor._trigger_pre_emptive_scrape.assert_called_once()
+
+    def test_cancelled_seek_timer_cannot_start_an_extra_progress_loop(self):
+        module, window, monitor, history, episode = self.make_active_episode()
+        module.xbmc.getCondVisibility.return_value = False
+        monitor.onPlayBackSeek(10000, -85000)
+        old_args = module.threading.Timer.call_args.kwargs['args']
+        monitor.onPlayBackSeek(50000, 40000)
+        module.threading.Timer.reset_mock()
+        monitor._update_progress(*old_args)
+        module.threading.Timer.assert_not_called()
+
+    def test_pause_invalidates_a_progress_callback_already_in_flight(self):
+        module, window, monitor, history, episode = self.make_active_episode()
+        module.xbmc.getCondVisibility.return_value = False
+        monitor.onPlayBackSeek(10000, -85000)
+        old_args = module.threading.Timer.call_args.kwargs['args']
+        monitor.onPlayBackPaused()
+        module.threading.Timer.reset_mock()
+        monitor._update_progress(*old_args)
+        module.threading.Timer.assert_not_called()
+
+    def test_current_progress_callback_reschedules_once_after_seek_settles(self):
+        module, window, monitor, history, episode = self.make_active_episode()
+        monitor.getTime = lambda: 10.0
+        module.xbmc.getCondVisibility.return_value = False
+        monitor.onPlayBackSeek(10000, -85000)
+        old_args = module.threading.Timer.call_args.kwargs['args']
+        module.threading.Timer.reset_mock()
+        monitor._update_progress(*old_args)
+        self.assertEqual(module.threading.Timer.call_count, 1)
+        self.assertEqual(module.threading.Timer.call_args.args[0], 15)
+        new_args = module.threading.Timer.call_args.kwargs['args']
+        module.threading.Timer.reset_mock()
+        monitor._update_progress(*old_args)
+        module.threading.Timer.assert_not_called()
+        monitor.onPlayBackPaused()
+        monitor._update_progress(*new_args)
+        module.threading.Timer.assert_not_called()
+
+    def test_trakt_seek_to_zero_sends_zero_on_stop(self):
+        module, window, monitor, history, episode = self.make_active_episode()
+        monitor.scrobbling_in_progress = True
+        monitor.media_id, monitor.media_type = '77', 'episode'
+        monitor.addon.getSetting.return_value = 'true'
+        monitor._queue_scrobble = MagicMock()
+        monitor.last_known_progress = 95.0
+        monitor.getTime = lambda: 95.0
+        module.xbmc.getCondVisibility.return_value = True
+        monitor.onPlayBackSeek(0, -95000)
+        monitor.onPlayBackStopped()
+        monitor._queue_scrobble.assert_called_once_with('stop', '77', 'episode', 0.0, episode)
+
+    def test_trakt_paused_seek_still_sends_coalesced_pause(self):
+        module, window, monitor, history, episode = self.make_active_episode()
+        monitor.scrobbling_in_progress = True
+        monitor.media_id, monitor.media_type = '77', 'episode'
+        monitor.addon.getSetting.return_value = 'true'
+        monitor._queue_scrobble = MagicMock()
+        monitor.getTime = lambda: 60.0
+        module.xbmc.getCondVisibility.return_value = True
+        module.threading.Timer.reset_mock()
+        monitor.onPlayBackSeek(50000, 40000)
+        delay, callback = module.threading.Timer.call_args.args
+        self.assertEqual(delay, 1.0)
+        self.assertEqual(monitor.last_known_progress, 50.0)
+        callback()
+        monitor._queue_scrobble.assert_called_once_with(
+            'pause', '77', 'episode', 50.0, episode, monitor._playback_item_generation)
+
+    def test_new_item_resets_known_zero_before_stop_fallback(self):
+        module, window, monitor, history, episode = self.make_active_episode()
+        monitor.mark_watched_func = MagicMock()
+        module.xbmc.getCondVisibility.return_value = True
+        monitor.onPlayBackSeek(0, -10000)
+        url = 'https://example.invalid/next-episode'
+        next_episode = dict(episode, episode=3)
+        self.queue_record(module, window, monitor, url, next_episode)
+        self.set_playing_url(monitor, url)
+        monitor.onAVStarted()
+        monitor.getTime = lambda: 95.0
+        monitor.onPlayBackStopped()
+        monitor.mark_watched_func.assert_called_once_with(next_episode)
+
     def test_superseded_monitor_does_not_clear_new_owner_metadata(self):
         module, window, monitor, history, episode = self.make_active_episode()
         window.setProperty('play_er.monitor_owner', 'new-owner')

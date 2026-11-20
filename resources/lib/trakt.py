@@ -1908,7 +1908,12 @@ class KodiPlayerMonitor(xbmc.Player):
         self.media_id = None
         self.media_type = None
         self.last_known_progress = 0.0
+        self._progress_known = False
+        self._progress_sample_lock = threading.RLock()
+        self._pending_seek = None
+        self._seek_was_paused = False
         self.progress_update_timer = None
+        self._progress_timer_revision = 0
         self.progress_lock = threading.Lock()
         self._playback_action_lock = threading.RLock()
         self._scrobble_executor = None
@@ -1950,6 +1955,56 @@ class KodiPlayerMonitor(xbmc.Player):
         return bool(self._playback_owner) and (
             xbmcgui.Window(10000).getProperty('play_er.monitor_owner') == self._playback_owner
         )
+
+    def _reset_progress(self):
+        with self._progress_sample_lock:
+            self.last_known_progress = 0.0
+            self._progress_known = False
+            self._pending_seek = None
+            self._seek_was_paused = False
+
+    def _set_seek_progress(self, position, duration, paused=False):
+        with self._progress_sample_lock:
+            target = max(0.0, min(duration, position))
+            self.last_known_progress = target / duration * 100.0
+            self._progress_known = True
+            self._pending_seek = (target, time.monotonic())
+            self._seek_was_paused = paused
+
+    def _sample_progress(self, position, duration, paused=False):
+        """Ignore the old player clock briefly while a seek is still settling."""
+        with self._progress_sample_lock:
+            if self._pending_seek:
+                target, started = self._pending_seek
+                elapsed = max(0.0, time.monotonic() - started)
+                if paused:
+                    self._seek_was_paused = True
+                tolerance = 1.0 if paused else 1.0 + min(elapsed, 3.0)
+                if abs(position - target) <= tolerance:
+                    self._pending_seek = None
+                    self._seek_was_paused = False
+                elif paused or elapsed < 3.0 or xbmc.getCondVisibility('Player.Caching'):
+                    self.last_known_progress = max(0.0, min(100.0, target / duration * 100.0))
+                    self._progress_known = True
+                    return self.last_known_progress, False
+                else:
+                    self._pending_seek = None
+                    self._seek_was_paused = False
+            self.last_known_progress = max(0.0, min(100.0, position / duration * 100.0))
+            self._progress_known = True
+            return self.last_known_progress, True
+
+    def _resume_pending_seek(self):
+        with self._progress_sample_lock:
+            if self._pending_seek and self._seek_was_paused:
+                self._pending_seek = (self._pending_seek[0], time.monotonic())
+                self._seek_was_paused = False
+
+    def _schedule_progress_update_locked(self, delay, generation):
+        self._progress_timer_revision += 1
+        self.progress_update_timer = threading.Timer(
+            delay, self._update_progress, args=(generation, self._progress_timer_revision))
+        self.progress_update_timer.start()
 
     def _queue_scrobble(self, action, media_id, media_type, progress, meta=None,
                         expected_generation=None):
@@ -2007,8 +2062,10 @@ class KodiPlayerMonitor(xbmc.Player):
             if self.scrobbling_in_progress:
                 mid = self.media_id
                 mtype = self.media_type
-                progress = self.last_known_progress
-                if progress == 0.0 and not current_item_changed and self.isPlaying():
+                with self._progress_sample_lock:
+                    progress = self.last_known_progress
+                    progress_known = self._progress_known
+                if progress == 0.0 and not progress_known and not current_item_changed and self.isPlaying():
                     try:
                         total = self.getTotalTime()
                         if total > 0:
@@ -2037,10 +2094,12 @@ class KodiPlayerMonitor(xbmc.Player):
                 if timer:
                     timer.cancel()
             self.progress_update_timer = None
+            self._progress_timer_revision += 1
             self.downgrade_timer = None
             self._downgrade_generation += 1
         self.scrobbling_in_progress = False
         self.current_meta = None
+        self._reset_progress()
 
     # FIX PRE-EMPTIVE AND FILTERS [SEEK PROGRESS WITHOUT FALSE HISTORY ENTRIES]
     def _cancel_seek_scrobble(self):
@@ -2065,26 +2124,29 @@ class KodiPlayerMonitor(xbmc.Player):
     def onPlayBackSeek(self, time, seekOffset):
         if not self.owns_playback():
             return
-        # A seek can jump across the entire credits window between the normal
-        # 15-second ticks. Check local features promptly, independently of Trakt.
-        if not xbmc.getCondVisibility('Player.Paused'):
-            with self.progress_lock:
-                if self.progress_update_timer:
-                    self.progress_update_timer.cancel()
-                self.progress_update_timer = threading.Timer(
-                    0.25, self._update_progress, args=(self._playback_item_generation,))
-                self.progress_update_timer.start()
-        if not self.scrobbling_in_progress:
-            return
-        if self.addon.getSetting('enable_trakt_scrobbling') != 'true':
-            return
+        paused = xbmc.getCondVisibility('Player.Paused')
+        total = 0
         try:
             total = self.getTotalTime()
-            if total <= 0:
-                return
-            # Kodi's callback position is milliseconds; getTotalTime is seconds.
-            # Update immediately, even if Stop arrives before the next 15s tick.
-            self.last_known_progress = max(0.0, min(100.0, float(time) / (total * 10.0)))
+            if total > 0:
+                # Kodi's callback position is milliseconds; getTotalTime is seconds.
+                self._set_seek_progress(float(time) / 1000.0, total, paused)
+        except Exception as e:
+            total = 0
+            log(f'TRAKT - Seek callback failed: {e}', xbmc.LOGWARNING)
+        # A seek can jump across the entire credits window between the normal
+        # 15-second ticks. Check local features promptly, independently of Trakt.
+        with self.progress_lock:
+            if self.progress_update_timer:
+                self.progress_update_timer.cancel()
+            if not paused:
+                self._schedule_progress_update_locked(0.25, self._playback_item_generation)
+            else:
+                self.progress_update_timer = None
+                self._progress_timer_revision += 1
+        if total <= 0 or not self.scrobbling_in_progress or self.addon.getSetting('enable_trakt_scrobbling') != 'true':
+            return
+        try:
             self._cancel_seek_scrobble()
             generation = self._seek_generation
             item_generation = self._playback_item_generation
@@ -2104,9 +2166,9 @@ class KodiPlayerMonitor(xbmc.Player):
                     duration = self.getTotalTime()
                     if duration <= 0:
                         return
-                    progress = max(0.0, min(100.0, self.getTime() / duration * 100.0))
-                    self.last_known_progress = progress
-                    action = 'pause' if xbmc.getCondVisibility('Player.Paused') else 'start'
+                    paused = xbmc.getCondVisibility('Player.Paused')
+                    progress, _ = self._sample_progress(self.getTime(), duration, paused)
+                    action = 'pause' if paused else 'start'
                     self._queue_scrobble(action, media_id, media_type, progress, meta, item_generation)
                 except Exception as e:
                     log(f'TRAKT - Seek progress sync failed: {e}', xbmc.LOGWARNING)
@@ -2116,14 +2178,15 @@ class KodiPlayerMonitor(xbmc.Player):
         except Exception as e:
             log(f'TRAKT - Seek callback failed: {e}', xbmc.LOGWARNING)
 
-    def _update_progress(self, generation=None):
+    def _update_progress(self, generation=None, timer_revision=None):
         if not self.owns_playback():
             return
         pending_actions = []
         with self.progress_lock:
             if generation is None:
                 generation = self._playback_item_generation
-            if generation != self._playback_item_generation:
+            if (generation != self._playback_item_generation
+                    or (timer_revision is not None and timer_revision != self._progress_timer_revision)):
                 return
             active_timer = self.progress_update_timer
             if not self.isPlaying():
@@ -2132,7 +2195,10 @@ class KodiPlayerMonitor(xbmc.Player):
                 current_time = self.getTime()
                 total_time = self.getTotalTime()
                 if total_time > 0:
-                    self.last_known_progress = max(0, min(100, (current_time / total_time * 100)))
+                    _, settled = self._sample_progress(current_time, total_time)
+                    if not settled:
+                        self._schedule_progress_update_locked(1, generation)
+                        return
                     remaining = total_time - current_time
 
                     if self.addon.getSettingBool("enable_pre_emptive_scrape"):
@@ -2173,10 +2239,10 @@ class KodiPlayerMonitor(xbmc.Player):
 
         with self.progress_lock:
             if (generation != self._playback_item_generation or not self.owns_playback()
+                    or (timer_revision is not None and timer_revision != self._progress_timer_revision)
                     or self.progress_update_timer is not active_timer or not self.isPlaying()):
                 return
-            self.progress_update_timer = threading.Timer(15, self._update_progress, args=(generation,))
-            self.progress_update_timer.start()
+            self._schedule_progress_update_locked(15, generation)
 
     def _schedule_downgrade_check(self, generation):
         with self.progress_lock:
@@ -2556,7 +2622,8 @@ class KodiPlayerMonitor(xbmc.Player):
         with self.progress_lock:
             start_generation = self._downgrade_generation
         previous_meta = dict(self.current_meta) if self.current_meta else None
-        previous_progress = self.last_known_progress
+        with self._progress_sample_lock:
+            previous_progress = self.last_known_progress
         try:
             playing_item = self.getPlayingItem()
             win = xbmcgui.Window(10000)
@@ -2668,7 +2735,7 @@ class KodiPlayerMonitor(xbmc.Player):
                 self._cancel_pending_scrobble_start()
                 self._cancel_pending_subtitles()
                 self._playback_item_generation += 1
-                self.last_known_progress = 0.0
+                self._reset_progress()
                 with self.progress_lock:
                     self._downgrade_generation += 1
                     start_generation = self._downgrade_generation
@@ -2790,9 +2857,13 @@ class KodiPlayerMonitor(xbmc.Player):
                                 # FIX PRE-EMPTIVE AND FILTERS [RESUME/SEEK BEFORE START TIMER]
                                 # trakt_scrobble_start(start_id, start_type, 0.0, ...)
                                 duration = self.getTotalTime()
-                                progress = max(0.0, min(100.0, self.getTime() / duration * 100.0)) if duration > 0 else 0.0
-                                self.last_known_progress = progress
-                                action = 'pause' if xbmc.getCondVisibility('Player.Paused') else 'start'
+                                if duration > 0:
+                                    paused = xbmc.getCondVisibility('Player.Paused')
+                                    progress, _ = self._sample_progress(self.getTime(), duration, paused)
+                                else:
+                                    paused = xbmc.getCondVisibility('Player.Paused')
+                                    progress = 0.0
+                                action = 'pause' if paused else 'start'
                                 self._queue_scrobble(action, start_id, start_type, progress, start_meta, scrobble_generation)
                         except Exception as ex:
                             log(f"TRAKT delayed_start error: {ex}", xbmc.LOGWARNING)
@@ -2819,8 +2890,7 @@ class KodiPlayerMonitor(xbmc.Player):
             with self.progress_lock:
                 if self.progress_update_timer:
                     self.progress_update_timer.cancel()
-                self.progress_update_timer = threading.Timer(5, self._update_progress, args=(self._playback_item_generation,))
-                self.progress_update_timer.start()
+                self._schedule_progress_update_locked(5, self._playback_item_generation)
         except Exception as e:
             log(f"TRAKT onAVStarted error: {e}", xbmc.LOGERROR)
             self.scrobbling_in_progress = False
@@ -2833,28 +2903,27 @@ class KodiPlayerMonitor(xbmc.Player):
             if self.progress_update_timer:
                 self.progress_update_timer.cancel()
                 self.progress_update_timer = None
-        if not self.scrobbling_in_progress:
-            return
+            self._progress_timer_revision += 1
         try:
             progress = self.last_known_progress
             if self.isPlaying():
                 current_time = self.getTime()
                 total_time = self.getTotalTime()
                 if total_time > 0:
-                    progress = max(0, min(100, (current_time / total_time * 100)))
-                    self.last_known_progress = progress
-            self._queue_scrobble("pause", self.media_id, self.media_type, progress, self.current_meta)
+                    progress, _ = self._sample_progress(current_time, total_time, paused=True)
+            if self.scrobbling_in_progress:
+                self._queue_scrobble("pause", self.media_id, self.media_type, progress, self.current_meta)
         except Exception:
             pass
 
     def onPlayBackResumed(self):
         if not self.owns_playback():
             return
+        self._resume_pending_seek()
         self._cancel_seek_scrobble()
         with self.progress_lock:
             if not self.progress_update_timer:
-                self.progress_update_timer = threading.Timer(15, self._update_progress, args=(self._playback_item_generation,))
-                self.progress_update_timer.start()
+                self._schedule_progress_update_locked(15, self._playback_item_generation)
         if not self.scrobbling_in_progress or self.addon.getSetting("enable_trakt_scrobbling") != "true":
             return
         try:
@@ -2863,8 +2932,7 @@ class KodiPlayerMonitor(xbmc.Player):
                 current_time = self.getTime()
                 total_time = self.getTotalTime()
                 if total_time > 0:
-                    progress = max(0, min(100, (current_time / total_time * 100)))
-                    self.last_known_progress = progress
+                    progress, _ = self._sample_progress(current_time, total_time)
             self._queue_scrobble("start", self.media_id, self.media_type, progress, self.current_meta)
         except Exception:
             pass
@@ -2888,8 +2956,10 @@ class KodiPlayerMonitor(xbmc.Player):
 
         mid = self.media_id
         mtype = self.media_type
-        prog = self.last_known_progress
-        if prog == 0.0:
+        with self._progress_sample_lock:
+            prog = self.last_known_progress
+            progress_known = self._progress_known
+        if prog == 0.0 and not progress_known:
             try:
                 prog = (self.getTime() / self.getTotalTime() * 100)
             except Exception:
@@ -2974,6 +3044,7 @@ class KodiPlayerMonitor(xbmc.Player):
             if self.progress_update_timer:
                 self.progress_update_timer.cancel()
                 self.progress_update_timer = None
+            self._progress_timer_revision += 1
             if self.downgrade_timer:
                 self.downgrade_timer.cancel()
                 self.downgrade_timer = None
@@ -2982,7 +3053,7 @@ class KodiPlayerMonitor(xbmc.Player):
         self.scrobbling_in_progress = False
         self.media_id = None
         self.media_type = None
-        self.last_known_progress = 0.0
+        self._reset_progress()
         self.current_meta = None
         self._last_av_started_key = None
         self._last_av_started_at = 0.0
