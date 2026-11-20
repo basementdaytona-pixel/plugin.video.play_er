@@ -1912,8 +1912,10 @@ class KodiPlayerMonitor(xbmc.Player):
         self._progress_sample_lock = threading.RLock()
         self._pending_seek = None
         self._seek_was_paused = False
+        self._progress_seek_revision = 0
         self.progress_update_timer = None
         self._progress_timer_revision = 0
+        self._progress_recheck_on_resume = False
         self.progress_lock = threading.Lock()
         self._playback_action_lock = threading.RLock()
         self._scrobble_executor = None
@@ -2095,6 +2097,7 @@ class KodiPlayerMonitor(xbmc.Player):
                     timer.cancel()
             self.progress_update_timer = None
             self._progress_timer_revision += 1
+            self._progress_recheck_on_resume = False
             self.downgrade_timer = None
             self._downgrade_generation += 1
         self.scrobbling_in_progress = False
@@ -2124,6 +2127,8 @@ class KodiPlayerMonitor(xbmc.Player):
     def onPlayBackSeek(self, time, seekOffset):
         if not self.owns_playback():
             return
+        with self._progress_sample_lock:
+            self._progress_seek_revision += 1
         paused = xbmc.getCondVisibility('Player.Paused')
         total = 0
         try:
@@ -2140,10 +2145,12 @@ class KodiPlayerMonitor(xbmc.Player):
             if self.progress_update_timer:
                 self.progress_update_timer.cancel()
             if not paused:
+                self._progress_recheck_on_resume = False
                 self._schedule_progress_update_locked(0.25, self._playback_item_generation)
             else:
                 self.progress_update_timer = None
                 self._progress_timer_revision += 1
+                self._progress_recheck_on_resume = True
         if total <= 0 or not self.scrobbling_in_progress or self.addon.getSetting('enable_trakt_scrobbling') != 'true':
             return
         try:
@@ -2191,6 +2198,9 @@ class KodiPlayerMonitor(xbmc.Player):
             active_timer = self.progress_update_timer
             if not self.isPlaying():
                 return
+            with self._progress_sample_lock:
+                seek_revision = self._progress_seek_revision
+            owner = self._playback_owner
             try:
                 current_time = self.getTime()
                 total_time = self.getTotalTime()
@@ -2198,6 +2208,8 @@ class KodiPlayerMonitor(xbmc.Player):
                     _, settled = self._sample_progress(current_time, total_time)
                     if not settled:
                         self._schedule_progress_update_locked(1, generation)
+                        return
+                    if seek_revision != self._progress_seek_revision:
                         return
                     remaining = total_time - current_time
 
@@ -2209,7 +2221,7 @@ class KodiPlayerMonitor(xbmc.Player):
                                 self.play_key = play_key
                             if play_key and not self.orchestrator.has_triggered(play_key, 'preemptive') and (self.last_known_progress > 80 or remaining < 300):
                                 self.orchestrator.set_triggered(play_key, 'preemptive')
-                                pending_actions.append(self._trigger_pre_emptive_scrape)
+                                pending_actions.append((self._trigger_pre_emptive_scrape, play_key, 'preemptive'))
                         except Exception:
                             pass
 
@@ -2222,20 +2234,45 @@ class KodiPlayerMonitor(xbmc.Player):
                                 self.play_key = play_key
                             if play_key and not self.orchestrator.has_triggered(play_key, 'skip_credits') and 0 < remaining <= trigger_time:
                                 self.orchestrator.set_triggered(play_key, 'skip_credits')
-                                pending_actions.append(self._trigger_skip_credits)
+                                pending_actions.append((self._trigger_skip_credits, play_key, 'skip_credits'))
                         except Exception:
                             pass
             except Exception:
                 pass
 
+        def is_current():
+            return (generation == self._playback_item_generation
+                    and seek_revision == self._progress_seek_revision
+                    and owner == self._playback_owner and self.owns_playback()
+                    and self.isPlayingVideo())
+
+        def rearm_after_seek(actions):
+            # The flags prevent overlapping ticks while an action is running.
+            # Only the same owner and item may clear flags after a seek.
+            with self.progress_lock:
+                if (generation != self._playback_item_generation or owner != self._playback_owner
+                        or not self.owns_playback() or seek_revision == self._progress_seek_revision):
+                    return
+                for _, play_key, trigger in actions:
+                    self.orchestrator.clear_trigger(play_key, trigger)
+                if actions and self.isPlayingVideo() and not xbmc.getCondVisibility('Player.Paused'):
+                    if self.progress_update_timer:
+                        self.progress_update_timer.cancel()
+                    self._schedule_progress_update_locked(0.25, generation)
+
         # Metadata lookup and modal dialogs must not block Stop/Pause cleanup.
-        for action in pending_actions:
-            if generation != self._playback_item_generation or not self.owns_playback() or not self.isPlaying():
+        for index, (action, play_key, trigger) in enumerate(pending_actions):
+            if not is_current():
+                rearm_after_seek(pending_actions[index:])
                 return
             try:
-                action()
+                completed = action(is_current)
+                if completed is False:
+                    rearm_after_seek([(action, play_key, trigger)])
             except Exception as e:
                 log(f"PLAYBACK - Progress action failed: {e}", xbmc.LOGWARNING)
+                if not is_current():
+                    rearm_after_seek([(action, play_key, trigger)])
 
         with self.progress_lock:
             if (generation != self._playback_item_generation or not self.owns_playback()
@@ -2427,11 +2464,17 @@ class KodiPlayerMonitor(xbmc.Player):
 
         self._schedule_downgrade_check(generation)
 
-    def _trigger_pre_emptive_scrape(self):
+    def _trigger_pre_emptive_scrape(self, is_current=None):
         if not self.current_meta or self.current_meta.get("media_type") != "episode":
-            return
+            return True
         try:
             generation = self._playback_item_generation
+            seek_revision = self._progress_seek_revision
+            is_current = is_current or (lambda: generation == self._playback_item_generation
+                                        and seek_revision == self._progress_seek_revision
+                                        and self.owns_playback() and self.isPlayingVideo())
+            if not is_current():
+                return False
             meta = dict(self.current_meta)
             tmdb_id = meta.get("tmdb_id")
             current_season = int(meta.get("season", 1))
@@ -2439,43 +2482,54 @@ class KodiPlayerMonitor(xbmc.Player):
 
             if self.orchestrator:
                 should, _ = self.orchestrator.should_trigger_preemptive(meta, self.tmdb_client, self.addon)
+                if not is_current():
+                    return False
                 if not should:
-                    return
+                    return True
 
             # FIX PRE-EMPTIVE AND FILTERS [SEARCH BEYOND QUEUED EPISODES]
             # Původní cíl current_episode + 1 znovu hledal zdroj, který už mohl být ve frontě:
             # next_ep_meta["episode"] = current_episode + 1
             from resources.lib.generator import get_preemptive_episode_target
             target = get_preemptive_episode_target(meta, self.tmdb_client)
+            if not is_current():
+                return False
             if not target:
-                return
+                return True
             next_ep_meta = meta.copy()
             next_ep_meta["season"], next_ep_meta["episode"] = target
             url = get_url(action="pre_emptive_search", meta=json.dumps(next_ep_meta))
-            if generation != self._playback_item_generation or not self.owns_playback():
-                return
+            if not is_current():
+                return False
             xbmc.executebuiltin(f"RunPlugin({url})")
             if self.orchestrator:
                 self.orchestrator.record_preemptive(tmdb_id, current_season)
+            return True
         except Exception:
-            pass
+            return bool(is_current()) if is_current else True
 
-    def _trigger_skip_credits(self):
+    def _trigger_skip_credits(self, is_current=None):
         if not self.current_meta or self.current_meta.get("media_type") != "episode":
-            return
+            return True
         try:
             if self.orchestrator:
                 generation = self._playback_item_generation
+                seek_revision = self._progress_seek_revision
+                is_current = is_current or (lambda: generation == self._playback_item_generation
+                                            and seek_revision == self._progress_seek_revision
+                                            and self.owns_playback() and self.isPlayingVideo())
+                if not is_current():
+                    return False
                 meta = dict(self.current_meta)
                 action, reason = self.orchestrator.handle_skip_credits(
-                    meta, self.tmdb_client, self.addon,
-                    is_current=lambda: (generation == self._playback_item_generation
-                                        and self.owns_playback() and self.isPlayingVideo()),
+                    meta, self.tmdb_client, self.addon, is_current=is_current,
                 )
                 log(f"SKIP CREDITS - RESULT: {action}; REASON: {reason}; "
                     f"S{meta.get('season')}E{meta.get('episode')}", xbmc.LOGINFO)
+                return reason != 'playback_changed' and (action in ('next', 'runplugin') or is_current())
         except Exception:
-            pass
+            return bool(is_current()) if is_current else True
+        return True
 
     def _legacy_episode_matches_playlist(self, key, record):
         """Recognize pre-update queue records only in the active series playlist."""
@@ -2890,6 +2944,7 @@ class KodiPlayerMonitor(xbmc.Player):
             with self.progress_lock:
                 if self.progress_update_timer:
                     self.progress_update_timer.cancel()
+                self._progress_recheck_on_resume = False
                 self._schedule_progress_update_locked(5, self._playback_item_generation)
         except Exception as e:
             log(f"TRAKT onAVStarted error: {e}", xbmc.LOGERROR)
@@ -2923,7 +2978,9 @@ class KodiPlayerMonitor(xbmc.Player):
         self._cancel_seek_scrobble()
         with self.progress_lock:
             if not self.progress_update_timer:
-                self._schedule_progress_update_locked(15, self._playback_item_generation)
+                delay = 0.25 if self._progress_recheck_on_resume else 15
+                self._progress_recheck_on_resume = False
+                self._schedule_progress_update_locked(delay, self._playback_item_generation)
         if not self.scrobbling_in_progress or self.addon.getSetting("enable_trakt_scrobbling") != "true":
             return
         try:
@@ -3045,6 +3102,7 @@ class KodiPlayerMonitor(xbmc.Player):
                 self.progress_update_timer.cancel()
                 self.progress_update_timer = None
             self._progress_timer_revision += 1
+            self._progress_recheck_on_resume = False
             if self.downgrade_timer:
                 self.downgrade_timer.cancel()
                 self.downgrade_timer = None

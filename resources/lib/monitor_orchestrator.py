@@ -419,6 +419,8 @@ class MonitorOrchestrator:
             except Exception as e:
                 log(f"ORCHESTRATOR - SKIP CREDITS TMDB ERROR : {e}", xbmc.LOGWARNING)
                 return "none", "tmdb_error"
+            if not is_current():
+                return "none", "playback_changed"
 
             # Strict prediction must never stop this episode to try an unverified
             # Continue fallback. Only a prepared sequential successor can be used.
@@ -454,6 +456,8 @@ class MonitorOrchestrator:
                         pass
             except Exception:
                 pass
+            if not is_current():
+                return "none", "playback_changed"
 
             try:
                 play_key = self.get_play_key(meta)
@@ -607,6 +611,14 @@ class MonitorOrchestrator:
             self.win.setProperty(self._trigger_prop_key(play_key, trigger_name), '1')
         except Exception as e:
             log(f"ORCHESTRATOR - FUNCTION  ( set_triggered )  ERROR : {e}", xbmc.LOGWARNING)
+
+
+    def clear_trigger(self, play_key, trigger_name):
+        try:
+            if self.win and play_key:
+                self.win.clearProperty(self._trigger_prop_key(play_key, trigger_name))
+        except Exception as e:
+            log(f"ORCHESTRATOR - FUNCTION  ( clear_trigger )  ERROR : {e}", xbmc.LOGWARNING)
 
 
     def clear_triggers(self, play_key):

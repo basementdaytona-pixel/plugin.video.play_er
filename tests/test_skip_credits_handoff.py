@@ -180,6 +180,18 @@ class SkipCreditsHandoffTests(unittest.TestCase):
         self.assertEqual(self.run_handoff(is_current=lambda: next(current)), ('none', 'playback_changed'))
         orchestrator.xbmc.executebuiltin.assert_not_called()
 
+    def test_position_change_during_next_episode_lookup_stops_before_dialog(self):
+        current = {'value': True}
+        def lookup(*args):
+            current['value'] = False
+            return 1, 2
+        self.generator._next_episode_coordinates = lookup
+        self.assertEqual(self.run_handoff(is_current=lambda: current['value']),
+                         ('none', 'playback_changed'))
+        self.show_dialog.assert_not_called()
+        self.owner.perform_next.assert_not_called()
+        orchestrator.xbmc.executebuiltin.assert_not_called()
+
     def test_slow_stop_waits_for_original_playback(self):
         self.player.isPlaying.return_value = True
         sleeps = []
