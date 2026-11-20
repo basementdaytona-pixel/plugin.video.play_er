@@ -84,6 +84,7 @@ class SeriesManager:
         search_queries = [series_name, f"{series_name} season", f"{series_name} s01", f"{series_name} epizoda"]
         found_episodes = {}
         seen_filenames = set()
+        include_keywords = None
 
         for provider in providers:
             provider_name = provider.__class__.__name__
@@ -117,11 +118,9 @@ class SeriesManager:
                             quality = self._detect_quality(item["title"])
                             quality_score = self._get_quality_score(quality)
 
-                            include_keywords = []
-                            val = self.addon.getSetting("filter_global")
-                            if val:
-                                include_keywords.extend([k.strip().lower() for k in val.split() if k.strip()])
-
+                            if include_keywords is None:
+                                val = self.addon.getSetting("filter_global")
+                                include_keywords = [k.strip().lower() for k in val.split() if k.strip()] if val else []
                             matches = sum(1 for k in include_keywords if k in item["title"].lower())
                             final_score = quality_score + (matches * 20)
 
