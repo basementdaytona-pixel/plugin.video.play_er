@@ -110,6 +110,29 @@ class SeriesPlaylistTests(unittest.TestCase):
         self.assertEqual(len(records), 2)
         self.assertEqual(self.window.getProperty('play_er.bg_series_playlist_building'), '')
 
+    def test_tmdbh_queue_can_retry_after_thread_start_failure(self):
+        meta = {'tmdb_id': 42, 'media_type': 'episode', 'season': 1, 'episode': 1}
+        for queue in (generator.queue_following_episodes_from_tmdbh,
+                      generator._queue_following_episodes_from_tmdbh_legacy):
+            for fail_construction in (False, True):
+                with self.subTest(queue=queue.__name__, construction=fail_construction):
+                    self.window.clearProperty('play_er.tmdbh_episode_queue_active')
+                    thread = MagicMock()
+                    if not fail_construction:
+                        thread.start.side_effect = RuntimeError('Cannot start thread')
+                    with patch.object(generator.threading, 'Thread', return_value=thread,
+                                      side_effect=RuntimeError('Cannot create thread')
+                                      if fail_construction else None) as factory:
+                        queue(meta, self.addon, self.instance)
+                        self.assertEqual(self.window.getProperty('play_er.tmdbh_episode_queue_active'), '')
+                        factory.side_effect = None
+                        thread.start.side_effect = None
+                        queue(meta, self.addon, self.instance)
+                        self.assertEqual(factory.call_count, 2)
+                    self.window.clearProperty('play_er.tmdbh_episode_queue_active')
+        self.playlist.add.assert_not_called()
+        self.actions.resolve_video.assert_not_called()
+
     def test_background_cache_failure_preserves_episode_queue(self):
         store = self.utils.store_meta_in_cache.side_effect
 

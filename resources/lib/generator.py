@@ -1369,7 +1369,11 @@ def _queue_following_episodes_from_tmdbh_legacy(meta, addon, plugin_instance):
         finally:
             win.clearProperty("play_er.tmdbh_episode_queue_active")
 
-    threading.Thread(target=_load_following_episodes).start()
+    try:
+        threading.Thread(target=_load_following_episodes).start()
+    except Exception as e:
+        win.clearProperty("play_er.tmdbh_episode_queue_active")
+        log(f"TMDBH queue - Nelze spustit načítání na pozadí: {e}", xbmc.LOGWARNING)
 
 
 # FIX PRE-EMPTIVE AND FILTERS [ROLLING TMDBHELPER QUEUE]
@@ -1646,7 +1650,11 @@ def queue_following_episodes_from_tmdbh(meta, addon, plugin_instance, seed_only=
         finally:
             win.clearProperty("play_er.tmdbh_episode_queue_active")
 
-    threading.Thread(target=_load_following_episodes).start()
+    try:
+        threading.Thread(target=_load_following_episodes).start()
+    except Exception as e:
+        win.clearProperty("play_er.tmdbh_episode_queue_active")
+        log(f"TMDBH queue - Nelze spustit načítání na pozadí: {e}", xbmc.LOGWARNING)
 
 
 def random_movie_trigger(start_meta, addon, active_provider, tmdb_client, handle, plugin_instance):
