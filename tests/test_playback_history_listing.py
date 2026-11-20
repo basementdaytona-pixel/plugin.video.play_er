@@ -20,6 +20,7 @@ class PlaybackHistoryListingTests(unittest.TestCase):
         self.cache.user_data_get.side_effect = lambda key: self.history
         self.cache.cache_get.return_value = None
         self.client = MagicMock()
+        self.client._fetch.return_value = None
         self.instance = SimpleNamespace(handle=7, addon=MagicMock(), tmdb_client=self.client)
         stack = ExitStack()
         self.addCleanup(stack.close)
@@ -59,7 +60,8 @@ class PlaybackHistoryListingTests(unittest.TestCase):
         self.history.insert(1, {'meta': dict(self.show), 'link': 'episode-b'})
         actions.playback_show_history({'show_title': 'Show', 'tmdb_id': '42'}, self.instance)
         self.client._fetch.assert_called_once_with('tv/42/season/0/episode/1',
-                                                   params={'append_to_response': 'credits'}, cache_key='tv_42_s0_e1')
+                                                   params={'append_to_response': 'credits'}, cache_key='tv_42_s0_e1',
+                                                   _cache_validator=actions._history_tmdb_details)
         self.assertEqual(self.add.call_count, 2)
 
     def test_duplicate_movies_load_tmdb_metadata_once_without_merging_history(self):
@@ -89,13 +91,13 @@ class PlaybackHistoryListingTests(unittest.TestCase):
         self.cache.user_data_update.assert_not_called()
 
     def test_error_payload_is_not_used_as_tmdb_metadata(self):
-        self.cache.cache_get.return_value = {'status_code': 34, 'success': False}
+        self.client._fetch.return_value = {'status_code': 34, 'success': False}
         actions.playback_history(self.instance)
         self.client._build_metadata_props.assert_not_called()
         self.assertEqual([c.kwargs['label'] for c in self.items.call_args_list], ['Show', 'Film'])
 
     def test_error_episode_payload_falls_back_to_saved_metadata(self):
-        self.cache.cache_get.return_value = {'status_code': 34, 'success': False}
+        self.client._fetch.return_value = {'status_code': 34, 'success': False}
         actions.playback_show_history({'show_title': 'Show', 'tmdb_id': '42'}, self.instance)
         self.client._build_metadata_props.assert_not_called()
         self.assertEqual(self.items.call_args.kwargs['label'], 'S00E01 - Special')
@@ -107,7 +109,7 @@ class PlaybackHistoryListingTests(unittest.TestCase):
         self.items.return_value.getVideoInfoTag.return_value.setTitle.assert_any_call('Film')
 
     def test_empty_tmdb_metadata_keeps_saved_titles(self):
-        self.cache.cache_get.return_value = {'name': 'unusable'}
+        self.client._fetch.return_value = {'name': 'unusable'}
         self.client._build_metadata_props.return_value = {}
         actions.playback_history(self.instance)
         self.assertEqual([c.kwargs['label'] for c in self.items.call_args_list], ['Show', 'Film'])

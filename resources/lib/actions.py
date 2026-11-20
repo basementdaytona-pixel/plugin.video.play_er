@@ -1777,29 +1777,24 @@ def playback_history(plugin_instance, is_widget=False):
         client = plugin_instance.tmdb_client
         if not client: return
         try:
-            if m_type == 'tv':
-                cache_key = f"tv_{m_id}"
-                client._fetch(f"tv/{m_id}", params={'append_to_response': 'credits'}, cache_key=cache_key)
-            elif m_type == 'movie':
-                cache_key = f"movie_{m_id}"
-                client._fetch(f"movie/{m_id}", params={'append_to_response': 'credits'}, cache_key=cache_key)
-        except: pass
+            return client._fetch(f"{m_type}/{m_id}", params={'append_to_response': 'credits'},
+                                 cache_key=f"{m_type}_{m_id}", _cache_validator=_history_tmdb_details)
+        except Exception:
+            return None
 
+    fetched = {}
     if items_to_fetch and plugin_instance.tmdb_client:
-        items_to_fetch = list({(kind, str(ident)): (kind, ident) for kind, ident in items_to_fetch}.values())
+        unique = {(kind, str(ident)): (kind, ident) for kind, ident in items_to_fetch}
         max_workers = get_threadpool(10)
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            executor.map(_fetch_meta_worker, items_to_fetch)
+            fetched = dict(zip(unique, executor.map(_fetch_meta_worker, unique.values())))
 
     for entries in shows_dict.values():
         first_meta = entries[0].get("meta", {})
         show_title = first_meta.get("tv_show_title", "Neznámý seriál")
         tmdb_id = first_meta.get("tmdb_id")
 
-        show_data_raw = {}
-        if plugin_instance.tmdb_client and tmdb_id:
-            cache_key = f"tv_{tmdb_id}"
-            show_data_raw = cache_manager.cache_get("TMDB", cache_key) or {}
+        show_data_raw = fetched.get(('tv', str(tmdb_id)))
 
         props = None
         if _history_tmdb_details(show_data_raw):
@@ -1848,10 +1843,7 @@ def playback_history(plugin_instance, is_widget=False):
         link = item.get("link") or ""
         tmdb_id = meta.get("tmdb_id")
 
-        movie_data_raw = {}
-        if plugin_instance.tmdb_client and tmdb_id:
-            cache_key = f"movie_{tmdb_id}"
-            movie_data_raw = cache_manager.cache_get("TMDB", cache_key) or {}
+        movie_data_raw = fetched.get(('movie', str(tmdb_id)))
 
         props = None
         if _history_tmdb_details(movie_data_raw):
@@ -1939,9 +1931,13 @@ def playback_show_history(params, plugin_instance):
         if tmdb_id and s is not None and e is not None and str(s) and str(e):
             cache_key = f"tv_{tmdb_id}_s{s}_e{e}"
             try:
-                plugin_instance.tmdb_client._fetch(f"tv/{tmdb_id}/season/{s}/episode/{e}", params={'append_to_response': 'credits'}, cache_key=cache_key)
-            except: pass
+                return plugin_instance.tmdb_client._fetch(
+                    f"tv/{tmdb_id}/season/{s}/episode/{e}", params={'append_to_response': 'credits'},
+                    cache_key=cache_key, _cache_validator=_history_tmdb_details)
+            except Exception:
+                return None
 
+    fetched = {}
     if episodes and plugin_instance.tmdb_client:
         unique = {}
         for item in episodes:
@@ -1950,7 +1946,7 @@ def playback_show_history(params, plugin_instance):
             unique.setdefault(key, item)
         max_workers = get_threadpool(10)
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            executor.map(_fetch_ep_worker, unique.values())
+            fetched = dict(zip(unique, executor.map(_fetch_ep_worker, unique.values())))
 
     for item in episodes:
         meta = item.get("meta", {})
@@ -1961,10 +1957,7 @@ def playback_show_history(params, plugin_instance):
         season = meta.get("season")
         episode = meta.get("episode")
 
-        episode_data_raw = {}
-        if tmdb_id and season is not None and episode is not None and str(season) and str(episode) and plugin_instance.tmdb_client:
-            cache_key = f"tv_{tmdb_id}_s{season}_e{episode}"
-            episode_data_raw = cache_manager.cache_get("TMDB", cache_key) or {}
+        episode_data_raw = fetched.get(tuple(str(meta.get(name)) for name in ('tmdb_id', 'season', 'episode')))
 
         props = None
         if _history_tmdb_details(episode_data_raw):
@@ -1972,6 +1965,9 @@ def playback_show_history(params, plugin_instance):
                 props = plugin_instance.tmdb_client._build_metadata_props(episode_data_raw, 'episode')
                 if isinstance(props, dict) and props:
                     props['tv_show_title'] = meta.get("tv_show_title")
+                    props['tmdb_id'] = tmdb_id
+                    props['season'] = season
+                    props['episode'] = episode
             except Exception:
                 pass
         if not isinstance(props, dict) or not props:
