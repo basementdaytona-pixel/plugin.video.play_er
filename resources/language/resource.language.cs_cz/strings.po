@@ -3566,3 +3566,7 @@ msgstr "POUZE [ 8K UHD ]"
 msgctxt "#32917"
 msgid "ONLY [ > 8K ]"
 msgstr "POUZE [ > 8K ]"
+
+msgctxt "#32918"
+msgid "ALTERNATIVE"
+msgstr "ALTERNATIVA"

@@ -77,6 +77,32 @@ def _local_language(value):
     return None
 
 
+def _stream_height(value):
+    """Recognize unambiguous list-form quality labels."""
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, int):
+        return value if 100 <= value <= 9999 else None
+    if isinstance(value, float):
+        return int(value) if value.is_integer() and 100 <= value <= 9999 else None
+    if not isinstance(value, str):
+        return None
+    label = value.strip().lower()
+    if label in ('4k', '8k'):
+        return {'4k': 2160, '8k': 4320}[label]
+    match = re.fullmatch(r'(\d{3,4})p?', label)
+    return int(match.group(1)) if match and int(match.group(1)) >= 100 else None
+
+
+def _alternate_stream_name(index, prefix):
+    """Keep unknown alternatives selectable without implying a resolution."""
+    label = ''
+    while index:
+        index, remainder = divmod(index - 1, 26)
+        label = chr(ord('A') + remainder) + label
+    return f'{prefix} {label}'
+
+
 def _write_subtitle_atomically(path, content):
     """Publish a complete file without truncating the subtitle used by Kodi."""
     temporary = None
@@ -738,7 +764,7 @@ class PrehrajTo(BaseProvider):
         res = self._api_get(f'videos/{video_id}/download', require_auth=True)
         data = self._video_response_data(res)
         if data:
-            orig_link = next((value for key in ('download_link', 'link', 'url')
+            orig_link = next((value.strip() for key in ('download_link', 'link', 'url')
                               if isinstance((value := data.get(key)), str) and value.strip()), None)
             if orig_link and detail and detail.get('extension'):
                 ext = str(detail.get('extension')).upper()
@@ -748,20 +774,53 @@ class PrehrajTo(BaseProvider):
             links_obj = detail.get('links') or {}
             if isinstance(links_obj, dict):
                 for k, v in links_obj.items():
-                    if v and isinstance(v, str):
+                    if isinstance(v, str) and v.strip():
+                        v = v.strip()
                         try:
                             transcodes[int(k)] = v
                         except Exception:
                             transcodes[k] = v
             elif isinstance(links_obj, list) and links_obj:
+                seen_urls = {}
+                alternate_index = 0
+                alternate_label = None
                 for item in links_obj:
-                    if not isinstance(item, dict):
+                    if isinstance(item, dict):
+                        url = next((value.strip() for key in ('url', 'link')
+                                    if isinstance((value := item.get(key)), str) and value.strip()), None)
+                        height = next((height for key in ('height', 'resolution', 'quality')
+                                       if (height := _stream_height(item.get(key))) is not None), None)
+                    else:
+                        url = item.strip() if isinstance(item, str) else None
+                        height = None
+                    if not url:
                         continue
-                    url = next((value for key in ('url', 'link')
-                                if isinstance((value := item.get(key)), str) and value.strip()), None)
-                    if url:
-                        transcodes[0] = url
-                        break
+                    if url in seen_urls:
+                        previous = seen_urls[url]
+                        if ((previous == 0 or isinstance(previous, str))
+                                and height is not None and height not in transcodes):
+                            del transcodes[previous]
+                            transcodes[height] = url
+                            seen_urls[url] = height
+                        continue
+                    if height is not None and height not in transcodes:
+                        key = height
+                    elif height is None and 0 not in transcodes:
+                        key = 0
+                    else:
+                        if alternate_label is None:
+                            try:
+                                alternate_label = self.addon.getLocalizedString(32918)
+                            except Exception:
+                                alternate_label = ''
+                            if not isinstance(alternate_label, str) or not alternate_label.strip():
+                                alternate_label = 'ALTERNATIVE'
+                            else:
+                                alternate_label = alternate_label.strip()
+                        alternate_index += 1
+                        key = _alternate_stream_name(alternate_index, alternate_label)
+                    transcodes[key] = url
+                    seen_urls[url] = key
 
         if orig_link:
             valid_links[f'ORIGINAL ({ext})'] = orig_link
