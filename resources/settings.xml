@@ -967,7 +967,7 @@
                     <default>false</default>
                     <control type="toggle"/>
                 </setting>
-                <setting id="prehrajto_api_sort" label="32000" type="string">
+                <setting id="prehrajto_api_sort" label="32000" help="32910" type="string">
                     <level>0</level>
                     <default>0</default>
                     <constraints>
@@ -979,7 +979,7 @@
                     </constraints>
                     <control type="list" format="string"/>
                 </setting>
-                <setting id="prehrajto_api_quality" label="32004" type="string">
+                <setting id="prehrajto_api_quality" label="32004" help="32911" type="string">
                     <level>0</level>
                     <default>0</default>
                     <constraints>
@@ -988,6 +988,12 @@
                             <option label="32006">1</option>
                             <option label="32007">2</option>
                             <option label="32008">3</option>
+                            <option label="32912">4</option>
+                            <option label="32913">5</option>
+                            <option label="32914">6</option>
+                            <option label="32915">7</option>
+                            <option label="32916">8</option>
+                            <option label="32917">9</option>
                         </options>
                     </constraints>
                     <control type="list" format="string"/>

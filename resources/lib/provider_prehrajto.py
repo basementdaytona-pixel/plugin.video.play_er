@@ -986,10 +986,11 @@ class PrehrajTo(BaseProvider):
         long_videos_only = get_setting_bool(self.addon, 'prehrajto_long_videos', False)
 
         api_sort_idx = get_setting_int_with_bounds(self.addon, 'prehrajto_api_sort', 0, 0, 2)
-        api_quality_idx = get_setting_int_with_bounds(self.addon, 'prehrajto_api_quality', 0, 0, 3)
+        api_quality_idx = get_setting_int_with_bounds(self.addon, 'prehrajto_api_quality', 0, 0, 9)
 
         sort_map = {0: "relevance", 1: "popularity", 2: "relevance"}
-        quality_map = {0: "", 1: "4k", 2: "1080p", 3: "720p"}
+        quality_map = {0: "", 1: "4k", 2: "1080p", 3: "720p", 4: "1440p",
+                       5: "480p", 6: "360p", 7: "240p", 8: "8k", 9: "8k_more"}
 
         api_sort = sort_map.get(api_sort_idx, "relevance")
         api_quality = quality_map.get(api_quality_idx, "")
@@ -1015,11 +1016,12 @@ class PrehrajTo(BaseProvider):
 
             if filter_duration:
                 params['longer-than-20min'] = 'true'
-            if is_filtering_enabled:
-                if api_sort:
-                    params['sort'] = api_sort
-                if api_quality:
-                    params['quality'] = api_quality
+            # Explicit server preferences are separate from local expression
+            # filters. Preserve the historical default request when unset.
+            if is_filtering_enabled or api_sort_idx:
+                params['sort'] = api_sort
+            if api_quality:
+                params['quality'] = api_quality
 
             api_resp = self._api_get('videos/search', params=params, require_auth=bool(self._access_token))
 
@@ -1028,7 +1030,7 @@ class PrehrajTo(BaseProvider):
                 break
             used_suggest = False
             if not items:
-                if p != 1 or filter_duration:
+                if p != 1 or filter_duration or api_quality:
                     break
                 log(f"PREHRAJTO - Běžné hledání '{smart_query}' vrátilo 0 výsledků. Zkouším suggest fallback.", xbmc.LOGINFO)
                 api_resp = self._api_get('videos/suggest', params={'phrase': smart_query}, require_auth=bool(self._access_token))

@@ -1196,7 +1196,7 @@ msgid "[B][COLOR orange]    ►  [/COLOR][/B]  SKIP CREDITS  :  AUTO-CLOSE"
 msgstr ""
 
 msgctxt "#32000"
-msgid "[B][COLOR orange]    ►  [/COLOR][/B]  API CALL  :  STREAM SHORTING"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  API CALL  :  STREAM SORTING"
 msgstr ""
 
 msgctxt "#32004"
@@ -3650,3 +3650,35 @@ msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  PREHRAJ.TO  :  VIDEOS OVER 20 MI
 msgctxt "#32909"
 msgid "Ask Prehraj.to to return videos longer than 20 minutes. Searches containing an episode number such as S01E02 or 1x02 are excluded. Other searches may hide short episodes and films. Suggest fallback is disabled for filtered searches."
 msgstr "Ask Prehraj.to to return videos longer than 20 minutes. Searches containing an episode number such as S01E02 or 1x02 are excluded. Other searches may hide short episodes and films. Suggest fallback is disabled for filtered searches."
+
+msgctxt "#32910"
+msgid "Sends the selected sorting to Prehraj.to independently of expression filters. Local sorting may change the final result order."
+msgstr "Sends the selected sorting to Prehraj.to independently of expression filters. Local sorting may change the final result order."
+
+msgctxt "#32911"
+msgid "Requests the selected quality from Prehraj.to independently of expression filters, including for episodes. Unfiltered suggestions are not used when this limit is selected."
+msgstr "Requests the selected quality from Prehraj.to independently of expression filters, including for episodes. Unfiltered suggestions are not used when this limit is selected."
+
+msgctxt "#32912"
+msgid "ONLY [ 1440P QHD ]"
+msgstr "ONLY [ 1440P QHD ]"
+
+msgctxt "#32913"
+msgid "ONLY [ 480P SD ]"
+msgstr "ONLY [ 480P SD ]"
+
+msgctxt "#32914"
+msgid "ONLY [ 360P ]"
+msgstr "ONLY [ 360P ]"
+
+msgctxt "#32915"
+msgid "ONLY [ 240P ]"
+msgstr "ONLY [ 240P ]"
+
+msgctxt "#32916"
+msgid "ONLY [ 8K UHD ]"
+msgstr "ONLY [ 8K UHD ]"
+
+msgctxt "#32917"
+msgid "ONLY [ > 8K ]"
+msgstr "ONLY [ > 8K ]"
