@@ -86,9 +86,7 @@ def show_stream_menu(plugin_instance):
 
         playing_item = player.getPlayingItem()
         playing_file = player.getPlayingFile()
-        current_link = playing_item.getProperty("play_er.link")
         current_meta_id = playing_item.getProperty("play_er.meta_id")
-        current_trakt_id = playing_item.getProperty("play_er.trakt_id")
 
         streams = get_streams(playing_item)
         if not streams:
@@ -169,18 +167,20 @@ def show_stream_menu(plugin_instance):
         if meta:
             try:
                 plugin_instance.tmdb_client.fill_list_item(li, meta, meta.get('media_type', 'movie'))
-                li.setProperty('play_er.meta_id', str(current_meta_id))
-                li.setProperty('play_er.link', str(current_link))
-                li.setProperty('play_er.provider', playing_item.getProperty('play_er.provider'))
-                li.setProperty('play_er.view_video_id', playing_item.getProperty('play_er.view_video_id'))
-                li.setProperty('play_er.view_binding', playing_item.getProperty('play_er.view_binding'))
                 li.setProperty('play_er.media_type', meta.get('media_type', 'movie'))
-                if current_trakt_id:
-                    li.setProperty('play_er.trakt_id', str(current_trakt_id))
-
-                attach_subtitles(li, playing_item)
             except Exception as e: 
                 log(f"STREAM SWITCH - Chyba metadat : {e}", xbmc.LOGWARNING)
+
+        # Playback identity and subtitles remain valid when metadata expires.
+        for key in ('play_er.link', 'play_er.provider', 'play_er.view_video_id', 'play_er.view_binding',
+                    'play_er.meta_id', 'play_er.media_type', 'play_er.source_list', 'play_er.trakt_id'):
+            value = playing_item.getProperty(key)
+            if value:
+                li.setProperty(key, value)
+        try:
+            attach_subtitles(li, playing_item)
+        except Exception as e:
+            log(f"STREAM SWITCH - Chyba titulků : {e}", xbmc.LOGWARNING)
 
 
         # ============== HYBRIDNÍ PŘEPÍNAČ (ANTI-CRASH) ==============
