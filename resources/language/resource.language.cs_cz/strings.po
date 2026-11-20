@@ -3526,3 +3526,11 @@ msgstr "Zobrazí navigační nabídky v AF3 jako filmové katalogy a zpřístupn
 msgctxt "#32907"
 msgid "Activate Arctic Fuse 3 and install script.skinvariables to configure views."
 msgstr "Pro nastavení pohledů aktivujte Arctic Fuse 3 a nainstalujte script.skinvariables."
+
+msgctxt "#32908"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  PREHRAJ.TO  :  VIDEOS OVER 20 MINUTES"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  PREHRAJ.TO  :  VIDEA NAD 20 MINUT"
+
+msgctxt "#32909"
+msgid "Ask Prehraj.to to return videos longer than 20 minutes. Searches containing an episode number such as S01E02 or 1x02 are excluded. Other searches may hide short episodes and films. Suggest fallback is disabled for filtered searches."
+msgstr "Požádá Prehraj.to o videa delší než 20 minut. Hledání s číslem epizody, například S01E02 nebo 1x02, je vynecháno. Ostatní hledání mohou skrýt krátké epizody a filmy. Pro filtrované hledání se nepoužije náhradní hledání přes návrhy."

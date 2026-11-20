@@ -16,7 +16,8 @@ def source_scope(addon, provider_manager):
     settings = {'providers': providers, 'enable_filtering': addon.getSetting('enable_filtering')}
     if 'prehraj.to' in providers:
         for key in ('email', 'search_pages', 'search_ls', 'prehrajto_api_sort',
-                    'prehrajto_api_quality', 'prehrajto_mark_multi_streams'):
+                    'prehrajto_api_quality', 'prehrajto_mark_multi_streams',
+                    'prehrajto_long_videos'):
             settings[key] = addon.getSetting(key)
     if 'webshare.cz' in providers:
         for key in ('webshare_username', 'webshare_search_limit', 'webshare_category', 'webshare_sort'):

@@ -983,6 +983,7 @@ class PrehrajTo(BaseProvider):
         search_ls = get_setting_int_with_bounds(self.addon, 'search_ls', 32, 32, 416)
         mark_multi = get_setting_bool(self.addon, 'prehrajto_mark_multi_streams', True)
         is_filtering_enabled = get_setting_bool(self.addon, 'enable_filtering', True)
+        long_videos_only = get_setting_bool(self.addon, 'prehrajto_long_videos', False)
 
         api_sort_idx = get_setting_int_with_bounds(self.addon, 'prehrajto_api_sort', 0, 0, 2)
         api_quality_idx = get_setting_int_with_bounds(self.addon, 'prehrajto_api_quality', 0, 0, 3)
@@ -996,8 +997,9 @@ class PrehrajTo(BaseProvider):
         smart_query = re.sub(r'[:\-]', ' ', query)
         smart_query = re.sub(r'\s+', ' ', smart_query).strip()
 
-        # Detekce epizody seriálu (např. S01E02 nebo 1x02) - u epizod NESMÍME filtrovat >20 minut!
-        is_episode_query = bool(re.search(r'\b[Ss]\d+[Ee]\d+\b|\b\d+x\d+\b', smart_query))
+        # Short episodes must remain available even when the duration filter is enabled.
+        is_episode_query = bool(re.search(r'\bs\d+e\d+\b|\b\d+x\d+\b', smart_query, re.IGNORECASE))
+        filter_duration = long_videos_only and not is_episode_query
 
         all_videos = []
         seen_links = set()
@@ -1011,9 +1013,9 @@ class PrehrajTo(BaseProvider):
                 'offset': offset
             }
 
+            if filter_duration:
+                params['longer-than-20min'] = 'true'
             if is_filtering_enabled:
-                if not is_episode_query:
-                    params['filterLongerThan20min'] = 1
                 if api_sort:
                     params['sort'] = api_sort
                 if api_quality:
@@ -1026,7 +1028,7 @@ class PrehrajTo(BaseProvider):
                 break
             used_suggest = False
             if not items:
-                if p != 1:
+                if p != 1 or filter_duration:
                     break
                 log(f"PREHRAJTO - Běžné hledání '{smart_query}' vrátilo 0 výsledků. Zkouším suggest fallback.", xbmc.LOGINFO)
                 api_resp = self._api_get('videos/suggest', params={'phrase': smart_query}, require_auth=bool(self._access_token))

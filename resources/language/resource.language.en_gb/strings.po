@@ -3642,3 +3642,11 @@ msgstr "Displays navigation menus as movie catalogues in AF3, making poster rows
 msgctxt "#32907"
 msgid "Activate Arctic Fuse 3 and install script.skinvariables to configure views."
 msgstr "Activate Arctic Fuse 3 and install script.skinvariables to configure views."
+
+msgctxt "#32908"
+msgid "[B][COLOR orange]    ►  [/COLOR][/B]  PREHRAJ.TO  :  VIDEOS OVER 20 MINUTES"
+msgstr "[B][COLOR orange]    ►  [/COLOR][/B]  PREHRAJ.TO  :  VIDEOS OVER 20 MINUTES"
+
+msgctxt "#32909"
+msgid "Ask Prehraj.to to return videos longer than 20 minutes. Searches containing an episode number such as S01E02 or 1x02 are excluded. Other searches may hide short episodes and films. Suggest fallback is disabled for filtered searches."
+msgstr "Ask Prehraj.to to return videos longer than 20 minutes. Searches containing an episode number such as S01E02 or 1x02 are excluded. Other searches may hide short episodes and films. Suggest fallback is disabled for filtered searches."
