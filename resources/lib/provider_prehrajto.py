@@ -34,6 +34,7 @@ import xbmcvfs
 
 
 from resources.lib.provider_base import BaseProvider
+from resources.lib.stream_quality import stream_quality
 from resources.lib.utils_filter import FilterUtils
 from resources.lib.utils_theme import Colors
 from resources.lib.utils_logging import log
@@ -963,9 +964,9 @@ class PrehrajTo(BaseProvider):
                 if "ORIGINAL" in k.upper():
                     original_url = v
                 else:
-                    nums = re.findall(r'\d+', k)
-                    if nums:
-                        q_dict[int(nums[0])] = v
+                    quality = stream_quality(k)
+                    if quality is not None:
+                        q_dict[quality] = v
 
             if max_bandwidth > 0.0:
                 if original_url and original_bitrate > max_bandwidth:

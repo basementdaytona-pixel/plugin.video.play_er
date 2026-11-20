@@ -116,6 +116,16 @@ class PrehrajStreamLinksTests(unittest.TestCase):
                 url, subtitles = self.resolve(detail, {'download_link': 'https://example.invalid/original'})
                 self.assertEqual((url, subtitles), ('https://example.invalid/' + expected, []))
 
+    def test_highest_recognizes_4k_object_key(self):
+        detail = {'links': {'4k': 'https://example.invalid/4k', '1080': 'https://example.invalid/1080'}}
+        url, subtitles = self.resolve(detail)
+        self.assertEqual((url, subtitles), ('https://example.invalid/4k', []))
+
+    def test_highest_recognizes_8k_over_4k(self):
+        detail = {'links': {'4k': 'https://example.invalid/4k', '8k': 'https://example.invalid/8k'}}
+        url, _ = self.resolve(detail)
+        self.assertEqual(url, 'https://example.invalid/8k')
+
     def test_bandwidth_filter_still_selects_existing_eligible_quality(self):
         self.settings.update(prehrajto_pref_quality='original', max_bandwidth_mbps='1')
         detail = {'size': 100000000, 'length': 60, 'links': [

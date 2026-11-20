@@ -32,6 +32,7 @@ import xbmcvfs
 from resources.lib.monitor_orchestrator import get_orchestrator
 from resources.lib.utils_logging import log
 from resources.lib.stream_state import get_streams, attach_subtitles, publish_active_streams
+from resources.lib.stream_quality import stream_quality
 from resources.lib.playback_identity import (EXPECTED_OWNER, EXPECTED_URL, EXPECTED_SOURCE, EXPECTED_PROVIDER,
                                               EXPECTED_VIEW_ID, EXPECTED_VIEW_BINDING, VIEW_ID, VIEW_BINDING,
                                               expect_stream, stream_key)
@@ -79,6 +80,46 @@ TRAKT_SCROBBLE_RATE_LIMIT_WAIT = 1
 TRAKT_TOKEN_REFRESH_TIMEOUT = 15
 
 _GLOBAL_PLAYER_MONITOR = None
+
+
+def _next_lower_stream(streams, playing_file):
+    """Find a lower stream, retaining the fallback for unknown redirects."""
+    if not isinstance(playing_file, str) or not playing_file:
+        return None
+
+    ordered = []
+    for label, url in streams.items():
+        if not isinstance(label, str) or not stream_key(url):
+            continue
+        if 'ORIGINAL' in label.upper():
+            quality = 9999
+        else:
+            quality = stream_quality(label) or 0
+        ordered.append((quality, url, label))
+    ordered.sort(key=lambda entry: entry[0], reverse=True)
+    if len({stream_key(url) for _, url, _ in ordered}) < 2:
+        return None
+
+    current_key = stream_key(playing_file)
+    matches = [index for index, (_, url, _) in enumerate(ordered) if stream_key(url) == current_key]
+    if not matches:
+        current_base = playing_file.split('|', 1)[0].split('?', 1)[0]
+        if not current_base:
+            return None
+        matches = [index for index, (_, url, _) in enumerate(ordered)
+                   if url.split('|', 1)[0].split('?', 1)[0] == current_base]
+        if len({stream_key(ordered[index][1]) for index in matches}) > 1:
+            return None
+        if not matches:
+            # Preserve the existing lowest-quality fallback for unknown redirects.
+            return ordered[-1][1], ordered[-1][2]
+
+    current_index = max(matches)
+    current_quality = ordered[current_index][0]
+    for quality, url, label in ordered[current_index + 1:]:
+        if quality < current_quality and stream_key(url) != current_key:
+            return url, label
+    return None
 
 
 def _trakt_set_globals(addon=None, session=None, handle=None):
@@ -2415,52 +2456,13 @@ class KodiPlayerMonitor(xbmc.Player):
                 playing_item = self.getPlayingItem()
                 current_link = playing_item.getProperty("play_er.link")
 
-                playing_file = self.getPlayingFile().split('|')[0]
-                playing_base = playing_file.split('?')[0]
-
                 streams = get_streams(playing_item)
                 if not streams:
                     return
-
-                sorted_streams = []
-                for k, v in streams.items():
-                    if "ORIGINAL" in k.upper():
-                        sorted_streams.append((9999, v, k))
-                    else:
-                        nums = re.findall(r'\d+', k)
-                        if nums:
-                            sorted_streams.append((int(nums[0]), v, k))
-                        else:
-                            sorted_streams.append((0, v, k))
-
-                sorted_streams = sorted(sorted_streams, key=lambda x: x[0], reverse=True)
-                next_url = None
-                next_label = None
-                found_current = False
-
-                for q_val, s_url, s_label in sorted_streams:
-                    clean_s_url = s_url.split('|')[0]
-                    s_url_base = clean_s_url.split('?')[0]
-
-                    if playing_base == s_url_base or playing_base in s_url_base or s_url_base in playing_base:
-                        found_current = True
-                        continue
-
-                    if found_current:
-                        next_url = s_url
-                        next_label = s_label
-                        break
-
-                if next_url or (not found_current and sorted_streams):
-                    if not next_url:
-                        next_url = sorted_streams[-1][1]
-                        next_label = sorted_streams[-1][2]
-                        clean_s_url = next_url.split('|')[0]
-                        s_url_base = clean_s_url.split('?')[0]
-                        if playing_base == s_url_base or playing_base in s_url_base or s_url_base in playing_base:
-                            return
-
-                    notify_info(f"Pomalá síť: Přepínám na {next_label}", category="STREAM", time=5000)
+                playing_file = self.getPlayingFile()
+                next_stream = _next_lower_stream(streams, playing_file)
+                if next_stream:
+                    next_url, next_label = next_stream
 
                     ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/124.0.0.0 Safari/537.36"
                     referer = "https://prehraj.to/"
@@ -2490,27 +2492,36 @@ class KodiPlayerMonitor(xbmc.Player):
 
                     attach_subtitles(li, playing_item)
 
+                    stream_changed = False
                     with self._playback_action_lock:
                         if generation != self._downgrade_generation or not self.owns_playback() or not self.isPlayingVideo():
                             return
                         if self.getPlayingItem().getProperty("play_er.link") != current_link:
                             return
-                        win.setProperty("play_er.seamless_switching", "true")
-                        switch_count = int(win.getProperty("play_er.switch_count") or "0")
-                        win.setProperty("play_er.switch_count", str(switch_count + 1))
-                        playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
-                        pos = playlist.getposition()
+                        if stream_key(self.getPlayingFile()) != stream_key(playing_file):
+                            stream_changed = True
+                        else:
+                            win.setProperty("play_er.seamless_switching", "true")
+                            switch_count = int(win.getProperty("play_er.switch_count") or "0")
+                            win.setProperty("play_er.switch_count", str(switch_count + 1))
+                            playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+                            pos = playlist.getposition()
 
-                        try:
-                            if pos >= 0:
-                                playlist.add(url=final_url, listitem=li, index=pos + 1)
-                                xbmc.executebuiltin("PlayerControl(Next)")
-                            else:
-                                playlist.add(url=final_url, listitem=li)
-                                self.play(playlist, windowed=False, startpos=max(0, playlist.size() - 1))
-                        except Exception:
-                            win.clearProperty("play_er.seamless_switching")
-                            raise
+                            try:
+                                if pos >= 0:
+                                    playlist.add(url=final_url, listitem=li, index=pos + 1)
+                                    xbmc.executebuiltin("PlayerControl(Next)")
+                                else:
+                                    playlist.add(url=final_url, listitem=li)
+                                    self.play(playlist, windowed=False, startpos=max(0, playlist.size() - 1))
+                            except Exception:
+                                win.clearProperty("play_er.seamless_switching")
+                                raise
+
+                    if stream_changed:
+                        self._schedule_downgrade_check(generation)
+                        return
+                    notify_info(f"Pomalá síť: Přepínám na {next_label}", category="STREAM", time=5000)
 
                     for _ in range(50):
                         with self._playback_action_lock:
