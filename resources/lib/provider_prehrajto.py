@@ -19,6 +19,7 @@ import hashlib
 import hmac
 import math
 import requests
+import tempfile
 import threading
 import time
 
@@ -74,6 +75,25 @@ def _local_language(value):
     if language in ('sk', 'slo', 'slk', 'slovak', 'slovensky', 'slovenský', 'slovenčina', 'slovencina'):
         return 'sk'
     return None
+
+
+def _write_subtitle_atomically(path, content):
+    """Publish a complete file without truncating the subtitle used by Kodi."""
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(mode='wb', dir=os.path.dirname(path),
+                                         prefix='.play_er_sub_', suffix='.tmp', delete=False) as output:
+            temporary = output.name
+            if output.write(content) != len(content):
+                raise OSError('Incomplete subtitle write')
+        os.replace(temporary, path)
+        temporary = None
+    finally:
+        if temporary:
+            try:
+                os.unlink(temporary)
+            except OSError:
+                log('PREHRAJTO - Nelze odstranit dočasný soubor titulků.', xbmc.LOGWARNING)
 
 
 class PrehrajTo(BaseProvider):
@@ -810,8 +830,7 @@ class PrehrajTo(BaseProvider):
                 try:
                     resp = safe_get(self.session, url, timeout=5)
                     if resp and resp.content:
-                        with open(local_file, 'wb') as f:
-                            f.write(resp.content)
+                        _write_subtitle_atomically(local_file, resp.content)
 
                     if os.path.exists(local_file):
                         if language:
