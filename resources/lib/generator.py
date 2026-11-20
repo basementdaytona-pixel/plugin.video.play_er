@@ -1377,7 +1377,7 @@ def _queue_following_episodes_from_tmdbh_legacy(meta, addon, plugin_instance):
 
 
 # FIX PRE-EMPTIVE AND FILTERS [ROLLING TMDBHELPER QUEUE]
-def _build_managed_episode_item(meta, addon, plugin_instance, show_props, show_cast, season, episode, is_current=None):
+def _build_managed_episode_item(meta, addon, plugin_instance, show_props, show_cast, season, episode, is_current=None, remember_item=None):
     from resources.lib import actions
     from resources.lib.utils import store_meta_in_cache
 
@@ -1478,7 +1478,8 @@ def _build_managed_episode_item(meta, addon, plugin_instance, show_props, show_c
     except Exception:
         pass
     list_item.setProperty("play_er.trakt_id", str(trakt_id))
-    _remember_playlist_item(final_url, episode_meta, meta_id, trakt_id, selected.get("link"), selected.get("provider"), view_identity)
+    (remember_item if remember_item is not None else _remember_playlist_item)(
+        final_url, episode_meta, meta_id, trakt_id, selected.get("link"), selected.get("provider"), view_identity)
     return final_url, list_item
 
 
@@ -1607,15 +1608,17 @@ def queue_following_episodes_from_tmdbh(meta, addon, plugin_instance, seed_only=
                 candidate_season, candidate_episode = coordinates
                 candidate_meta = dict(meta)
                 candidate_meta['_play_er_queue_remaining'] = remaining - len(future_items) - len(items_to_add) - 1
+                prepared_fallbacks = []
                 item = _build_managed_episode_item(
                     candidate_meta, addon, plugin_instance, show_props, show_cast,
-                    candidate_season, candidate_episode, is_current=is_current
+                    candidate_season, candidate_episode, is_current=is_current,
+                    remember_item=lambda *args: prepared_fallbacks.append(args)
                 )
                 if not is_current():
                     return
                 if not item:
                     break
-                items_to_add.append(item)
+                items_to_add.append((item, prepared_fallbacks))
                 season_num, episode_num = candidate_season, candidate_episode
 
             strict_seed_end = (seed_only and not items_to_add
@@ -1646,7 +1649,10 @@ def queue_following_episodes_from_tmdbh(meta, addon, plugin_instance, seed_only=
                     log("FIX PRE-EMPTIVE AND FILTERS - Queue: playlist se změnil při odstranění alternativních streamů", xbmc.LOGINFO)
                     return
 
-            for final_url, list_item in items_to_add:
+            for (final_url, list_item), prepared_fallbacks in items_to_add:
+                # Kodi may start playback synchronously inside add().
+                for fallback in prepared_fallbacks:
+                    _remember_playlist_item(*fallback)
                 playlist.add(final_url, list_item)
 
             log(

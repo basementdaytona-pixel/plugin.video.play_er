@@ -225,6 +225,13 @@ class SeriesPlaylistTests(unittest.TestCase):
                 'season': 1, 'episode': 1, '_play_er_queue_remaining': 2}
         self.playlist.size.return_value = 1
         self.playlist.getposition.return_value = 0
+        def on_add(url, item):
+            import hashlib
+            key = hashlib.sha256(url.split('|', 1)[0].encode('utf-8')).hexdigest()
+            record = json.loads(self.window.getProperty('play_er.episode_queue_metadata'))[key]
+            self.assertEqual(record['meta_id'], item.getProperty('play_er.meta_id'))
+            self.assertEqual(record['link'], item.getProperty('play_er.link'))
+        self.playlist.add.side_effect = on_add
         def sources(query, addon, instance, tmdb_id, season, episode):
             return [{'link': 'S{:02d}E{:02d}'.format(season, episode),
                      'provider': 'test', 'title': query}]
@@ -241,6 +248,39 @@ class SeriesPlaylistTests(unittest.TestCase):
         self.assertEqual([(r['meta']['season'], r['meta']['episode'], r['meta']['_play_er_queue_remaining'])
                           for r in records], [(1, 2, 1), (2, 1, 0)])
         self.assertEqual(self.window.getProperty('play_er.tmdbh_episode_queue_active'), '')
+
+    def test_uncommitted_tmdbh_candidates_preserve_existing_fallback_records(self):
+        meta = {'tmdb_id': 42, 'media_type': 'episode', 'tv_show_title': 'Show',
+                'season': 1, 'episode': 1, '_play_er_queue_remaining': 2}
+        existing = json.dumps({'existing': {'owner': 'previous'}})
+        self.playlist.getposition.return_value = 0
+        for reason in ('switch', 'remove_error'):
+            with self.subTest(reason=reason):
+                self.window.setProperty('play_er.episode_queue_metadata', existing)
+                self.player.playing = True
+                self.playlist.size.return_value = 1 if reason == 'switch' else 2
+                self.playlist.add.reset_mock()
+                lookups = []
+
+                def coordinates(*args):
+                    lookups.append(args)
+                    if len(lookups) == 2:
+                        self.player.playing = False
+                    return (1, 2)
+
+                with patch.object(generator, '_active_episode_matches', return_value=True), \
+                     patch.object(generator, '_get_video_playlist_snapshot',
+                                  return_value=(self.playlist, 0, [{}])), \
+                     patch.object(generator, '_next_episode_coordinates', side_effect=coordinates), \
+                     patch.object(generator, '_search_continue_sources', return_value=[
+                         {'link': 'S01E02', 'provider': 'test', 'title': 'Episode'}]), \
+                     patch.object(generator.xbmc, 'executeJSONRPC',
+                                  return_value=json.dumps({'error': {'code': -1}})):
+                    generator.queue_following_episodes_from_tmdbh(
+                        meta, self.addon, self.instance, seed_only=reason == 'remove_error')
+                self.assertEqual(self.window.getProperty('play_er.episode_queue_metadata'), existing)
+                self.assertEqual(self.window.getProperty('play_er.tmdbh_episode_queue_active'), '')
+                self.playlist.add.assert_not_called()
 
     def test_tmdbh_refill_stops_requests_when_playback_changes(self):
         meta = {'tmdb_id': 42, 'media_type': 'episode', 'tv_show_title': 'Show',
