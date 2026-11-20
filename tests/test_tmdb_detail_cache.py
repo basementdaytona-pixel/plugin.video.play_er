@@ -44,6 +44,29 @@ class TMDBDetailCacheTests(unittest.TestCase):
             self.assertEqual(self.client.get_localized_title('movie', 42, 'cs'), 'Updated')
         request.assert_not_called()
 
+    def test_season_error_response_is_not_cached_and_next_call_retries(self):
+        error = {'status_code': 34, 'success': False}
+        season = {'id': 99, 'episodes': [{'episode_number': 1}]}
+        key = ('TMDB', self.client._cache_variant('tv_season_42_1'))
+        with patch.object(tmdb, 'cache_manager', self.cache), \
+             patch.object(tmdb, 'safe_get', side_effect=[self.response(error), self.response(season)]) as request:
+            self.assertEqual(self.client.get_season_details_raw(42, 1), error)
+            self.assertNotIn(key, self.storage)
+            self.assertEqual(self.client.get_season_details_raw(42, 1), season)
+        self.assertEqual(request.call_count, 2)
+
+    def test_season_old_error_cache_is_ignored_but_empty_episode_list_is_valid(self):
+        key = ('TMDB', self.client._cache_variant('tv_season_42_1'))
+        for bad in ({'success': False}, {'status_code': 34}, {}, []):
+            with self.subTest(bad=bad):
+                self.storage[key] = bad
+                season = {'id': 99, 'episodes': []}
+                with patch.object(tmdb, 'cache_manager', self.cache), \
+                     patch.object(tmdb, 'safe_get', return_value=self.response(season)) as request:
+                    self.assertEqual(self.client.get_season_details_raw(42, 1), season)
+                    self.assertEqual(self.client.get_season_details_raw(42, 1), season)
+                request.assert_called_once()
+
     def test_incomplete_entry_is_refreshed_and_then_reused(self):
         self.storage[self.key] = {'id': 42, 'title': 'Old'}
         with patch.object(tmdb, 'cache_manager', self.cache), \

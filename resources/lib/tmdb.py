@@ -484,7 +484,7 @@ class TMDB:
     def get_season_details_raw(self, tmdb_id, season_number):
         endpoint = f"tv/{tmdb_id}/season/{season_number}"
         cache_key = f"tv_season_{tmdb_id}_{season_number}"
-        return self._fetch(endpoint, cache_key=cache_key)
+        return self._fetch(endpoint, cache_key=cache_key, _cache_validator=self._usable_details)
 
 
     def get_details_raw(self, tmdb_id, media_type):
