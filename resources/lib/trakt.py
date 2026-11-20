@@ -2081,6 +2081,11 @@ class KodiPlayerMonitor(xbmc.Player):
                         self._queue_scrobble("stop", mid, mtype, progress, meta_copy)
                     except Exception as e:
                         log(f"TRAKT - Failed to stop scrobble while releasing playback: {e}", xbmc.LOGWARNING)
+            try:
+                if self.play_key and self.orchestrator:
+                    self.orchestrator.clear_triggers(self.play_key)
+            except Exception:
+                pass
             win.clearProperty("play_er.seamless_switching")
             if current_item_changed and win.getProperty(EXPECTED_OWNER) == self._playback_owner:
                 for key in ('play_er.current_meta', 'play_er.current_meta_uuid',
@@ -2091,6 +2096,7 @@ class KodiPlayerMonitor(xbmc.Player):
         self._playback_owner = None
         self._playback_confirmed = False
         self._last_owned_meta = None
+        self.play_key = None
         with self.progress_lock:
             for timer in (self.progress_update_timer, self.downgrade_timer):
                 if timer:
@@ -2835,7 +2841,14 @@ class KodiPlayerMonitor(xbmc.Player):
             self.pre_emptive_triggered = False
             self.skip_credits_triggered = False
             try:
-                self.play_key = self.orchestrator.get_play_key(self.current_meta) if self.orchestrator else None
+                next_play_key = self.orchestrator.get_play_key(self.current_meta) if self.orchestrator else None
+                if (self.play_key and next_play_key and self.play_key != next_play_key
+                        and self.owns_playback()):
+                    try:
+                        self.orchestrator.clear_triggers(self.play_key)
+                    except Exception:
+                        pass
+                self.play_key = next_play_key
             except Exception:
                 self.play_key = None
 
