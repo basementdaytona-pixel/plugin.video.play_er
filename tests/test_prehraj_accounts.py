@@ -181,6 +181,67 @@ class PrehrajAccountTests(unittest.TestCase):
             self.assertIsNone(client.get_premium_cookies())
         self.assertIsNone(client._access_token)
 
+    def test_expired_old_account_does_not_register_after_account_change(self):
+        self.settings['enable_auto_register'] = 'true'
+        client = self.provider()
+        def premium(*args, **kwargs):
+            self.settings.update(email='second@example.invalid', password='second-pass')
+            return 1
+        with patch.object(client, '_fetch_and_set_premium_days', side_effect=premium), \
+             patch.object(client, '_auto_register_new_account') as register:
+            self.assertIsNone(client.get_premium_cookies())
+        register.assert_not_called()
+        self.assertIsNone(client._access_token)
+
+    def test_registration_does_not_replace_manually_changed_account(self):
+        client = self.provider()
+        client.get_premium_cookies()
+        def registration():
+            self.settings.update(email='manual@example.invalid', password='manual-pass')
+            return 'generated@example.invalid', 'generated-pass'
+        with patch.object(prehraj, 'PlayMail') as mail:
+            mail.return_value.register_account.side_effect = registration
+            self.assertFalse(client._auto_register_new_account())
+        self.assertEqual(self.settings['email'], 'manual@example.invalid')
+        self.assertEqual(self.settings['password'], 'manual-pass')
+        self.assertIsNone(client._access_token)
+
+    def test_changed_account_during_registration_aborts_current_login(self):
+        self.settings['enable_auto_register'] = 'true'
+        client = self.provider()
+        def registration():
+            self.settings.update(email='manual@example.invalid', password='manual-pass')
+            return 'generated@example.invalid', 'generated-pass'
+        with patch.object(client, '_fetch_and_set_premium_days', return_value=1), \
+             patch.object(prehraj, 'PlayMail') as mail:
+            mail.return_value.register_account.side_effect = registration
+            self.assertIsNone(client.get_premium_cookies())
+        self.assertEqual(self.settings['email'], 'manual@example.invalid')
+        self.assertIsNone(client._access_token)
+        client.session.post.assert_not_called()
+
+    def test_failed_registration_keeps_current_account(self):
+        self.settings['enable_auto_register'] = 'true'
+        client = self.provider()
+        with patch.object(client, '_fetch_and_set_premium_days', return_value=1), \
+             patch.object(prehraj, 'PlayMail') as mail:
+            mail.return_value.register_account.return_value = (None, None)
+            self.assertIs(client.get_premium_cookies(), client.session.cookies)
+        self.assertEqual(self.settings['email'], 'first@example.invalid')
+        self.assertEqual(client._access_token, 'first-token')
+        client.session.post.assert_not_called()
+
+    def test_automatic_account_replacement_preserves_other_provider_cookies(self):
+        client = self.provider()
+        client.session.cookies.set('other', 'keep', domain='other.invalid', path='/')
+        client.session.cookies.set('provider', 'remove', domain='prehrajto.cz', path='/')
+        client.get_premium_cookies()
+        client.replace_account_credentials('new@example.invalid', 'new-pass')
+        self.assertEqual(client.session.cookies.get('other', domain='other.invalid'), 'keep')
+        self.assertIsNone(client.session.cookies.get('provider', domain='prehrajto.cz'))
+        self.assertIsNone(client.session.cookies.get('account_cookie'))
+        self.assertIsNone(client._access_token)
+
 
 if __name__ == '__main__':
     unittest.main()

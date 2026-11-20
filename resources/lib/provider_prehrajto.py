@@ -452,8 +452,7 @@ class PrehrajTo(BaseProvider):
             if xbmcvfs.exists(path):
                 xbmcvfs.delete(path)
         self._set_tokens(None, None)
-        self.session.cookies.clear()
-        self._loaded_cookies.clear()
+        self._clear_account_cookies()
         self._auth_credentials = self._credentials()
         self._auth_loaded = True
         win = xbmcgui.Window(10000)
@@ -462,6 +461,7 @@ class PrehrajTo(BaseProvider):
         win.clearProperty("player.prehrajto.premium_days")
 
     def _auto_register_new_account(self):
+        credentials = self._credentials()
         win = xbmcgui.Window(10000)
         if win.getProperty("play_er.prehrajto.auto_reg_running") == "true":
             return False
@@ -475,6 +475,10 @@ class PrehrajTo(BaseProvider):
             email, password = mail_bot.register_account()
 
             if email and password:
+                if self._credentials() != credentials:
+                    self._sync_credentials()
+                    log('AUTO-REGISTER :: Účet se během registrace změnil; nové údaje nebudou použity.', xbmc.LOGWARNING)
+                    return False
                 self.replace_account_credentials(email, password)
 
                 xbmcgui.Dialog().ok(
@@ -505,11 +509,18 @@ class PrehrajTo(BaseProvider):
             auto_register = get_setting_bool(self.addon, 'enable_auto_register', True)
             if not auto_register and not get_setting_bool(self.addon, 'notify_premium_expiry', False):
                 return False
+            credentials = self._credentials()
             days_left = self._fetch_and_set_premium_days()
+            if self._credentials() != credentials:
+                self._sync_credentials()
+                return None
             if auto_register and days_left is not None and days_left <= 2:
                 log(f"PREMIUM :: ZBÝVÁ {days_left} DNÍ -> SPOUŠTÍM AUTO-REGISTRACI", xbmc.LOGINFO)
                 if self._auto_register_new_account():
                     return True
+                if self._credentials() != credentials:
+                    self._sync_credentials()
+                    return None
             return False
 
         if not force and self._access_token:
@@ -517,15 +528,22 @@ class PrehrajTo(BaseProvider):
                 if not self._refresh_access_token():
                     log('PREHRAJTO :: Obnova tokenu selhala, opakuji přihlášení', xbmc.LOGWARNING)
                     force = True
-            if not force and _check_and_auto_register():
-                force = True
+            if not force:
+                renewal = _check_and_auto_register()
+                if renewal is None:
+                    return None
+                if renewal:
+                    force = True
             if not force:
                 if self._sync_credentials():
                     return None
                 return self.session.cookies
         elif not force and self._refresh_token:
             if self._refresh_access_token():
-                if not _check_and_auto_register():
+                renewal = _check_and_auto_register()
+                if renewal is None:
+                    return None
+                if not renewal:
                     if self._sync_credentials():
                         return None
                     return self.session.cookies
