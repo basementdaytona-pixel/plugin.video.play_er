@@ -105,6 +105,20 @@ class ViewModesTests(unittest.TestCase):
         self.assertFalse(views.configure_af3_views(addon))
         views.xbmc.executebuiltin.assert_not_called()
 
+    def test_native_configuration_includes_video_and_actor_content(self):
+        addon = MagicMock()
+        views.xbmc.getLocalizedString.side_effect = lambda index: 'label-%s' % index
+        self.addCleanup(setattr, views.xbmc.getLocalizedString, 'side_effect', None)
+        for index, content in ((5, 'videos'), (6, 'actors')):
+            with self.subTest(content=content):
+                views.xbmcgui.Dialog.return_value.select.return_value = index
+                views.xbmc.executebuiltin.reset_mock()
+                self.assertTrue(views.configure_af3_views(addon))
+                labels = views.xbmcgui.Dialog.return_value.select.call_args.args[1]
+                self.assertEqual(labels[index], 'label-%s' % (3 if content == 'videos' else 344))
+                views.xbmc.executebuiltin.assert_called_once_with(
+                    'RunScript(script.skinvariables,action=buildviews,pluginname=plugin.video.play_er,contentid=%s)' % content)
+
     def test_native_or_disabled_modes_still_set_content(self):
         addon = MagicMock()
         ui.xbmc.getSkinDir.return_value = 'skin.arctic.fuse.3'

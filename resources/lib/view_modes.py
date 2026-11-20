@@ -101,8 +101,8 @@ def configure_af3_views(addon):
             or not xbmc.getCondVisibility('System.HasAddon(script.skinvariables)')):
         notify_info(addon.getLocalizedString(32907), category='VIEW MODE')
         return False
-    contents = ('files', 'movies', 'tvshows', 'seasons', 'episodes')
-    labels = [xbmc.getLocalizedString(label) for label in (744, 342, 20343, 20373, 20360)]
+    contents = ('files', 'movies', 'tvshows', 'seasons', 'episodes', 'videos', 'actors')
+    labels = [xbmc.getLocalizedString(label) for label in (744, 342, 20343, 20373, 20360, 3, 344)]
     selected = xbmcgui.Dialog().select(addon.getLocalizedString(32901), labels)
     if selected < 0 or selected >= len(contents):
         return False

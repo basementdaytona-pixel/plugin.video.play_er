@@ -1597,7 +1597,7 @@ def prehrajto_history(plugin_instance, is_widget=False):
 
             size_tag = ""
             duration_tag = ""
-            likes_tag = ""
+            display_title = vid["title"]
 
             if show_size and vid.get('size_str'):
                 size_tag = f'[LIGHT][COLOR {color}][{vid.get("size_str")}][/LIGHT][/COLOR] '
