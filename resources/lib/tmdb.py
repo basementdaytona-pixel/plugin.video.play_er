@@ -276,7 +276,10 @@ class TMDB:
         if not tmdb_id:
             return None
 
-        lang_formatted = f"{lang_code}-{lang_code.upper()}"
+        lang_formatted = lang_code.strip().replace('_', '-')
+        # Language and country codes differ (Czech is cs-CZ, not cs-CS).
+        lang_formatted = {'cs': 'cs-CZ', 'sk': 'sk-SK', 'en': 'en-US'}.get(
+            lang_formatted, lang_formatted)
 
         details = self.get_full_details(media_type, tmdb_id, lang=lang_formatted)
 

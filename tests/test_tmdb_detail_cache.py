@@ -30,6 +30,20 @@ class TMDBDetailCacheTests(unittest.TestCase):
         result.json.return_value = data
         return result
 
+    def test_localized_title_uses_valid_language_tags(self):
+        for requested, expected in [('cs', 'cs-CZ'), ('sk', 'sk-SK'), ('en', 'en-US'),
+                                    ('fr', 'fr'), ('en_GB', 'en-GB'), ('cs-CZ', 'cs-CZ')]:
+            with self.subTest(requested=requested), \
+                 patch.object(self.client, 'get_full_details', return_value={'title': 'Translated'}) as details:
+                self.assertEqual(self.client.get_localized_title('movie', 42, requested), 'Translated')
+                details.assert_called_once_with('movie', 42, lang=expected)
+
+    def test_localized_title_reuses_current_czech_detail_cache(self):
+        self.storage[self.key] = self.full
+        with patch.object(tmdb, 'cache_manager', self.cache), patch.object(tmdb, 'safe_get') as request:
+            self.assertEqual(self.client.get_localized_title('movie', 42, 'cs'), 'Updated')
+        request.assert_not_called()
+
     def test_incomplete_entry_is_refreshed_and_then_reused(self):
         self.storage[self.key] = {'id': 42, 'title': 'Old'}
         with patch.object(tmdb, 'cache_manager', self.cache), \
