@@ -1250,7 +1250,7 @@ def _tmdbh_empty_search_fallback(query, meta, providers, sort_priority, raw_resu
 
 
 
-def find_and_list_sources_multi(params, plugin_instance, tmdbh_search=False):
+def find_and_list_sources_multi(params, plugin_instance, tmdbh_search=False, _localized_title=None):
 
     """
     PLUGIN :: MULTI-PROVIDER SOURCES
@@ -1271,7 +1271,9 @@ def find_and_list_sources_multi(params, plugin_instance, tmdbh_search=False):
         lookup_type = 'tv' if media_type == 'episode' else media_type
         if plugin_instance.tmdb_client:
             try:
-                loc_title = plugin_instance.tmdb_client.get_localized_title(lookup_type, tmdb_id, 'cs')
+                # A successful lookup from this bridge call can be reused without
+                # trusting a title supplied in the external plugin parameters.
+                loc_title = _localized_title or plugin_instance.tmdb_client.get_localized_title(lookup_type, tmdb_id, 'cs')
                 if loc_title:
                     log(f"SEARCH - LOKALIZOVANÝ NÁZEV : {loc_title}", xbmc.LOGINFO)
                     if media_type == 'episode': tv_show_title = loc_title
@@ -1452,161 +1454,6 @@ def find_and_list_sources_multi(params, plugin_instance, tmdbh_search=False):
     # 5. Závěr sestavení adresáře (TADY JE OPRAVA PRO AF3)
 
     xbmcplugin.endOfDirectory(plugin_instance.handle, succeeded=True, cacheToDisc=False)
-
-
-
-# def find_and_list_sources_multi(params, plugin_instance):
-#
-#     """
-#     PLUGIN :: MULTI-PROVIDER SOURCES
-#     -- Hledání zdrojů  ( MULTI-PROVIDER ).
-#     -- Čisté a rychlé volání bez zdržujících dialogů.
-#     """
-#
-#     meta_raw = params.get("meta")
-#     if not meta_raw: return
-#
-#     meta = get_meta_from_cache(meta_raw)
-#     media_type = meta.get("media_type")
-#     tmdb_id = meta.get("tmdb_id")
-#
-#     search_title = meta.get("title", "")
-#     tv_show_title = meta.get("tv_show_title", "")
-#
-#     if plugin_instance.addon.getSettingBool('trakt_prefer_czech_search') and tmdb_id:
-#         lookup_type = 'tv' if media_type == 'episode' else media_type
-#         if plugin_instance.tmdb_client:
-#             try:
-#                 loc_title = plugin_instance.tmdb_client.get_localized_title(lookup_type, tmdb_id, 'cs')
-#                 if loc_title:
-#                     log(f"SEARCH - LOKALIZOVANÝ NÁZEV : {loc_title}", xbmc.LOGINFO)
-#                     if media_type == 'episode': tv_show_title = loc_title
-#                     else: search_title = loc_title
-#             except Exception as e:
-#                 log(f"SEARCH - CHYBA LOKALIZACE NÁZVU : {e}", xbmc.LOGWARNING)
-#
-#     query = f"{search_title} {meta.get('year', '')}".strip()
-#     if media_type == "episode":
-#         try:
-#             s, e = int(meta.get("season")), int(meta.get("episode"))
-#             query = f"{tv_show_title} S{s:02d}E{e:02d}"
-#         except: pass
-#
-#     providers = plugin_instance.provider_manager.get_providers_to_search()
-#     sort_priority = plugin_instance.addon.getSetting("multi_provider_sort")
-#
-#     cached_results = None
-#     if media_type == "episode" and tmdb_id:
-#         try:
-#             season = int(meta.get("season", 0))
-#             episode = int(meta.get("episode", 0))
-#             cache_key = f"preemptive_{tmdb_id}_S{season:02d}E{episode:02d}"
-#             cached_data = cache_manager.cache_get("PREEMPTIVE_SOURCES", cache_key)
-#
-#             if cached_data and isinstance(cached_data, dict):
-#                 import time
-#                 cache_age = time.time() - cached_data.get("timestamp", 0)
-#                 if cache_age < 1800:
-#                     cached_results = cached_data.get("results",[])
-#                     log(f"SOURCES - Načteno {len(cached_results)} zdrojů z pre-emptive cache", xbmc.LOGINFO)
-#         except Exception as e:
-#             log(f"SOURCES - Chyba při čtení pre-emptive cache: {e}", xbmc.LOGWARNING)
-#
-#     # Čisté vyhledání - žádné zdržující dialogy
-#     results = cached_results if cached_results else _search_providers_parallel(query, providers, apply_filters=True, sort_priority=sort_priority)
-#
-#     if not results:
-#         notify_info("INFO Žádné zdroje nenalezeny", category="SOURCES")
-#         xbmcplugin.endOfDirectory(plugin_instance.handle, succeeded=True, cacheToDisc=False)
-#         return
-#
-#     show_size = plugin_instance.addon.getSettingBool("show_size")
-#     show_duration = plugin_instance.addon.getSettingBool("show_duration_time")
-#     filter_enabled = plugin_instance.addon.getSettingBool("filter_display_title_tmdb")
-#
-#     meta_key = store_meta_in_cache(meta)
-#
-#     for i, vid in enumerate(results):
-#         from resources.lib.utils_theme import Colors
-#         color = Colors.LIMEGREEN if vid.get("provider") == "webshare.cz" else Colors.ORANGE
-#
-#         size_tag = ""
-#         duration_tag = ""
-#
-#         if show_size and vid.get("size_str"):
-#             raw = vid.get("size_str")
-#             try:
-#                 from resources.lib.utils import convert_size_to_bytes, convert_size
-#                 b = convert_size_to_bytes(raw)
-#             except Exception:
-#                 b = None
-#             normalized = convert_size(b) if b else raw
-#             size_tag = f'[LIGHT][COLOR {color}][{normalized}][/LIGHT][/COLOR] '
-#
-#         if show_duration and vid.get("duration_str") and vid["duration_str"] != "0":
-#             duration_tag = f'[LIGHT][COLOR gray][{vid["duration_str"]}][/COLOR][/LIGHT] '
-#
-#         if filter_enabled:
-#             try:
-#                 from resources.lib.utils_filter import clean_display_title
-#                 cleaned_title, _, _, _ = clean_display_title(
-#                     vid["title"],
-#                     explicit_tags=vid.get("tags", []),
-#                     extension=vid.get("extension"),
-#                     likes=vid.get("likes", 0)
-#                 )
-#                 label = f'{size_tag}{duration_tag}{cleaned_title}'.strip()
-#             except Exception:
-#                 label = f'{size_tag}{duration_tag}{vid["title"]}'.strip()
-#         else:
-#             label = f'{size_tag}{duration_tag}{vid["title"]}'.strip()
-#
-#         li = xbmcgui.ListItem(label=label)
-#         li.setProperty("IsPlayable", "true")
-#
-#         if plugin_instance.tmdb_client:
-#             plugin_instance.tmdb_client.fill_list_item(li, meta, media_type)
-#         else:
-#             li.setArt({"poster": meta.get("poster"), "fanart": meta.get("fanart")})
-#
-#         info_tag = li.getVideoInfoTag()
-#         info_tag.setTitle(label)
-#         info_tag.setUniqueIDs({'tmdb': f"stream_{i}"})
-#
-#         url_params = {'action': 'play', 'link': vid["link"], 'provider': vid.get("provider"), 'meta': meta_key}
-#         if params.get('source_list'): url_params['source_list'] = params.get('source_list')
-#
-#         url = get_url(**url_params)
-#         xbmcplugin.addDirectoryItem(plugin_instance.handle, url, li, False)
-#
-#     # 1. Vyčištění zablokovaného stavu okna z TMDBHelperu
-#
-#     videos_window = xbmcgui.Window(10025)
-#     videos_window.clearProperty('tmdbhelper.windowmanager')
-#     videos_window.clearProperty('tmdbhelper.isupdating')
-#     videos_window.setProperty('is_source_select', 'true')
-#
-#     # 2. Nastavení obsahu na "movies" namísto "files"
-#
-#     xbmcplugin.setContent(plugin_instance.handle, "movies")
-#
-#     # 3. Pokus o nastavení přes UI Builder, pokud je zapnutý
-#
-#     try:
-#         from resources.lib.ui_builder import set_view_mode
-#         set_view_mode(plugin_instance.handle, plugin_instance.addon, "movies", "search_results")
-#     except Exception:
-#         pass
-#
-#     # 4. FALLBACK: VYNUCENÍ ZOBRAZENÍ 507
-#
-#     if "arctic.fuse" in xbmc.getSkinDir() and not xbmc.getCondVisibility("Window.IsVisible(home)"):
-#         if not plugin_instance.addon.getSettingBool("enable_view_modes"):
-#             xbmc.executebuiltin("Container.SetViewMode(507)")
-#
-#     # 5. Závěr sestavení adresáře s parametry pro AF3 Skin
-#
-#     xbmcplugin.endOfDirectory(plugin_instance.handle, succeeded=True, cacheToDisc=False)
 
 
 
@@ -3604,10 +3451,12 @@ def tmdbh_bridge(params, plugin_instance):
             search_title = props.get('title', '')
             search_query = search_title.strip()
 
+        localized_title = None
         if plugin_instance.addon.getSettingBool('trakt_prefer_czech_search'):
             lookup_type = 'tv' if media_type in ['episode', 'show'] else media_type
             loc_title = client.get_localized_title(lookup_type, tmdb_id, 'cs')
             if loc_title:
+                localized_title = loc_title
                 search_title = loc_title
                 if media_type == 'episode':
                     props['tv_show_title'] = loc_title
@@ -3622,7 +3471,8 @@ def tmdbh_bridge(params, plugin_instance):
                 # Značka omezuje úpravu Kodi playlistu na explicitní výběr TMDBH zdroje.
                 props["_play_er_tmdbh_source_search"] = True
             meta_key = store_meta_in_cache(props)
-            find_and_list_sources_multi({'meta': meta_key}, plugin_instance, tmdbh_search=True)
+            find_and_list_sources_multi({'meta': meta_key}, plugin_instance, tmdbh_search=True,
+                                        _localized_title=localized_title)
             return
 
         providers = plugin_instance.provider_manager.get_providers_to_search()
