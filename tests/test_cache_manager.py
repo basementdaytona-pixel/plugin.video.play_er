@@ -1,4 +1,5 @@
 import sqlite3
+import sys
 import tempfile
 import threading
 import unittest
@@ -9,6 +10,32 @@ from unittest.mock import MagicMock, patch
 from kodi_test_support import load_module
 
 cache = load_module('resources.lib.cache_manager')
+
+
+class CacheSettingsTests(unittest.TestCase):
+    def test_invalid_ram_size_does_not_replace_database_configuration(self):
+        names = ('ADDON', 'ADDON_ID', 'TTL_WATCH', 'TTL_TRAKT', 'TTL_TMDB', 'TTL_CSFD',
+                 'RAM_TTL', 'RAM_SIZE', 'CACHE_DB_PATH', 'DB_TYPE', 'TTL_USER_DATA')
+        original = {name: getattr(cache, name) for name in names}
+        values = [('²', 2000), ('invalid', 2000), ('', 2000)]
+        digit_limit = getattr(sys, 'get_int_max_str_digits', lambda: 0)()
+        if digit_limit:
+            values.append(('9' * (digit_limit + 1), 2000))
+        values += [(str(size), size) for size in (500, 750, 1000, 1500, 2000, 3000, 4000, 5000)]
+        with tempfile.TemporaryDirectory() as directory, \
+             patch.multiple(cache, **original), \
+             patch.object(cache.xbmcvfs, 'translatePath', return_value=directory):
+            for raw, expected in values:
+                with self.subTest(raw=raw[:20]):
+                    addon = MagicMock()
+                    settings = {'cache_ram_size': raw, 'db_type': 'MySQL (MariaDB)',
+                                'cache_ttl_tmdb': '48'}
+                    addon.getSetting.side_effect = lambda key: settings.get(key, '')
+                    cache._cache_set_globals(addon)
+                    self.assertEqual(cache.DB_TYPE, 'MySQL (MariaDB)')
+                    self.assertEqual(cache.RAM_SIZE, expected)
+                    self.assertEqual(cache.TTL_TMDB, 48 * 3600)
+                    self.assertEqual(cache.CACHE_DB_PATH, str(Path(directory) / 'XBMC--PLAY.ER--CACHE.DB'))
 
 
 class PoolTests(unittest.TestCase):

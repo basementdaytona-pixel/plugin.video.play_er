@@ -120,7 +120,10 @@ def _cache_set_globals(addon=None):
                 TTL_USER_DATA = get_setting_int_with_bounds(ADDON, "cache_ttl_userdata", 365) * 86400
 
                 raw_ram_size = ADDON.getSetting("cache_ram_size") or "2000"
-                RAM_SIZE = int(raw_ram_size) if raw_ram_size.isdigit() else 2000
+                try:
+                    RAM_SIZE = int(raw_ram_size) if raw_ram_size.isdigit() else 2000
+                except (ValueError, TypeError, OverflowError):
+                    RAM_SIZE = 2000
 
                 DB_TYPE = ADDON.getSetting("db_type") or "SQLite"
                 cache_ssd_setting = ADDON.getSetting("cache_data_path")
