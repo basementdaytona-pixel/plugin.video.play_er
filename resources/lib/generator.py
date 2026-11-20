@@ -1634,6 +1634,8 @@ def queue_following_episodes_from_tmdbh(meta, addon, plugin_instance, seed_only=
 
             if seed_only:
                 for item_position in range(size - 1, position, -1):
+                    if not is_current():
+                        return
                     request = json.dumps({
                         "jsonrpc": "2.0",
                         "method": "Playlist.Remove",
@@ -1644,8 +1646,9 @@ def queue_following_episodes_from_tmdbh(meta, addon, plugin_instance, seed_only=
                     if response.get("error"):
                         log(f"FIX PRE-EMPTIVE AND FILTERS - Queue: nelze odstranit alternativní streamy: {response['error']}", xbmc.LOGWARNING)
                         return
+                    expected_size -= 1
                 removed_streams = max(0, size - position - 1)
-                if playlist.getposition() != position or playlist.size() != position + 1:
+                if not is_current() or expected_size != position + 1:
                     log("FIX PRE-EMPTIVE AND FILTERS - Queue: playlist se změnil při odstranění alternativních streamů", xbmc.LOGINFO)
                     return
 

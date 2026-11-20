@@ -249,6 +249,42 @@ class SeriesPlaylistTests(unittest.TestCase):
                           for r in records], [(1, 2, 1), (2, 1, 0)])
         self.assertEqual(self.window.getProperty('play_er.tmdbh_episode_queue_active'), '')
 
+    def test_tmdbh_seed_checks_playback_between_alternative_removals(self):
+        meta = {'tmdb_id': 42, 'media_type': 'episode', 'tv_show_title': 'Show',
+                'season': 1, 'episode': 1, '_play_er_queue_remaining': 2}
+        self.playlist.getposition.return_value = 0
+        for switch_after in (1, 2, None):
+            with self.subTest(switch_after=switch_after):
+                self.player.path = 'https://example.invalid/S01E01'
+                self.playlist.size.return_value = 3
+                self.playlist.add.reset_mock()
+                self.window.clearProperty('play_er.episode_queue_metadata')
+                removed = []
+
+                def remove(request):
+                    removed.append(json.loads(request)['params']['position'])
+                    self.playlist.size.return_value -= 1
+                    if len(removed) == switch_after:
+                        self.player.path = 'https://other.invalid/video'
+                    return json.dumps({'result': 'OK'})
+
+                with patch.object(generator, '_active_episode_matches',
+                                  side_effect=lambda player, win, meta: player.path.endswith('/S01E01')), \
+                     patch.object(generator, '_get_video_playlist_snapshot',
+                                  return_value=(self.playlist, 0, [{}, {}, {}])), \
+                     patch.object(generator, '_next_episode_coordinates', return_value=(1, 2)), \
+                     patch.object(generator, '_search_continue_sources', return_value=[
+                         {'link': 'S01E02', 'provider': 'test', 'title': 'Episode'}]), \
+                     patch.object(generator.xbmc, 'executeJSONRPC', side_effect=remove):
+                    generator.queue_following_episodes_from_tmdbh(meta, self.addon, self.instance)
+                self.assertEqual(removed, [2] if switch_after == 1 else [2, 1])
+                if switch_after is None:
+                    self.playlist.add.assert_called_once()
+                else:
+                    self.playlist.add.assert_not_called()
+                    self.assertEqual(self.window.getProperty('play_er.episode_queue_metadata'), '')
+                self.assertEqual(self.window.getProperty('play_er.tmdbh_episode_queue_active'), '')
+
     def test_uncommitted_tmdbh_candidates_preserve_existing_fallback_records(self):
         meta = {'tmdb_id': 42, 'media_type': 'episode', 'tv_show_title': 'Show',
                 'season': 1, 'episode': 1, '_play_er_queue_remaining': 2}
