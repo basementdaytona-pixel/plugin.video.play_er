@@ -15,8 +15,11 @@ import os
 import re
 import json
 import base64
+import hashlib
+import hmac
 import math
 import requests
+import threading
 import time
 
 
@@ -81,6 +84,11 @@ class PrehrajTo(BaseProvider):
         self._fallback_email = 'player.8ceff2ec@deltajohnsons.com'
         self._fallback_password = 'PLAYER123!'
         self._auth_loaded = False
+        self._auth_credentials = None
+        loaded_cookies = getattr(session, '_play_er_prehraj_loaded_cookies', None)
+        self._loaded_cookies = loaded_cookies if isinstance(loaded_cookies, dict) else {}
+        session._play_er_prehraj_loaded_cookies = self._loaded_cookies
+        self._auth_lock = threading.RLock()
 
     def _fetch_and_set_premium_days(self, force_notify=False):
         days_left = None
@@ -200,6 +208,74 @@ class PrehrajTo(BaseProvider):
     def _auth_file(self):
         return xbmcvfs.translatePath("special://profile/addon_data/plugin.video.play_er/PREHRAJTO_COOKIES.JSON")
 
+    def _credentials(self):
+        return (get_setting_str(self.addon, 'email', '') or self._fallback_email,
+                get_setting_str(self.addon, 'password', '') or self._fallback_password)
+
+    def _binding_file(self):
+        return xbmcvfs.translatePath("special://profile/addon_data/plugin.video.play_er/PREHRAJTO_AUTH_BINDING.JSON")
+
+    def _binding_for(self, token, credentials):
+        identity = json.dumps(credentials, ensure_ascii=False, separators=(',', ':')).encode('utf-8')
+        return {'token_hash': hashlib.sha256(token.encode('utf-8')).hexdigest(),
+                'credentials': hmac.new(token.encode('utf-8'), identity, hashlib.sha256).hexdigest()}
+
+    def _save_binding(self, token, credentials):
+        binding = self._binding_for(token, credentials)
+        try:
+            with SafeVFSFile(self._binding_file(), 'w') as handle:
+                if handle.write(json.dumps(binding)) is False:
+                    raise OSError('binding write failed')
+        except Exception as exc:
+            log(f'PREHRAJTO :: Nelze uložit vazbu účtu: {type(exc).__name__}', xbmc.LOGWARNING)
+
+    def _accept_binding(self, token, credentials):
+        current = self._binding_for(token, credentials)
+        try:
+            path = self._binding_file()
+            if not xbmcvfs.exists(path):
+                # Existing installations can continue using their saved token.
+                self._save_binding(token, credentials)
+                return True
+            with SafeVFSFile(path, 'r') as handle:
+                previous = json.loads(handle.read() or '{}')
+            if not isinstance(previous, dict) or not all(isinstance(previous.get(k), str) for k in ('token_hash', 'credentials')):
+                return False
+            valid = (hmac.compare_digest(previous['token_hash'], current['token_hash']) and
+                     hmac.compare_digest(previous['credentials'], current['credentials']))
+            return valid
+        except Exception as exc:
+            log(f'PREHRAJTO :: Nelze ověřit vazbu účtu: {type(exc).__name__}', xbmc.LOGWARNING)
+            return False
+
+    def _clear_account_cookies(self):
+        jar = self.session.cookies
+        for name, (loaded, previous) in self._loaded_cookies.items():
+            if jar.get(name, domain='', path='/') == loaded:
+                jar.clear('', '/', name)
+                if previous is not None:
+                    jar.set(name, previous)
+        self._loaded_cookies.clear()
+        for cookie in list(jar):
+            domain = cookie.domain.lstrip('.').lower()
+            if domain in ('prehraj.to', 'prehrajto.cz') or domain.endswith(('.prehraj.to', '.prehrajto.cz')):
+                jar.clear(cookie.domain, cookie.path, cookie.name)
+
+    def _sync_credentials(self):
+        with self._auth_lock:
+            credentials = self._credentials()
+            if self._auth_credentials is not None and self._auth_credentials != credentials:
+                self._set_tokens(None, None)
+                self._clear_account_cookies()
+                self._auth_loaded = True
+                win = xbmcgui.Window(10000)
+                for prop in ('player.prehrajto.premium.notified', 'player.prehrajto.premium.expiry_notified', 'player.prehrajto.premium_days'):
+                    win.clearProperty(prop)
+                self._auth_credentials = credentials
+                return True
+            self._auth_credentials = credentials
+            return False
+
     def _set_tokens(self, access, refresh):
         self._access_token = access
         self._refresh_token = refresh
@@ -209,6 +285,7 @@ class PrehrajTo(BaseProvider):
             self.headers.pop('Authorization', None)
 
     def _load_auth_state(self):
+        self._sync_credentials()
         if getattr(self, '_auth_loaded', False):
             return
         self._auth_loaded = True
@@ -227,9 +304,16 @@ class PrehrajTo(BaseProvider):
                     raise ValueError('token block is not an object')
                 access = token.get('access') or token.get('access_token')
                 refresh = token.get('refresh') or token.get('refresh_token')
+                if (access or refresh) and not self._accept_binding(access or refresh, self._auth_credentials):
+                    self._clear_account_cookies()
+                    return
                 if path == canonical:
                     cookies = {k: v for k, v in state.items() if k not in ('token', 'tokens', 'access', 'refresh', 'access_token', 'refresh_token')}
                     if cookies:
+                        for name, value in cookies.items():
+                            prior = self.session.cookies.get(name, domain='', path='/')
+                            old = self._loaded_cookies.get(name)
+                            self._loaded_cookies[name] = (value, old[1] if old and old[0] == prior else prior)
                         self.session.cookies.update(cookies)
                 if access or refresh:
                     self._set_tokens(access, refresh)
@@ -240,13 +324,18 @@ class PrehrajTo(BaseProvider):
                 log(f'PREHRAJTO :: Nelze načíst uložené přihlášení ({os.path.basename(path)}): {type(exc).__name__}', xbmc.LOGWARNING)
 
     def _save_auth_state(self):
+        if self._auth_credentials != self._credentials():
+            self._sync_credentials()
+            return False
         if not self._access_token:
             return False
         try:
             state = dict(self.session.cookies.get_dict())
             state['token'] = {'access': self._access_token, 'refresh': self._refresh_token}
             with SafeVFSFile(self._auth_file(), 'w') as f:
-                f.write(json.dumps(state))
+                if f.write(json.dumps(state)) is False:
+                    raise OSError('auth write failed')
+            self._save_binding(self._access_token, self._auth_credentials)
             legacy = xbmcvfs.translatePath("special://profile/addon_data/plugin.video.play_er/PREHRAJTO_TOKENS.JSON")
             if xbmcvfs.exists(legacy):
                 xbmcvfs.delete(legacy)
@@ -274,12 +363,14 @@ class PrehrajTo(BaseProvider):
         """Activate a successfully registered account and retire old auth state."""
         self.addon.setSetting('email', email)
         self.addon.setSetting('password', password)
-        for filename in ('PREHRAJTO_COOKIES.JSON', 'PREHRAJTO_TOKENS.JSON'):
+        for filename in ('PREHRAJTO_COOKIES.JSON', 'PREHRAJTO_TOKENS.JSON', 'PREHRAJTO_AUTH_BINDING.JSON'):
             path = xbmcvfs.translatePath(f"special://profile/addon_data/plugin.video.play_er/{filename}")
             if xbmcvfs.exists(path):
                 xbmcvfs.delete(path)
         self._set_tokens(None, None)
         self.session.cookies.clear()
+        self._loaded_cookies.clear()
+        self._auth_credentials = self._credentials()
         self._auth_loaded = True
         win = xbmcgui.Window(10000)
         win.clearProperty("player.prehrajto.premium.notified")
@@ -320,6 +411,10 @@ class PrehrajTo(BaseProvider):
             win.clearProperty("play_er.prehrajto.auto_reg_running")
 
     def get_premium_cookies(self, force=False):
+        with self._auth_lock:
+            return self._get_premium_cookies(force)
+
+    def _get_premium_cookies(self, force=False):
         self._load_auth_state()
 
         def _check_and_auto_register():
@@ -341,18 +436,17 @@ class PrehrajTo(BaseProvider):
             if not force and _check_and_auto_register():
                 force = True
             if not force:
+                if self._sync_credentials():
+                    return None
                 return self.session.cookies
         elif not force and self._refresh_token:
             if self._refresh_access_token():
                 if not _check_and_auto_register():
+                    if self._sync_credentials():
+                        return None
                     return self.session.cookies
 
-        email = get_setting_str(self.addon, 'email', '')
-        password = get_setting_str(self.addon, 'password', '')
-
-        if not email or not password:
-            email = email or self._fallback_email
-            password = password or self._fallback_password
+        email, password = self._credentials()
 
         main_window = xbmcgui.Window(10000)
 
@@ -371,12 +465,22 @@ class PrehrajTo(BaseProvider):
             if getattr(res, 'status_code', None) == 200:
                 access, refresh = self._extract_tokens_from_response(res.json())
                 if access:
+                    if self._credentials() != (email, password):
+                        self._sync_credentials()
+                        return None
                     self._set_tokens(access, refresh)
 
                     notify_acc(f'PREHRAJ.TO PŘIHLÁŠEN : {email}', category='PROVIDER')
                     self._fetch_and_set_premium_days(force_notify=True)
 
+                    if self._credentials() != (email, password):
+                        self._sync_credentials()
+                        return None
+
                     self._save_auth_state()
+
+                    if self._sync_credentials():
+                        return None
 
                     main_window.clearProperty('player.prehrajto.login.failed')
                     return self.session.cookies
@@ -393,8 +497,16 @@ class PrehrajTo(BaseProvider):
         return None
 
     def _refresh_access_token(self):
+        with self._auth_lock:
+            return self._refresh_access_token_locked()
+
+    def _refresh_access_token_locked(self):
+        if self._sync_credentials():
+            return False
         if not self._refresh_token:
             return False
+        credentials = self._credentials()
+        old_refresh = self._refresh_token
         refresh_api = f"{self.api_base}/users/refresh-token"
         payload = {'refreshToken': self._refresh_token}
         try:
@@ -402,15 +514,20 @@ class PrehrajTo(BaseProvider):
             if getattr(res, 'status_code', None) == 200:
                 access, refresh = self._extract_tokens_from_response(res.json())
                 if access:
+                    if self._credentials() != credentials or self._refresh_token != old_refresh:
+                        self._sync_credentials()
+                        return False
                     self._set_tokens(access, refresh or self._refresh_token)
                     self._save_auth_state()
-                    return True
+                    return bool(self._access_token)
             log(f'PREHRAJTO :: Obnova tokenu odmítnuta, HTTP {getattr(res, "status_code", "?")}', xbmc.LOGWARNING)
         except Exception as e:
             log(f'PREHRAJTO :: REFRESH ERROR : {e}', xbmc.LOGWARNING)
         return False
 
     def _api_get(self, path, params=None, require_auth=False):
+        if require_auth and hasattr(self, '_auth_credentials') and self._sync_credentials():
+            return None
         url = f"{self.api_base.rstrip('/')}/{path.lstrip('/')}"
         headers = {'User-Agent': self.headers.get('user-agent')}
         if require_auth and self._access_token:
@@ -431,6 +548,8 @@ class PrehrajTo(BaseProvider):
         return None
 
     def _api_post(self, path, json_payload=None, require_auth=False):
+        if require_auth and hasattr(self, '_auth_credentials') and self._sync_credentials():
+            return None
         url = f"{self.api_base.rstrip('/')}/{path.lstrip('/')}"
         headers = {'User-Agent': self.headers.get('user-agent'), 'Content-Type': 'application/json'}
         if require_auth and self._access_token:
