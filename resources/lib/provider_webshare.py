@@ -12,6 +12,7 @@
 ##############################################################################
 
 import hashlib
+import threading
 import xml.etree.ElementTree as ET
 
 
@@ -70,6 +71,7 @@ class Webshare(BaseProvider):
         self.password = get_setting_str(self.addon, "webshare_password", "")
         self._auth_token = get_setting_str(self.addon, "webshare_token", "")
         self._login_failed = False
+        self._auth_lock = threading.RLock()
 
         if not self.username or not self.password:
             log("WEBSHARE - Chybí uživatelské jméno nebo heslo v nastavení.", xbmc.LOGERROR)
@@ -152,19 +154,50 @@ class Webshare(BaseProvider):
             return False
 
     def _get_auth_token(self):
-        if self._auth_token:
-            return self._auth_token
-
-        token = get_setting_str(self.addon, "webshare_token", "")
-        if token:
-            self._auth_token = token
-            return self._auth_token
-
-        if self.username and self.password:
-            if self._login():
+        with self._auth_lock:
+            if self._auth_token:
                 return self._auth_token
 
-        return None
+            token = get_setting_str(self.addon, "webshare_token", "")
+            if token:
+                self._auth_token = token
+                return self._auth_token
+
+            if self.username and self.password:
+                if self._login():
+                    return self._auth_token
+
+            return None
+
+    def _invalidate_token(self, rejected):
+        # A delayed response for an old token must not erase a newer login.
+        with self._auth_lock:
+            if self._auth_token and self._auth_token != rejected:
+                return
+            self._auth_token = None
+            stored = get_setting_str(self.addon, 'webshare_token', '')
+            if not stored or stored == rejected:
+                self.addon.setSetting('webshare_token', '')
+
+    def _post_with_token_retry(self, url, payload):
+        """Retry once only when the server explicitly rejects the token."""
+        current = payload.get('wst')
+        for attempt in range(2):
+            request_data = dict(payload, wst=current)
+            response = safe_post(self.session, url, data=request_data, timeout=15)
+            if response is None or response.status_code != 200:
+                return response, None
+            root = ET.fromstring(response.content)
+            if root.findtext('status') == 'OK' or root.findtext('message') != 'Invalid token':
+                return response, root
+            self._invalidate_token(current)
+            if attempt:
+                return response, root
+            fresh = self._get_auth_token()
+            if not fresh or fresh == current:
+                return response, root
+            current = fresh
+        return None, None
 
     def search_sources(self, query, cookies=None, apply_filters=True):
 
@@ -239,9 +272,8 @@ class Webshare(BaseProvider):
         all_videos = []
 
         try:
-            response = safe_post(self.session, url, data=payload, timeout=15)
+            response, xml_response = self._post_with_token_retry(url, payload)
             if response and response.status_code == 200:
-                xml_response = ET.fromstring(response.content)
                 if xml_response.findtext('status') == 'OK':
                     for item_xml in xml_response.iter('file'):
                         item = {child.tag: child.text for child in item_xml}
@@ -270,8 +302,6 @@ class Webshare(BaseProvider):
                     message = xml_response.findtext('message') or ''
                     log(f"WEBSHARE - Chyba při vyhledávání: {message}", xbmc.LOGERROR)
                     if message == "Invalid token":
-                        self.addon.setSetting("webshare_token", "")
-                        self._auth_token = None
                         notify_error("WEBSHARE.CZ NEPLATNÝ TOKEN", "PROVIDER")
             else:
                 log(f"WEBSHARE - Chyba HTTP: {response.status_code if response is not None else 'žádná odpověď'}", xbmc.LOGERROR)
@@ -368,15 +398,14 @@ class Webshare(BaseProvider):
         url = f"{self.base_url}file_link/"
 
         try:
-            response = safe_post(self.session, url, data=payload, timeout=15)
+            response, xml = self._post_with_token_retry(url, payload)
             if response and response.status_code == 200:
-                xml = ET.fromstring(response.content)
-                if xml.find('status').text == 'OK':
-                    direct_url = xml.find('link').text
+                if xml.findtext('status') == 'OK':
+                    direct_url = xml.findtext('link')
                     log(f"WEBSHARE - Získán přímý odkaz pro {file_id}", xbmc.LOGINFO)
                     return direct_url, None
                 else:
-                    log(f"WEBSHARE - Chyba při získávání odkazu: {xml.find('message').text}", xbmc.LOGERROR)
+                    log(f"WEBSHARE - Chyba při získávání odkazu: {xml.findtext('message') or ''}", xbmc.LOGERROR)
                     notify_error("WEBSHARE.CZ CHYBA ODKAZU", "PROVIDER")
             else:
                 log(f"WEBSHARE - Chyba HTTP při získávání odkazu: {response.status_code if response is not None else 'žádná odpověď'}", xbmc.LOGERROR)

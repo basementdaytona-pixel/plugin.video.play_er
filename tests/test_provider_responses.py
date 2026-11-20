@@ -1,5 +1,7 @@
 """Provider result normalization with synthetic responses; no real accounts."""
 import unittest
+import threading
+from concurrent.futures import ThreadPoolExecutor
 from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
@@ -24,6 +26,7 @@ class WebshareResponsesTests(unittest.TestCase):
         }.get(key, '')
         self.client._get_auth_token = MagicMock(return_value='synthetic-token')
         self.client._auth_token = 'synthetic-token'
+        self.client._auth_lock = threading.RLock()
         self.client.session = MagicMock()
         self.client.base_url = 'https://example.invalid/api/'
         self.client.normalize_and_filter = MagicMock(side_effect=lambda rows, **kwargs: rows)
@@ -67,6 +70,140 @@ class WebshareResponsesTests(unittest.TestCase):
             self.assertEqual(self.client.get_video_link('example-file'), (secret_url, None))
         self.assertNotIn(secret_url, str(log.call_args_list))
         self.assertNotIn('synthetic-secret', str(log.call_args_list))
+
+    def test_invalid_playback_token_recovers_once_with_new_token(self):
+        invalid = SimpleNamespace(status_code=200, content=b'<response><status>FAIL</status><message>Invalid token</message></response>')
+        valid = SimpleNamespace(status_code=200, content=b'<response><status>OK</status><link>https://example.invalid/video</link></response>')
+        self.client._auth_token = 'old'
+        def get_token():
+            if self.client._auth_token is None:
+                self.client._auth_token = 'new'
+            return self.client._auth_token
+        self.client._get_auth_token.side_effect = get_token
+        self.client.addon.getSetting.side_effect = lambda key: 'old' if key == 'webshare_token' else ''
+        with patch.object(webshare, 'safe_post', side_effect=[invalid, valid]) as request:
+            self.assertEqual(self.client.get_video_link('file'), ('https://example.invalid/video', None))
+        self.assertEqual([call.kwargs['data']['wst'] for call in request.call_args_list], ['old', 'new'])
+        self.client.addon.setSetting.assert_called_once_with('webshare_token', '')
+
+    def test_invalid_search_token_recovers_with_new_token(self):
+        invalid = SimpleNamespace(status_code=200, content=b'<response><status>FAIL</status><message>Invalid token</message></response>')
+        valid = SimpleNamespace(status_code=200, content=b'<response><status>OK</status><file><ident>new-file</ident><name>video.mkv</name></file></response>')
+        self.client._auth_token = 'old'
+        def get_token():
+            if self.client._auth_token is None:
+                self.client._auth_token = 'new'
+            return self.client._auth_token
+        self.client._get_auth_token.side_effect = get_token
+        self.client.addon.getSetting.side_effect = lambda key: 'old' if key == 'webshare_token' else ''
+        with patch.object(webshare, 'safe_post', side_effect=[invalid, valid]) as request, \
+             patch.object(webshare, 'encode', side_effect=lambda value: value):
+            rows = self.client.search_sources('show')
+        self.assertEqual([row['link'] for row in rows], ['new-file'])
+        self.assertEqual([call.kwargs['data']['wst'] for call in request.call_args_list], ['old', 'new'])
+
+    def test_late_invalid_response_preserves_a_newer_token(self):
+        invalid = SimpleNamespace(status_code=200, content=b'<response><status>FAIL</status><message>Invalid token</message></response>')
+        valid = SimpleNamespace(status_code=200, content=b'<response><status>OK</status><link>https://example.invalid/video</link></response>')
+        self.client._auth_token = 'old'
+        self.client._get_auth_token.side_effect = lambda: self.client._auth_token
+        self.client.addon.getSetting.side_effect = lambda key: 'new' if key == 'webshare_token' else ''
+        def request(*args, **kwargs):
+            if kwargs['data']['wst'] == 'old':
+                self.client._auth_token = 'new'
+                return invalid
+            return valid
+        with patch.object(webshare, 'safe_post', side_effect=request):
+            self.assertEqual(self.client.get_video_link('file'), ('https://example.invalid/video', None))
+        self.client.addon.setSetting.assert_not_called()
+        self.assertEqual(self.client._auth_token, 'new')
+
+    def test_repeated_invalid_token_stops_after_one_retry(self):
+        invalid = SimpleNamespace(status_code=200, content=b'<response><status>FAIL</status><message>Invalid token</message></response>')
+        settings = {'webshare_token': 'old'}
+        self.client._auth_token = 'old'
+        self.client.addon.getSetting.side_effect = lambda key: settings.get(key, '')
+        self.client.addon.setSetting.side_effect = lambda key, value: settings.__setitem__(key, value)
+        def get_token():
+            if self.client._auth_token is None:
+                self.client._auth_token = 'new'
+                settings['webshare_token'] = 'new'
+            return self.client._auth_token
+        self.client._get_auth_token.side_effect = get_token
+        with patch.object(webshare, 'safe_post', return_value=invalid) as request:
+            self.assertEqual(self.client.get_video_link('file'), (None, None))
+        self.assertEqual(request.call_count, 2)
+        self.assertIsNone(self.client._auth_token)
+        self.assertEqual(settings['webshare_token'], '')
+
+    def test_failed_reauthentication_does_not_retry_request(self):
+        invalid = SimpleNamespace(status_code=200, content=b'<response><status>FAIL</status><message>Invalid token</message></response>')
+        self.client._auth_token = 'old'
+        self.client._get_auth_token.side_effect = ['old', None]
+        with patch.object(webshare, 'safe_post', return_value=invalid) as request:
+            self.assertEqual(self.client.get_video_link('file'), (None, None))
+        self.assertEqual(request.call_count, 1)
+        self.assertIsNone(self.client._auth_token)
+
+    def test_expired_token_runs_real_login_flow_before_retried_playback(self):
+        settings = {'webshare_token': 'old'}
+        self.client.username, self.client.password = 'synthetic-user', 'synthetic-password'
+        self.client._auth_token = 'old'
+        self.client._get_auth_token = webshare.Webshare._get_auth_token.__get__(self.client)
+        self.client.addon.getSetting.side_effect = lambda key: settings.get(key, '')
+        self.client.addon.setSetting.side_effect = lambda key, value: settings.__setitem__(key, value)
+        responses = [b'<response><status>FAIL</status><message>Invalid token</message></response>',
+                     b'<response><status>OK</status><salt>synthetic-salt</salt></response>',
+                     b'<response><status>OK</status><token>new</token></response>',
+                     b'<response><status>OK</status><link>https://example.invalid/video</link></response>']
+        with patch.object(webshare, 'safe_post', side_effect=[SimpleNamespace(status_code=200, content=x) for x in responses]) as request, \
+             patch.object(webshare, 'md5crypt', return_value='synthetic-hash'):
+            self.assertEqual(self.client.get_video_link('file'), ('https://example.invalid/video', None))
+        self.assertEqual([call.args[1].rsplit('/', 2)[-2] for call in request.call_args_list],
+                         ['file_link', 'salt', 'login', 'file_link'])
+        self.assertEqual(settings['webshare_token'], 'new')
+
+    def test_parallel_invalid_responses_share_one_reauthentication(self):
+        invalid = SimpleNamespace(status_code=200, content=b'<response><status>FAIL</status><message>Invalid token</message></response>')
+        valid = SimpleNamespace(status_code=200, content=b'<response><status>OK</status><link>https://example.invalid/video</link></response>')
+        settings = {'webshare_token': 'old'}
+        self.client.username, self.client.password = 'synthetic-user', 'synthetic-password'
+        self.client._auth_token = 'old'
+        self.client._get_auth_token = webshare.Webshare._get_auth_token.__get__(self.client)
+        self.client.addon.getSetting.side_effect = lambda key: settings.get(key, '')
+        self.client.addon.setSetting.side_effect = lambda key, value: settings.__setitem__(key, value)
+        both_requested = threading.Barrier(2)
+        def post(*args, **kwargs):
+            if kwargs['data']['wst'] == 'old':
+                both_requested.wait(timeout=3)
+                return invalid
+            return valid
+        def login():
+            self.client._auth_token = 'new'
+            settings['webshare_token'] = 'new'
+            return True
+        self.client._login = MagicMock(side_effect=login)
+        with patch.object(webshare, 'safe_post', side_effect=post), ThreadPoolExecutor(max_workers=2) as pool:
+            results = list(pool.map(self.client.get_video_link, ['file-a', 'file-b']))
+        self.assertEqual(results, [('https://example.invalid/video', None)] * 2)
+        self.client._login.assert_called_once()
+        self.assertEqual(settings['webshare_token'], 'new')
+
+    def test_unrelated_or_malformed_errors_do_not_reset_token_or_retry(self):
+        responses = [SimpleNamespace(status_code=200, content=b'<response><status>FAIL</status><message>Not found</message></response>'),
+                     SimpleNamespace(status_code=200, content=b'<response><status>FAIL</status></response>'),
+                     SimpleNamespace(status_code=200, content=b'<response>')]
+        for response in responses:
+            with self.subTest(content=response.content):
+                self.client._auth_token = 'synthetic-token'
+                self.client.addon.setSetting.reset_mock()
+                self.client._get_auth_token.reset_mock()
+                with patch.object(webshare, 'safe_post', return_value=response) as request:
+                    self.assertEqual(self.client.get_video_link('file'), (None, None))
+                self.assertEqual(request.call_count, 1)
+                self.assertEqual(self.client._get_auth_token.call_count, 1)
+                self.assertEqual(self.client._auth_token, 'synthetic-token')
+                self.client.addon.setSetting.assert_not_called()
 
 
 class PrehrajCatalogueResponsesTests(unittest.TestCase):
