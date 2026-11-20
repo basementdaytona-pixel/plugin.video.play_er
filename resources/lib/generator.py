@@ -52,6 +52,8 @@ def _remember_playlist_item(url, meta, meta_id, trakt_id, source_link, provider=
             records = {}
         if not isinstance(records, dict):
             records = {}
+        # A refreshed source must outlive older untouched queue records.
+        records.pop(url_key, None)
         records[url_key] = {
             "meta": dict(meta or {}),
             "meta_id": str(meta_id or ""),
