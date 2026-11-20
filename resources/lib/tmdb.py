@@ -109,12 +109,16 @@ class TMDB:
 
 
 
-    def _cache_variant(self, key, language=None, skip_filter=False):
-        """Keep cached translations and filter preferences independent."""
+    def _get_language_filter_mode(self):
         try:
             mode = (self.addon.getSetting("filter_tmdb_language") or "SOFT").strip().upper()
         except Exception:
-            mode = "SOFT"
+            return "SOFT"
+        return mode if mode in ("OFF", "SOFT", "HARD") else "SOFT"
+
+    def _cache_variant(self, key, language=None, skip_filter=False):
+        """Keep cached translations and filter preferences independent."""
+        mode = self._get_language_filter_mode()
         return f"{key}_{language or self.language}_{'OFF' if skip_filter else mode}"
 
 
@@ -182,10 +186,7 @@ class TMDB:
             data = response.json()
 
 
-            try:
-                mode = (self.addon.getSetting("filter_tmdb_language") or "SOFT").strip().upper()
-            except Exception:
-                mode = "SOFT"
+            mode = self._get_language_filter_mode()
             if not skip_filter and mode != "OFF":
                 if isinstance(data, dict) and "results" in data:
                     asian_pattern = re.compile(r"[\u3040-\u30ff\u4e00-\u9fff\uac00-\ud7af]")

@@ -53,6 +53,34 @@ class FetchTests(unittest.TestCase):
             client._fetch('movie/popular', cache_key='popular_page_1', skip_filter=True)
             self.assertEqual(fetch.call_count, 4)
 
+    def test_invalid_filter_mode_uses_soft_default_for_results_and_cache(self):
+        client = object.__new__(tmdb.TMDB)
+        client.api_key, client.language = 'synthetic-key', 'cs-CZ'
+        client.base_url, client.session = 'https://example.invalid/3', MagicMock()
+        client.addon = MagicMock()
+        for mode in ('unknown', '   ', None, ' soft '):
+            with self.subTest(mode=mode):
+                client.addon.getSetting.return_value = mode
+                response = MagicMock()
+                response.json.return_value = {'results': [
+                    {'id': 1, 'title': 'Example', 'original_language': 'en'},
+                    {'id': 2, 'title': 'Translated', 'original_title': 'Original',
+                     'original_language': 'ja', 'genre_ids': [16]},
+                    {'id': 3, 'title': 'Original', 'original_title': 'Original',
+                     'original_language': 'ja', 'genre_ids': [16]}]}
+                store = MagicMock()
+                store.window_cache_get.return_value = None
+                store.cache_get.return_value = None
+                with patch.object(tmdb, 'cache_manager', store), \
+                     patch.object(tmdb, 'safe_get', return_value=response):
+                    result = client._fetch('movie/popular', cache_key='popular_page_1')
+                self.assertEqual([item['id'] for item in result['results']], [1, 2])
+                self.assertEqual(store.cache_set.call_args.args[1], 'popular_page_1_cs-CZ_SOFT')
+        for mode in ('OFF', 'SOFT', 'HARD'):
+            client.addon.getSetting.return_value = ' ' + mode.lower() + ' '
+            self.assertEqual(client._cache_variant('key'), 'key_cs-CZ_' + mode)
+            self.assertEqual(client._cache_variant('key', skip_filter=True), 'key_cs-CZ_OFF')
+
     def test_catalogue_errors_are_not_reused_or_cached(self):
         for error in ({'status_code': 34}, {'success': False}):
             for layer in ('response', 'disk', 'window'):
