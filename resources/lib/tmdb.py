@@ -118,7 +118,8 @@ class TMDB:
         return f"{key}_{language or self.language}_{'OFF' if skip_filter else mode}"
 
 
-    def _fetch(self, endpoint, params=None, cache_key=None, skip_filter=False, language_override=None):
+    def _fetch(self, endpoint, params=None, cache_key=None, skip_filter=False, language_override=None,
+               _cache_validator=None):
 
 
         if not self.api_key:
@@ -148,14 +149,14 @@ class TMDB:
 
         if cache_key and "page" in cache_key:
             w_data = cache_manager.window_cache_get(cache_key)
-            if w_data:
+            if w_data and (_cache_validator is None or _cache_validator(w_data)):
                 log(f"TMDB - CACHE HIT | WIDGET : {cache_key}", xbmc.LOGDEBUG)
                 return w_data
 
 
         if cache_key:
             cached_data = cache_manager.cache_get("TMDB", cache_key)
-            if cached_data is not None:
+            if cached_data is not None and (_cache_validator is None or _cache_validator(cached_data)):
                 log(f"TMDB - CACHE HIT | SSD : {cache_key}", xbmc.LOGDEBUG)
                 if "page" in cache_key:
                     cache_manager.window_cache_set(cache_key, cached_data)
@@ -187,13 +188,6 @@ class TMDB:
                     before = len(data["results"])
                     filtered =[]
                     label = "VIETCONG FILTER"
-
-
-                    # for item in data["results"]:
-                    #     if "known_for_department" in item:
-                    #         filtered.append(item)
-                    #         continue
-                    #     title = (item.get("title") or item.get("name") or "").strip()
 
 
                     # --- 1. KONTROLA PRO HERCE (OSOBY)
@@ -238,7 +232,8 @@ class TMDB:
 
             cacheable_detail = (isinstance(data, dict) and "status_code" not in data
                                 and data.get("success") is not False)
-            if cache_key and (not automatic_detail_cache or cacheable_detail):
+            if (cache_key and (not automatic_detail_cache or cacheable_detail)
+                    and (_cache_validator is None or _cache_validator(data))):
                 cache_manager.cache_set("TMDB", cache_key, data)
                 if "page" in cache_key:
                     cache_manager.window_cache_set(cache_key, data)
@@ -431,6 +426,15 @@ class TMDB:
         xbmcplugin.endOfDirectory(self._handle)
 
 
+    @staticmethod
+    def _usable_details(data):
+        return (isinstance(data, dict) and bool(data) and "status_code" not in data
+                and data.get("success") is not False)
+
+    @classmethod
+    def _complete_details(cls, data):
+        return cls._usable_details(data) and ("credits" in data or "aggregate_credits" in data)
+
     def get_full_details(self, media_type, tmdb_id, lang=None):
 
         """
@@ -453,29 +457,23 @@ class TMDB:
         detail_data = cache_manager.cache_get("TMDB", self._cache_variant(cache_key, lang))
 
 
-        is_valid = False
-        if detail_data:
-
-
-            if "credits" in detail_data or "aggregate_credits" in detail_data:
-                is_valid = True
-
-
-            if not is_valid:
-                log(f"TMDB CACHE - Data pro ID {tmdb_id} jsou nekompletní (chybí herci). Vynucuji stažení.", xbmc.LOGINFO)
-
-        if is_valid:
+        if self._complete_details(detail_data):
             return detail_data
+        if detail_data is not None:
+            log(f"TMDB CACHE - Data pro ID {tmdb_id} jsou nekompletní (chybí herci). Vynucuji stažení.", xbmc.LOGINFO)
 
-
-        detail_data = self._fetch(
+        refreshed = self._fetch(
             endpoint,
             params={"append_to_response": "credits,aggregate_credits"},
             cache_key=cache_key,
-            language_override=lang
+            language_override=lang,
+            _cache_validator=self._complete_details
         )
-
-        return detail_data
+        # Preserve usable cached metadata when the refresh fails. A later call
+        # will try again because incomplete data is not considered a cache hit.
+        if not self._usable_details(refreshed) and self._usable_details(detail_data):
+            return detail_data
+        return refreshed
 
 
     def get_season_details_raw(self, tmdb_id, season_number):
