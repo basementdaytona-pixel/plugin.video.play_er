@@ -11,11 +11,12 @@ dialog = load_module('resources.lib.dialog_stream', ('resources.lib.stream_state
 
 
 class StreamDialogPositionTests(unittest.TestCase):
-    def run_dialog(self, selected=True, stopped=False):
+    def run_dialog(self, selected=True, stopped=False, advanced=False):
         window = FakeWindow()
         player = MagicMock()
-        state = {'time': 20.0, 'playing': True}
+        state = {'time': 20.0, 'playing': True, 'file': 'https://example.invalid/original'}
         player.isPlayingVideo.side_effect = lambda: state['playing']
+        player.getPlayingFile.side_effect = lambda: state['file']
         player.getTime.side_effect = lambda: state['time']
         player.getPlayingItem.return_value.getProperty.return_value = ''
         dashboard = MagicMock()
@@ -24,6 +25,8 @@ class StreamDialogPositionTests(unittest.TestCase):
 
         def choose():
             state.update(time=65.0, playing=not stopped)
+            if advanced:
+                state['file'] = 'https://example.invalid/next-episode'
 
         dashboard.doModal.side_effect = choose
         item = MagicMock()
@@ -42,6 +45,10 @@ class StreamDialogPositionTests(unittest.TestCase):
         player.play.assert_called_once()
         item.setProperty.assert_any_call('StartOffset', '65.0')
         player.seekTime.assert_not_called()
+
+    def test_next_episode_is_not_replaced(self):
+        player, _ = self.run_dialog(advanced=True)
+        player.play.assert_not_called()
 
     def test_cancel_does_not_restart_playback(self):
         player, _ = self.run_dialog(selected=False)

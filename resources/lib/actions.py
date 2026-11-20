@@ -551,6 +551,7 @@ def change_stream_quality(params, plugin_instance):
     win = xbmcgui.Window(10000)
     player = xbmc.Player()
     playing_item = player.getPlayingItem()
+    playing_file = player.getPlayingFile()
     available_links = get_streams(playing_item)
     if not available_links:
         notify_error("ERROR Dostupné kvality streamu nejsou známy", category="STREAM")
@@ -568,6 +569,12 @@ def change_stream_quality(params, plugin_instance):
     choice = pop_dialog_select(f"[COLOR {Colors.ORANGE}] ○  VÝBĚR KVALITY STREAMU  ○ [/COLOR]", options)
 
     if choice == -1:
+        return
+
+    try:
+        if not player.isPlayingVideo() or player.getPlayingFile() != playing_file:
+            return
+    except RuntimeError:
         return
 
     selected_url = urls[choice]

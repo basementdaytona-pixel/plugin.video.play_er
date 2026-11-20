@@ -85,6 +85,7 @@ def show_stream_menu(plugin_instance):
         # 3. EXTRAKCE DAT Z AKTUÁLNĚ HRAJÍCÍ POLOŽKY
 
         playing_item = player.getPlayingItem()
+        playing_file = player.getPlayingFile()
         current_link = playing_item.getProperty("play_er.link")
         current_meta_id = playing_item.getProperty("play_er.meta_id")
         current_trakt_id = playing_item.getProperty("play_er.trakt_id")
@@ -127,7 +128,10 @@ def show_stream_menu(plugin_instance):
             return
 
         # Playback continues while the modal is open; resume at its current time.
-        if not player.isPlayingVideo():
+        try:
+            if not player.isPlayingVideo() or player.getPlayingFile() != playing_file:
+                return
+        except RuntimeError:
             return
         try:
             current_play_time = player.getTime()

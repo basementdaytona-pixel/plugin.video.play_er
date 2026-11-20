@@ -81,6 +81,32 @@ class StreamOwnershipTests(unittest.TestCase):
         player.play.assert_called_once()
         player.seekTime.assert_called_once_with(20)
 
+    def test_quality_selection_does_not_replace_changed_or_stopped_playback(self):
+        for stopped in (False, True):
+            with self.subTest(stopped=stopped):
+                player = MagicMock()
+                state = {'file': 'https://example.invalid/original', 'playing': True}
+                player.isPlayingVideo.side_effect = lambda: state['playing']
+                player.getPlayingFile.side_effect = lambda: state['file']
+
+                def choose(*args):
+                    state.update(file='https://example.invalid/next', playing=not stopped)
+                    return 1
+
+                kodi = MagicMock()
+                kodi.Player.return_value = player
+                gui = MagicMock()
+                gui.Window.return_value = self.window
+                modules = {'xbmc': kodi, 'xbmcgui': gui,
+                           'resources.lib.utils': SimpleNamespace(pop_dialog_select=choose),
+                           'resources.lib.utils_notification': MagicMock()}
+                with patch.dict(sys.modules, modules), \
+                     patch.object(actions, 'get_streams', return_value={'1080P': 'a', '720P': 'b'}):
+                    actions.change_stream_quality({}, MagicMock())
+                player.stop.assert_not_called()
+                player.play.assert_not_called()
+                self.assertEqual(self.window.getProperty('play_er.seamless_switching'), '')
+
 
 if __name__ == '__main__':
     unittest.main()
