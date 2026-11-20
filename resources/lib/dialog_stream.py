@@ -102,11 +102,6 @@ def show_stream_menu(plugin_instance):
             log("DIALOG STREAM - Nepodařilo se naimportovat StreamDashboardXML", xbmc.LOGERROR)
             return
 
-        try:
-            current_play_time = player.getTime()
-        except Exception:
-            current_play_time = 0.0
-
         # 4. OTEVŘENÍ OKNA
         xml_dialog = StreamDashboardXML(
             "script-play_er-dialog_stream.xml",
@@ -130,6 +125,14 @@ def show_stream_menu(plugin_instance):
         if not selected_url:
             log("DIALOG STREAM - Výběr zrušen uživatelem", xbmc.LOGINFO)
             return
+
+        # Playback continues while the modal is open; resume at its current time.
+        if not player.isPlayingVideo():
+            return
+        try:
+            current_play_time = player.getTime()
+        except Exception:
+            current_play_time = 0.0
 
 
         # ============== PŘÍPRAVA METADAT ==============
