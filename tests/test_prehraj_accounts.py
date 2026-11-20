@@ -329,6 +329,41 @@ class PrehrajAccountTests(unittest.TestCase):
         self.assertIs(client._api_get('profile', require_auth=True), unauthorized)
         client.session.post.assert_not_called()
 
+    def test_resolution_rejects_account_change_between_detail_and_download(self):
+        client = self.provider()
+        client.get_premium_cookies()
+        client.api_get_video_detail = MagicMock(return_value={'links': {'720': 'https://example.invalid/old'}})
+        def download(*args, **kwargs):
+            self.settings.update(email='second@example.invalid', password='second-pass')
+            return {'720P': 'https://example.invalid/old'}
+        client.api_get_download_link = MagicMock(side_effect=download)
+        client.api_get_video_subtitle = MagicMock(return_value=[])
+        window = MagicMock()
+        with patch.object(prehraj.xbmcgui, 'Window', return_value=window):
+            self.assertEqual(client.get_video_link('123456'), (None, []))
+        self.assertIsNone(client._access_token)
+        window.setProperty.assert_not_called()
+
+    def test_resolution_rejects_account_change_while_choosing_quality(self):
+        import sys
+        client = self.provider()
+        client.get_premium_cookies()
+        self.addon.getSettingString.side_effect = lambda key: 'ask' if key == 'prehrajto_stream_mode' else 'highest'
+        client.api_get_video_detail = MagicMock(return_value={})
+        client.api_get_download_link = MagicMock(return_value={'720P': 'https://example.invalid/a', '480P': 'https://example.invalid/b'})
+        client.api_get_video_subtitle = MagicMock(return_value=[])
+        window = MagicMock()
+        window.getProperty.return_value = ''
+        def choose(*args):
+            self.settings.update(email='second@example.invalid', password='second-pass')
+            return 0
+        with patch.object(prehraj.xbmcgui, 'Window', return_value=window), \
+             patch.object(prehraj.xbmc.Player.return_value, 'isPlayingVideo', return_value=False), \
+             patch.dict(sys.modules, {'resources.lib.utils': SimpleNamespace(pop_dialog_select=choose)}):
+            self.assertEqual(client.get_video_link('123456'), (None, []))
+        self.assertIsNone(client._access_token)
+        window.setProperty.assert_not_called()
+
 
 if __name__ == '__main__':
     unittest.main()

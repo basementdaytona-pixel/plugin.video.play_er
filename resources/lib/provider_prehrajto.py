@@ -904,6 +904,16 @@ class PrehrajTo(BaseProvider):
 
     def get_video_link(self, video_id):
         self.get_premium_cookies()
+        credentials = getattr(self, '_auth_credentials', None)
+
+        def same_account():
+            if credentials is None:
+                return True
+            with self._auth_lock:
+                if self._credentials() != credentials or self._auth_credentials != credentials:
+                    self._sync_credentials()
+                    return False
+                return True
 
         vid = self._video_id(video_id)
 
@@ -914,12 +924,11 @@ class PrehrajTo(BaseProvider):
 
         # A failed lookup is also reused for this resolution; no persistent cache.
         detail = self.api_get_video_detail(vid)
+        if not same_account():
+            return None, []
         available_links = self.api_get_download_link(vid, detail=detail)
-
-        if available_links:
-            xbmcgui.Window(10000).setProperty(f"play_er.qualities.{vid}", json.dumps(available_links))
-        else:
-            xbmcgui.Window(10000).clearProperty(f"play_er.qualities.{vid}")
+        if not same_account():
+            return None, []
 
         subs = self.api_get_video_subtitle(vid, detail=detail)
         sub_urls = []
@@ -966,9 +975,20 @@ class PrehrajTo(BaseProvider):
 
             sub_urls = cz_sk_subs + other_subs
 
-        xbmcgui.Window(10000).setProperty(f"play_er.subtitles.{vid}", json.dumps(sub_urls))
+        def publish_stream_assets():
+            if not same_account():
+                return False
+            window = xbmcgui.Window(10000)
+            if available_links:
+                window.setProperty(f"play_er.qualities.{vid}", json.dumps(available_links))
+            else:
+                window.clearProperty(f"play_er.qualities.{vid}")
+            window.setProperty(f"play_er.subtitles.{vid}", json.dumps(sub_urls))
+            return True
 
         if not available_links:
+            if not publish_stream_assets():
+                return None, []
             return None, sub_urls
 
         stream_mode = self.addon.getSettingString("prehrajto_stream_mode") or "auto"
@@ -1004,7 +1024,10 @@ class PrehrajTo(BaseProvider):
                 urls = list(available_links.values())
                 from resources.lib.utils import pop_dialog_select
                 choice = pop_dialog_select(f"[COLOR {Colors.ORANGE}] ○  VÝBĚR KVALITY STREAMU  ○ [/COLOR]", options)
+                if not same_account():
+                    return None, []
                 if choice == -1:
+                    publish_stream_assets()
                     return None, []
                 selected_url = urls[choice]
                 win.setProperty("play_er.playlist_quality_choice", options[choice])
@@ -1066,6 +1089,8 @@ class PrehrajTo(BaseProvider):
                 else:
                     selected_url = list(available_links.values())[0]
 
+        if not publish_stream_assets():
+            return None, []
         return selected_url, sub_urls
 
     def _apply_multi_indicator(self, it, title, mark_multi):
