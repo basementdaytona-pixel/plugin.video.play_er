@@ -1687,6 +1687,45 @@ def _history_show_key(meta):
     return ("id", tmdb_id) if tmdb_id else ("title", meta.get("tv_show_title", "Neznámý seriál"))
 
 
+def _history_entries(value):
+    """Ignore malformed rows for display without changing stored history."""
+    if not isinstance(value, list):
+        return []
+    return [item for item in value if isinstance(item, dict) and isinstance(item.get('meta'), dict)]
+
+
+def _history_tmdb_details(value):
+    return isinstance(value, dict) and bool(value) and 'status_code' not in value and value.get('success') is not False
+
+
+def _fill_history_item(list_item, props, media_type, client):
+    """Use the TMDB renderer when available, otherwise retain basic Kodi metadata."""
+    if client:
+        try:
+            client.fill_list_item(list_item, props, media_type)
+            return
+        except Exception as exc:
+            log(f'PLAYBACK HISTORY - Nelze doplnit metadata: {type(exc).__name__}', xbmc.LOGWARNING)
+    try:
+        info = list_item.getVideoInfoTag()
+        info.setMediaType('tvshow' if media_type in ('tv', 'show', 'tvshow') else media_type)
+        if props.get('tmdb_id'):
+            info.setUniqueIDs({'tmdb': str(props['tmdb_id'])})
+        for key, setter in (('title', 'setTitle'), ('plot', 'setPlot'),
+                            ('tv_show_title', 'setTvShowTitle'), ('premiered', 'setPremiered')):
+            if isinstance(props.get(key), str) and props[key]:
+                getattr(info, setter)(props[key])
+        for key, setter in (('season', 'setSeason'), ('episode', 'setEpisode'), ('year', 'setYear')):
+            if props.get(key) is not None and str(props[key]).isdigit():
+                getattr(info, setter)(int(props[key]))
+        art = {key: props[key] for key in ('poster', 'fanart', 'thumb')
+               if isinstance(props.get(key), str) and props[key]}
+        if art:
+            list_item.setArt(art)
+    except Exception as exc:
+        log(f'PLAYBACK HISTORY - Základní metadata nejsou dostupná: {type(exc).__name__}', xbmc.LOGWARNING)
+
+
 def playback_history(plugin_instance, is_widget=False):
 
     """
@@ -1695,7 +1734,7 @@ def playback_history(plugin_instance, is_widget=False):
     """
 
     try:
-        history = cache_manager.user_data_get("playback_history") or []
+        history = _history_entries(cache_manager.user_data_get("playback_history"))
     except Exception:
         history = []
 
@@ -1713,7 +1752,12 @@ def playback_history(plugin_instance, is_widget=False):
         meta = item.get("meta", {})
         media_type = meta.get("media_type", "movie")
         if media_type == "episode":
-            shows_dict[_history_show_key(meta)].append(item)
+            key = _history_show_key(meta)
+            try:
+                hash(key)
+            except TypeError:
+                continue
+            shows_dict[key].append(item)
         else:
             movies.append(item)
 
@@ -1741,7 +1785,8 @@ def playback_history(plugin_instance, is_widget=False):
                 client._fetch(f"movie/{m_id}", params={'append_to_response': 'credits'}, cache_key=cache_key)
         except: pass
 
-    if items_to_fetch:
+    if items_to_fetch and plugin_instance.tmdb_client:
+        items_to_fetch = list({(kind, str(ident)): (kind, ident) for kind, ident in items_to_fetch}.values())
         max_workers = get_threadpool(10)
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
             executor.map(_fetch_meta_worker, items_to_fetch)
@@ -1756,9 +1801,13 @@ def playback_history(plugin_instance, is_widget=False):
             cache_key = f"tv_{tmdb_id}"
             show_data_raw = cache_manager.cache_get("TMDB", cache_key) or {}
 
-        if show_data_raw:
-            props = plugin_instance.tmdb_client._build_metadata_props(show_data_raw, 'tv')
-        else:
+        props = None
+        if _history_tmdb_details(show_data_raw):
+            try:
+                props = plugin_instance.tmdb_client._build_metadata_props(show_data_raw, 'tv')
+            except Exception:
+                pass
+        if not isinstance(props, dict) or not props:
             props = {
                 'title': show_title,
                 'tmdb_id': tmdb_id,
@@ -1769,9 +1818,9 @@ def playback_history(plugin_instance, is_widget=False):
 
         list_item = xbmcgui.ListItem(label=props.get('title', show_title))
         list_item.setProperty("IsPlayable", "false")
-        plugin_instance.tmdb_client.fill_list_item(list_item, props, 'tvshow')
+        _fill_history_item(list_item, props, 'tvshow', plugin_instance.tmdb_client)
 
-        status = show_data_raw.get("status")
+        status = show_data_raw.get("status") if _history_tmdb_details(show_data_raw) else None
         if status:
             list_item.setProperty("status", status)
             list_item.getVideoInfoTag().setTvShowStatus(status)
@@ -1796,7 +1845,7 @@ def playback_history(plugin_instance, is_widget=False):
 
     for item in movies:
         meta = item.get("meta", {})
-        link = item["link"]
+        link = item.get("link") or ""
         tmdb_id = meta.get("tmdb_id")
 
         movie_data_raw = {}
@@ -1804,16 +1853,20 @@ def playback_history(plugin_instance, is_widget=False):
             cache_key = f"movie_{tmdb_id}"
             movie_data_raw = cache_manager.cache_get("TMDB", cache_key) or {}
 
-        if movie_data_raw:
-            props = plugin_instance.tmdb_client._build_metadata_props(movie_data_raw, 'movie')
-        else:
+        props = None
+        if _history_tmdb_details(movie_data_raw):
+            try:
+                props = plugin_instance.tmdb_client._build_metadata_props(movie_data_raw, 'movie')
+            except Exception:
+                pass
+        if not isinstance(props, dict) or not props:
             props = meta.copy()
             props['media_type'] = 'movie'
 
         label = props.get("title", "Neznámý titul")
         list_item = xbmcgui.ListItem(label=label)
         list_item.setProperty("IsPlayable", "true")
-        plugin_instance.tmdb_client.fill_list_item(list_item, props, 'movie')
+        _fill_history_item(list_item, props, 'movie', plugin_instance.tmdb_client)
 
         context_menu = _get_context_menu(
             'playback_history_movie',
@@ -1853,7 +1906,7 @@ def playback_show_history(params, plugin_instance):
     show_title = params["show_title"]
 
     try:
-        history = cache_manager.user_data_get("playback_history") or[]
+        history = _history_entries(cache_manager.user_data_get("playback_history"))
     except Exception:
         history = []
 
@@ -1867,25 +1920,41 @@ def playback_show_history(params, plugin_instance):
              item["meta"].get("tv_show_title", "Neznámý seriál") == show_title
              and (not no_id_only or not _history_tmdb_id(item["meta"])))
     ]
+    valid_episodes = []
+    for item in episodes:
+        meta = item['meta']
+        try:
+            int(meta.get('season') or 0)
+            int(meta.get('episode') or 0)
+        except (TypeError, ValueError, OverflowError):
+            continue
+        valid_episodes.append(item)
+    episodes = valid_episodes
 
     def _fetch_ep_worker(item):
         meta = item.get("meta", {})
         tmdb_id = meta.get("tmdb_id")
         s = meta.get("season")
         e = meta.get("episode")
-        if tmdb_id and s and e:
+        if tmdb_id and s is not None and e is not None and str(s) and str(e):
             cache_key = f"tv_{tmdb_id}_s{s}_e{e}"
             try:
                 plugin_instance.tmdb_client._fetch(f"tv/{tmdb_id}/season/{s}/episode/{e}", params={'append_to_response': 'credits'}, cache_key=cache_key)
             except: pass
 
-    max_workers = get_threadpool(10)
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        executor.map(_fetch_ep_worker, episodes)
+    if episodes and plugin_instance.tmdb_client:
+        unique = {}
+        for item in episodes:
+            meta = item['meta']
+            key = tuple(str(meta.get(name)) for name in ('tmdb_id', 'season', 'episode'))
+            unique.setdefault(key, item)
+        max_workers = get_threadpool(10)
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            executor.map(_fetch_ep_worker, unique.values())
 
     for item in episodes:
         meta = item.get("meta", {})
-        link = item["link"]
+        link = item.get("link") or ""
         media_type = meta.get("media_type", "episode")
 
         tmdb_id = meta.get("tmdb_id")
@@ -1893,16 +1962,19 @@ def playback_show_history(params, plugin_instance):
         episode = meta.get("episode")
 
         episode_data_raw = {}
-        if tmdb_id and season and episode and plugin_instance.tmdb_client:
+        if tmdb_id and season is not None and episode is not None and str(season) and str(episode) and plugin_instance.tmdb_client:
             cache_key = f"tv_{tmdb_id}_s{season}_e{episode}"
             episode_data_raw = cache_manager.cache_get("TMDB", cache_key) or {}
 
-        if episode_data_raw:
-            props = plugin_instance.tmdb_client._build_metadata_props(episode_data_raw, 'episode')
-
-            props['tv_show_title'] = meta.get("tv_show_title")
-        else:
-
+        props = None
+        if _history_tmdb_details(episode_data_raw):
+            try:
+                props = plugin_instance.tmdb_client._build_metadata_props(episode_data_raw, 'episode')
+                if isinstance(props, dict) and props:
+                    props['tv_show_title'] = meta.get("tv_show_title")
+            except Exception:
+                pass
+        if not isinstance(props, dict) or not props:
             props = meta.copy()
             props['media_type'] = 'episode'
 
@@ -1912,7 +1984,7 @@ def playback_show_history(params, plugin_instance):
         list_item = xbmcgui.ListItem(label=label)
         list_item.setProperty("IsPlayable", "true")
 
-        plugin_instance.tmdb_client.fill_list_item(list_item, props, 'episode')
+        _fill_history_item(list_item, props, 'episode', plugin_instance.tmdb_client)
 
         # --- CONTEXT MENU Z CENTRALIZACE
 
