@@ -1377,7 +1377,7 @@ def _queue_following_episodes_from_tmdbh_legacy(meta, addon, plugin_instance):
 
 
 # FIX PRE-EMPTIVE AND FILTERS [ROLLING TMDBHELPER QUEUE]
-def _build_managed_episode_item(meta, addon, plugin_instance, show_props, show_cast, season, episode):
+def _build_managed_episode_item(meta, addon, plugin_instance, show_props, show_cast, season, episode, is_current=None):
     from resources.lib import actions
     from resources.lib.utils import store_meta_in_cache
 
@@ -1387,7 +1387,7 @@ def _build_managed_episode_item(meta, addon, plugin_instance, show_props, show_c
         f"tv/{tmdb_id}/season/{season}/episode/{episode}",
         params={"append_to_response": "credits"}
     )
-    if not _valid_episode_details(episode_data):
+    if (is_current is not None and not is_current()) or not _valid_episode_details(episode_data):
         return None
 
     episode_props = tmdb_client._build_metadata_props(episode_data, "episode")
@@ -1396,6 +1396,8 @@ def _build_managed_episode_item(meta, addon, plugin_instance, show_props, show_c
     sources = _search_continue_sources(
         query, addon, plugin_instance, tmdb_id, season, episode
     )
+    if is_current is not None and not is_current():
+        return None
     if not sources:
         if str(addon.getSetting('auto_prediction_stop_on_no_match')).lower() == 'true':
             from resources.lib.utils_auto_prediction import select_source
@@ -1413,7 +1415,7 @@ def _build_managed_episode_item(meta, addon, plugin_instance, show_props, show_c
     if str(addon.getSetting('auto_prediction_enable')).lower() == 'true':
         from resources.lib.utils_auto_prediction import select_source
         selected = select_source(sources, meta, addon, selected, target=(season, episode))
-        if selected is None:
+        if selected is None or (is_current is not None and not is_current()):
             return None
 
     episode_meta = _episode_context(meta)
@@ -1446,7 +1448,7 @@ def _build_managed_episode_item(meta, addon, plugin_instance, show_props, show_c
         selected["link"], selected.get("provider"), json.dumps(episode_meta),
         return_url_only=True, return_view_identity=True, plugin_instance=plugin_instance
     )
-    if not final_url:
+    if not final_url or (is_current is not None and not is_current()):
         return None
 
     list_item = xbmcgui.ListItem(f"S{season:02d}E{episode:02d} - {episode_meta['title']}")
@@ -1577,7 +1579,15 @@ def queue_following_episodes_from_tmdbh(meta, addon, plugin_instance, seed_only=
             else:
                 expected_size = size
 
+            def is_current():
+                return (player.isPlayingVideo()
+                        and _active_episode_matches(player, win, meta)
+                        and playlist.getposition() == position
+                        and playlist.size() == expected_size)
+
             show_details = tmdb_client.get_full_details("tv", tmdb_id) or {}
+            if not is_current():
+                return
             show_props = tmdb_client._build_metadata_props(show_details, "tv") if show_details else {}
             show_cast = show_props.get("cast_full", [])
             base_episode = future_items[-1] if future_items else {
@@ -1590,6 +1600,8 @@ def queue_following_episodes_from_tmdbh(meta, addon, plugin_instance, seed_only=
 
             for _ in range(missing_count):
                 coordinates = _next_episode_coordinates(tmdb_id, season_num, episode_num, tmdb_client)
+                if not is_current():
+                    return
                 if not coordinates:
                     break
                 candidate_season, candidate_episode = coordinates
@@ -1597,8 +1609,10 @@ def queue_following_episodes_from_tmdbh(meta, addon, plugin_instance, seed_only=
                 candidate_meta['_play_er_queue_remaining'] = remaining - len(future_items) - len(items_to_add) - 1
                 item = _build_managed_episode_item(
                     candidate_meta, addon, plugin_instance, show_props, show_cast,
-                    candidate_season, candidate_episode
+                    candidate_season, candidate_episode, is_current=is_current
                 )
+                if not is_current():
+                    return
                 if not item:
                     break
                 items_to_add.append(item)
@@ -1611,12 +1625,7 @@ def queue_following_episodes_from_tmdbh(meta, addon, plugin_instance, seed_only=
                 log("FIX PRE-EMPTIVE AND FILTERS - Queue: žádné nové filtrované epizody", xbmc.LOGINFO)
                 return
 
-            if (
-                not player.isPlayingVideo()
-                or not _active_episode_matches(player, win, meta)
-                or playlist.getposition() != position
-                or playlist.size() != expected_size
-            ):
+            if not is_current():
                 log("FIX PRE-EMPTIVE AND FILTERS - Queue: přehrávání nebo playlist se během hledání změnil", xbmc.LOGINFO)
                 return
 

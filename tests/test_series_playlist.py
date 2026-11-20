@@ -220,6 +220,105 @@ class SeriesPlaylistTests(unittest.TestCase):
         records = json.loads(self.window.getProperty('play_er.episode_queue_metadata'))
         self.assertIn('binding-S01E02', {record['view_binding'] for record in records.values()})
 
+    def test_tmdbh_refill_builds_following_episodes_while_playback_is_current(self):
+        meta = {'tmdb_id': 42, 'media_type': 'episode', 'tv_show_title': 'Show',
+                'season': 1, 'episode': 1, '_play_er_queue_remaining': 2}
+        self.playlist.size.return_value = 1
+        self.playlist.getposition.return_value = 0
+        def sources(query, addon, instance, tmdb_id, season, episode):
+            return [{'link': 'S{:02d}E{:02d}'.format(season, episode),
+                     'provider': 'test', 'title': query}]
+        with patch.object(generator, '_active_episode_matches', return_value=True), \
+             patch.object(generator, '_get_video_playlist_snapshot', return_value=(self.playlist, 0, [{}])), \
+             patch.object(generator, '_next_episode_coordinates', side_effect=[(1, 2), (2, 1)]), \
+             patch.object(generator, '_search_continue_sources', side_effect=sources):
+            generator.queue_following_episodes_from_tmdbh(meta, self.addon, self.instance,
+                                                          seed_only=False, verify_future=True)
+        self.assertEqual([call.args[0] for call in self.playlist.add.call_args_list],
+                         ['https://example.invalid/S01E02|Header=value',
+                          'https://example.invalid/S02E01|Header=value'])
+        records = list(json.loads(self.window.getProperty('play_er.episode_queue_metadata')).values())
+        self.assertEqual([(r['meta']['season'], r['meta']['episode'], r['meta']['_play_er_queue_remaining'])
+                          for r in records], [(1, 2, 1), (2, 1, 0)])
+        self.assertEqual(self.window.getProperty('play_er.tmdbh_episode_queue_active'), '')
+
+    def test_tmdbh_refill_stops_requests_when_playback_changes(self):
+        meta = {'tmdb_id': 42, 'media_type': 'episode', 'tv_show_title': 'Show',
+                'season': 1, 'episode': 1, '_play_er_queue_remaining': 2}
+        self.playlist.size.return_value = 1
+        self.playlist.getposition.return_value = 0
+        for switched_at in ('show', 'coordinates', 'episode', 'search', 'empty_search',
+                            'playlist', 'prediction', 'resolve'):
+            with self.subTest(switched_at=switched_at):
+                self.player.path = 'https://example.invalid/S01E01'
+                self.playlist.reset_mock()
+                self.playlist.size.return_value = 1
+                self.settings['auto_prediction_enable'] = 'true' if switched_at == 'prediction' else 'false'
+                self.settings['auto_prediction_stop_on_no_match'] = 'true' if switched_at == 'empty_search' else 'false'
+                self.actions.resolve_video.reset_mock()
+                self.window.clearProperty('play_er.episode_queue_metadata')
+
+                def switch():
+                    self.player.path = 'https://other.invalid/video'
+
+                def details(*args):
+                    if switched_at == 'show':
+                        switch()
+                    return {'id': 42}
+
+                def coordinates(*args):
+                    if switched_at == 'coordinates':
+                        switch()
+                    return (1, 2)
+
+                def episode(*args, **kwargs):
+                    if switched_at == 'episode':
+                        switch()
+                    return {'season': 1, 'episode': 2}
+
+                def search(*args):
+                    if switched_at in ('search', 'empty_search'):
+                        switch()
+                    if switched_at == 'playlist':
+                        self.playlist.size.return_value = 2
+                    if switched_at == 'empty_search':
+                        return []
+                    return [{'link': 'S01E02', 'provider': 'test', 'title': 'Episode'}]
+
+                prediction = MagicMock()
+                def select(sources, *args, **kwargs):
+                    switch()
+                    return sources[0]
+                prediction.select_source.side_effect = select
+
+                def resolve(*args, **kwargs):
+                    if switched_at == 'resolve':
+                        switch()
+                    return ('https://example.invalid/S01E02', None)
+
+                self.tmdb.get_full_details.side_effect = details
+                self.tmdb._fetch.side_effect = episode
+                self.actions.resolve_video.side_effect = resolve
+                with patch.dict(sys.modules, {'resources.lib.utils_auto_prediction': prediction}), \
+                     patch.object(generator, '_active_episode_matches',
+                                  side_effect=lambda player, win, meta: player.path.endswith('/S01E01')), \
+                     patch.object(generator, '_get_video_playlist_snapshot', return_value=(self.playlist, 0, [{}])), \
+                     patch.object(generator, '_next_episode_coordinates', side_effect=coordinates) as next_episode, \
+                     patch.object(generator, '_search_continue_sources', side_effect=search) as source_search:
+                    generator.queue_following_episodes_from_tmdbh(meta, self.addon, self.instance,
+                                                                  seed_only=False, verify_future=True)
+                if switched_at == 'show':
+                    next_episode.assert_not_called()
+                if switched_at in ('show', 'coordinates', 'episode'):
+                    source_search.assert_not_called()
+                if switched_at != 'resolve':
+                    self.actions.resolve_video.assert_not_called()
+                if switched_at == 'empty_search':
+                    prediction.select_source.assert_not_called()
+                self.assertEqual(self.window.getProperty('play_er.episode_queue_metadata'), '')
+                self.assertEqual(self.window.getProperty('play_er.tmdbh_episode_queue_active'), '')
+                self.playlist.add.assert_not_called()
+
     def test_verified_refill_rejects_unidentified_future_items(self):
         meta = {'tmdb_id': 42, 'media_type': 'episode', 'season': 1, 'episode': 1,
                 '_play_er_queue_remaining': 2}
