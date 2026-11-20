@@ -51,6 +51,7 @@ from resources.lib import cache_manager
 from resources.lib.utils_logging import log
 from resources.lib.stream_state import get_streams, attach_subtitles, publish_active_streams
 from resources.lib.source_order import order_sources
+from resources.lib.preemptive_scope import source_scope
 from resources.lib.ui_builder import set_view_mode
 from resources.lib.utils_settings import get_setting_int_with_bounds
 
@@ -1281,7 +1282,8 @@ def find_and_list_sources_multi(params, plugin_instance, tmdbh_search=False):
             if cached_data and isinstance(cached_data, dict):
                 import time
                 cache_age = time.time() - cached_data.get("timestamp", 0)
-                if 0 <= cache_age < 1800 and isinstance(cached_data.get("results"), list):
+                if (0 <= cache_age < 1800 and isinstance(cached_data.get("results"), list)
+                        and cached_data.get("source_scope") == source_scope(plugin_instance.addon, plugin_instance.provider_manager)):
                     cached_results = order_sources(cached_data.get("results", []), sort_priority)
                     log(f"SOURCES - Načteno {len(cached_results)} zdrojů z pre-emptive cache", xbmc.LOGINFO)
         except Exception as e:
@@ -2524,6 +2526,7 @@ def _perform_pre_emptive_search(meta, plugin_instance):
         log(f"PRE-EMPTIVE SEARCH - HLEDÁM : {query}", xbmc.LOGINFO)
         notify_info(f"ACTION SEARCHING : {query}", category="EMPTIVE", time=5000)
 
+        scope = source_scope(plugin_instance.addon, plugin_instance.provider_manager)
         providers = plugin_instance.provider_manager.get_providers_to_search()
 
         if not providers:
@@ -2539,13 +2542,18 @@ def _perform_pre_emptive_search(meta, plugin_instance):
             notify_info(f"ACTION MISSING : {query}", category="EMPTIVE", time=5000)
             return
 
+        if scope != source_scope(plugin_instance.addon, plugin_instance.provider_manager):
+            log("PRE-EMPTIVE SEARCH - Nastavení poskytovatele se během hledání změnilo; cache nebyla uložena", xbmc.LOGINFO)
+            return
+
         cache_key = f"preemptive_{meta['tmdb_id']}_S{season:02d}E{episode:02d}"
 
         cache_manager.cache_set("PREEMPTIVE_SOURCES", cache_key, {
             "query": query,
             "results": results,
             "timestamp": int(time.time()),
-            "meta": next_ep_meta
+            "meta": next_ep_meta,
+            "source_scope": scope
         })
 
         log(f"PRE-EMPTIVE SEARCH - DOKONČENO : {len(results)} zdrojů uloženo do cache klíče: {cache_key}", xbmc.LOGINFO)

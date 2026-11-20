@@ -9,6 +9,7 @@ import resources.lib
 import test_episode_playback as episode_support
 from test_movie_playlist import generator
 from resources.lib.source_order import order_sources
+from resources.lib.preemptive_scope import source_scope
 
 actions = episode_support.actions
 
@@ -28,6 +29,7 @@ class PreemptiveOrderTests(unittest.TestCase):
         self.instance.addon = self.addon
         self.instance.tmdb_client = None
         self.instance.provider_manager.get_providers_to_search.return_value = []
+        self.cache.cache_get.return_value['source_scope'] = source_scope(self.addon, self.instance.provider_manager)
 
     def test_continue_cache_uses_current_priority_without_mutating_cache(self):
         with patch.object(generator, 'cache_manager', self.cache), \
@@ -40,8 +42,7 @@ class PreemptiveOrderTests(unittest.TestCase):
 
     def test_priority_can_change_back_without_reordering_cached_rows(self):
         self.cache.cache_get.return_value['results'] = [self.rows[1], self.rows[3], self.rows[0], self.rows[2]]
-        self.addon.getSetting.side_effect = None
-        self.addon.getSetting.return_value = 'PREHRAJ.TO'
+        self.addon.getSetting.side_effect = lambda key: 'PREHRAJ.TO' if key == 'multi_provider_sort' else ''
         with patch.object(generator, 'cache_manager', self.cache), \
              patch.object(generator, '_apply_continue_source_filters', side_effect=lambda rows, addon: rows), \
              patch.dict(sys.modules, {'resources.lib.actions': actions}), \

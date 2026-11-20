@@ -37,6 +37,7 @@ from resources.lib.utils_theme import Colors
 from resources.lib.stream_state import attach_subtitles
 from resources.lib.playback_identity import publish_fallback
 from resources.lib.source_order import order_sources
+from resources.lib.preemptive_scope import source_scope
 
 
 def _remember_playlist_item(url, meta, meta_id, trakt_id, source_link):
@@ -190,6 +191,7 @@ def _search_continue_sources(query, addon, plugin_instance, tmdb_id, season, epi
         cached = cache_manager.cache_get("PREEMPTIVE_SOURCES", cache_key)
         if (isinstance(cached, dict)
                 and 0 <= time.time() - cached.get("timestamp", 0) < 1800
+                and cached.get("source_scope") == source_scope(addon, plugin_instance.provider_manager)
                 and isinstance(cached.get("results"), list)):
             sources = order_sources(cached.get("results") or [], str(addon.getSetting("multi_provider_sort")))
             log(f"CONTINUE - Používám pre-emptive cache: {len(sources)} zdrojů", xbmc.LOGINFO)
