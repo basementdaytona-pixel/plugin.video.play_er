@@ -609,6 +609,8 @@ def create_movie_playlist(start_meta, addon, active_provider, tmdb_client, handl
                                     continue
 
                                 rec_meta_raw = tmdb_client.get_full_details("movie", rec_tmdb_id)
+                                if not _playlist_playback_is_current(player, allowed_urls, allowed_sources):
+                                    break
                                 if not rec_meta_raw:
                                     continue
 
@@ -623,6 +625,8 @@ def create_movie_playlist(start_meta, addon, active_provider, tmdb_client, handl
                                 else:
                                     results_rec = actions._search_providers_parallel(search_query_rec, providers, apply_filters=True, sort_priority=sort_priority)
 
+                                if not _playlist_playback_is_current(player, allowed_urls, allowed_sources):
+                                    break
                                 if not results_rec:
                                     continue
 

@@ -248,6 +248,40 @@ class MoviePlaylistTests(unittest.TestCase):
         self.tmdb.get_recommendations_raw.assert_not_called()
         self.playlist.add.assert_not_called()
 
+    def test_switch_during_recommendation_details_does_not_search_sources(self):
+        self.tmdb.get_recommendations_raw.return_value = [{'id': 3}]
+        details = self.tmdb.get_full_details.side_effect
+
+        def switch_on_details(kind, tmdb_id):
+            result = details(kind, tmdb_id)
+            if tmdb_id == 3:
+                self.player.path = 'https://other.invalid/video'
+            return result
+
+        self.tmdb.get_full_details.side_effect = switch_on_details
+        self.run_playlist()
+        self.assertEqual(self.actions._search_providers_parallel.call_count, 1)
+        self.assertEqual(self.actions.resolve_video.call_count, 1)
+        self.playlist.add.assert_not_called()
+        self.assertEqual(self.window.getProperty('play_er.bg_playlist_active'), '')
+
+    def test_switch_during_source_search_does_not_resolve_recommendation(self):
+        self.tmdb.get_recommendations_raw.return_value = [{'id': 3}]
+        search = self.actions._search_providers_parallel.side_effect
+
+        def switch_on_search(query, *args, **kwargs):
+            results = search(query, *args, **kwargs)
+            if not query.startswith('Start '):
+                self.player.path = 'https://other.invalid/video'
+            return results
+
+        self.actions._search_providers_parallel.side_effect = switch_on_search
+        self.run_playlist()
+        self.assertEqual(self.actions._search_providers_parallel.call_count, 2)
+        self.assertEqual(self.actions.resolve_video.call_count, 1)
+        self.playlist.add.assert_not_called()
+        self.assertEqual(self.window.getProperty('play_er.bg_playlist_active'), '')
+
     def test_switch_during_source_resolution_does_not_add_to_new_playback(self):
         self.tmdb.get_recommendations_raw.return_value = [{'id': 3}]
         def resolve(link, *args, **kwargs):
